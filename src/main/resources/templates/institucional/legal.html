@@ -6,8 +6,13 @@
 <html lang="es" xmlns:th="http://thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo=${bloque?.titulo ?: tituloPorDefecto} + ' · HÖSÉG', activa='',
                                           transparente=false, contenido=~{::main}, estilos=~{}, scripts=~{})}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${bloque?.titulo ?: tituloPorDefecto} + ' · HÖSÉG'">Términos y condiciones</title>
+</head>
 <body>
 <main class="hs-main--bajo-nav">
+
 
     <!-- BANNER DE IMAGEN DINÁMICO -->
     <div th:if="${bloque?.imagenUrl}" class="w-100 position-relative mb-5" style="height: 250px; overflow: hidden;">
