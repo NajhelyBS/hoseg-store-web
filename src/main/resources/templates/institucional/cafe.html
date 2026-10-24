@@ -25,7 +25,7 @@
         </div>
     </section>
 
-    <!-- SECCIÓN 2: CARTA DIGITAL -->
+    <!-- SECCIÓN 2: CARTA DIGITAL-->
     <section class="hs-seccion py-5">
         <div class="container-fluid px-md-5">
             <div class="d-flex align-items-center gap-2 mb-4">
@@ -35,35 +35,53 @@
             
             <p th:if="${carta.isEmpty()}" class="text-muted">Pronto publicaremos nuestras opciones en cocina.</p>
             
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                <div th:each="c : ${carta}" class="col">
-                    <div class="card h-100 p-4 border-0 shadow-sm" style="border-radius: var(--hs-radius); background-color: var(--hs-card); border: 1px solid var(--hs-sand) !important;">
-                        
-                        <!-- Categoría -->
-                        <div class="border-bottom pb-2 mb-3">
-                            <h3 class="h5 fw-bold mb-0 text-dark text-uppercase tracking-wide" th:text="${c.categoria}">Categoría</h3>
-                        </div>
-                        
-                        <!-- Lista de Ítems de la Categoría -->
-                        <div th:each="i, iterStat : ${c.items}" th:classappend="${!iterStat.last} ? 'mb-3' : ''">
-                            <div class="d-flex justify-content-between align-items-start gap-2">
-                                <div class="text-start">
-                                    <strong class="text-dark d-block fw-semibold" style="font-size: 1rem;" th:text="${i.nombre}">Latte</strong>
-                                    <small class="text-muted d-block lh-sm my-1" style="font-size: 0.85rem;" th:text="${i.descripcion}">Descripción</small>
-                                </div>
-                                <span class="fw-bold px-2 py-1 rounded bg-light" style="color: var(--hs-terracotta); white-space: nowrap; font-size: 0.9rem;"
-                                      th:text="'S/ ' + ${#numbers.formatDecimal(i.precio, 1, 'COMMA', 2, 'POINT')}">S/ 12.00</span>
-                            </div>
-<span th:if="${i.disponible == false}" class="badge bg-danger bg-opacity-10 text-danger rounded-pill mt-1 d-inline-block" style="font-size: 0.75rem;">agotado hoy</span>
+            <div class="w-100 overflow-x-auto pb-3" style="scrollbar-width: none; -ms-overflow-style: none;">
+                <style>
+                    @media (max-width: 767.98px) {
+                        .hs-carousel-mobile {
+                            display: flex !important;
+                            flex-wrap: nowrap !important;
+                            gap: 1rem !important;
+                        }
+                        .hs-carousel-mobile .col {
+                            flex: 0 0 85% !important; 
+                            max-width: 85% !important;
+                        }
+                    }
+                </style>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 hs-carousel-mobile">
+                    <div th:each="c : ${carta}" class="col">
+                        <div class="card h-100 p-4 border-0 shadow-sm" style="border-radius: var(--hs-radius); background-color: var(--hs-card); border: 1px solid var(--hs-sand) !important;">
                             
-                            <hr th:unless="${iterStat.last}" class="my-2 text-black-50 opacity-10">
+                            <!-- Categoría -->
+                            <div class="border-bottom pb-2 mb-3">
+                                <h3 class="h5 fw-bold mb-0 text-dark text-uppercase tracking-wide" th:text="${c.categoria}">Categoría</h3>
+                            </div>
+                            
+                            <!-- Lista de Ítems de la Categoría -->
+                            <div th:each="i, iterStat : ${c.items}" th:classappend="${!iterStat.last} ? 'mb-3' : ''">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                    <div class="text-start">
+                                        <strong class="text-dark d-block fw-semibold" style="font-size: 1rem;" th:text="${i.nombre}">Latte</strong>
+                                        <small class="text-muted d-block lh-sm my-1" style="font-size: 0.85rem;" th:text="${i.descripcion}">Descripción</small>
+                                    </div>
+                                    <span class="fw-bold px-2 py-1 rounded bg-light" style="color: var(--hs-terracotta); white-space: nowrap; font-size: 0.9rem;"
+                                          th:text="'S/ ' + ${#numbers.formatDecimal(i.precio, 1, 'COMMA', 2, 'POINT')}">S/ 12.00</span>
+                                </div>
+                                <span th:if="${i.disponible == false}" class="badge bg-danger bg-opacity-10 text-danger rounded-pill mt-1 d-inline-block" style="font-size: 0.75rem;">agotado hoy</span>
+                                
+                                <hr th:unless="${iterStat.last}" class="my-2 text-black-50 opacity-10">
+                            </div>
+                            
                         </div>
-                        
                     </div>
                 </div>
             </div>
         </div>
     </section>
+  
+
 
     <!-- SECCIÓN 3: SOLO CAFES EN GRANO -->
     <section class="hs-seccion py-5 border-top bg-white">
