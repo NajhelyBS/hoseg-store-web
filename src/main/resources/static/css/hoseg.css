@@ -792,3 +792,15 @@
     background: var(--hs-bark-light);
     color: var(--hs-cream);
 }
+
+@media (max-width: 767.98px) {
+    .hs-carousel-mobile {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 1rem !important;
+    }
+    .hs-carousel-mobile .col {
+        flex: 0 0 85% !important;
+        max-width: 85% !important;
+    }
+}

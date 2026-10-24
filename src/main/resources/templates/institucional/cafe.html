@@ -36,20 +36,7 @@
             <p th:if="${carta.isEmpty()}" class="text-muted">Pronto publicaremos nuestras opciones en cocina.</p>
             
             <div class="w-100 overflow-x-auto pb-3" style="scrollbar-width: none; -ms-overflow-style: none;">
-                <style>
-                    @media (max-width: 767.98px) {
-                        .hs-carousel-mobile {
-                            display: flex !important;
-                            flex-wrap: nowrap !important;
-                            gap: 1rem !important;
-                        }
-                        .hs-carousel-mobile .col {
-                            flex: 0 0 85% !important; 
-                            max-width: 85% !important;
-                        }
-                    }
-                </style>
-
+                
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 hs-carousel-mobile">
                     <div th:each="c : ${carta}" class="col">
                         <div class="card h-100 p-4 border-0 shadow-sm" style="border-radius: var(--hs-radius); background-color: var(--hs-card); border: 1px solid var(--hs-sand) !important;">
