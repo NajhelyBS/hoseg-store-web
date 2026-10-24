@@ -54,7 +54,7 @@
                                 <span class="fw-bold px-2 py-1 rounded bg-light" style="color: var(--hs-terracotta); white-space: nowrap; font-size: 0.9rem;"
                                       th:text="'S/ ' + ${#numbers.formatDecimal(i.precio, 1, 'COMMA', 2, 'POINT')}">S/ 12.00</span>
                             </div>
-                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill mt-1 d-inline-block" style="font-size: 0.75rem;">agotado hoy</span>
+<span th:if="${i.disponible == false}" class="badge bg-danger bg-opacity-10 text-danger rounded-pill mt-1 d-inline-block" style="font-size: 0.75rem;">agotado hoy</span>
                             
                             <hr th:unless="${iterStat.last}" class="my-2 text-black-50 opacity-10">
                         </div>
