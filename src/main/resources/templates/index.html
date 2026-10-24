@@ -130,6 +130,10 @@
                         <th:block
                             th:replace="~{fragments/impacto :: contador('bi-heart', ${impacto.pedidosConImpacto}, 'Pedidos con impacto')}" />
                     </div>
+                    <p class="hs-credito-foto mt-2 mb-0" th:if="${bloques['nosotros.historia']?.imagenUrl == null}">
+                        Foto: <a href="https://commons.wikimedia.org/wiki/File:Alpacas_in_the_mountains.jpg" target="_blank" rel="noopener">Alpacas in the mountains</a>,
+                        Havardtl, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener license">CC BY 4.0</a>
+                    </p>
                 </div>
 
                 <div class="text-center">
@@ -199,7 +203,6 @@
                             <span class="hs-chip hs-chip--pequeno">ONG aliada</span>
                             <span class="hs-chip hs-chip--pequeno">Trazabilidad 100%</span>
                         </div>
-                        <!-- Enlace corregido para navegar directamente a la vista institucional completa -->
                         <a class="hs-enlace-flecha" th:href="@{/nosotros}">
                             Conoce más <i class="bi bi-arrow-right" aria-hidden="true"></i>
                         </a>
