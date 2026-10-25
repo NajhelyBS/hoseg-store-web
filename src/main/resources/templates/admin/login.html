@@ -1,34 +1,40 @@
 <!DOCTYPE html>
 <!--
-  ESQUELETO · Bloque 4 · 4.1 Login administrativo (GET /admin/login; el POST lo procesa Spring Security).
+  PLANTILLA · Bloque 4 · 4.1 Login administrativo (GET /admin/login; el POST lo procesa Spring Security).
   El formulario DEBE enviar "username" y "password" por POST a /admin/login.
   Usuarios de la tabla usuario del escritorio, solo rol ADMINISTRADOR; mismo bloqueo que el escritorio.
   Variantes: ?error · ?bloqueado=5 (minutos) · ?inactivo · ?sinPermiso (es ENCARGADO) · ?salir
+  Adaptación de interfaz: formulario de acceso adaptable a escritorio y móvil, con avisos de autenticación.
 -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
-    <title>Panel · HÖSÉG</title>
+    <title>Acceso administrativo · HÖSÉG</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/font/bootstrap-icons.min.css}">
     <link rel="stylesheet" th:href="@{/css/tokens.css}">
     <link rel="stylesheet" th:href="@{/css/hoseg.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
-<body>
-<main class="container hs-ancho-form py-5">
-    <h1 class="hs-h2 mb-3">Panel HÖSÉG</h1>
-    <div class="alert alert-danger" th:if="${param.error}">Usuario o contraseña incorrectos.</div>
-    <div class="alert alert-danger" th:if="${param.bloqueado}"
-         th:text="'Cuenta bloqueada. Intenta de nuevo en ' + ${param.bloqueado} + ' minuto(s).'">Bloqueada</div>
-    <div class="alert alert-danger" th:if="${param.inactivo}">El usuario está inactivo. Contacta a un administrador.</div>
-    <div class="alert alert-warning" th:if="${param.sinPermiso}">Tu usuario no tiene acceso al panel web.</div>
-    <div class="alert alert-info" th:if="${param.salir}">Cerraste sesión.</div>
-    <form method="post" th:action="@{/admin/login}">
-        <label class="d-block">Usuario <input class="hs-input" name="username" autocomplete="username" required></label>
-        <label class="d-block mt-2">Contraseña <input class="hs-input" type="password" name="password" autocomplete="current-password" required></label>
-        <button class="hs-btn hs-btn--primario mt-3" type="submit">Ingresar</button>
-    </form>
+<body class="hs-admin-login">
+<main class="hs-login-wrap">
+    <section class="hs-login-card" aria-labelledby="titulo-login">
+        <div class="hs-login-brand"><span class="hs-wordmark">HÖSÉG</span><span class="hs-login-subtitle">PANEL DE ADMINISTRACIÓN</span></div>
+        <h1 id="titulo-login" class="visually-hidden">Iniciar sesión en el panel de administración</h1>
+        <div th:if="${param.error}" class="hs-notice hs-notice--danger" role="alert"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Usuario o contraseña incorrectos.</div>
+        <div th:if="${param.bloqueado}" class="hs-notice hs-notice--warning" role="alert"><i class="bi bi-shield-exclamation" aria-hidden="true"></i> <span th:text="'Cuenta bloqueada temporalmente. Vuelve a intentarlo en ' + ${param.bloqueado[0]} + ' minuto(s).'">Cuenta bloqueada temporalmente.</span></div>
+        <div th:if="${param.inactivo}" class="hs-notice hs-notice--danger" role="alert"><i class="bi bi-person-x" aria-hidden="true"></i> La cuenta está inactiva. Contacta a un administrador.</div>
+        <div th:if="${param.sinPermiso}" class="hs-notice hs-notice--warning" role="alert"><i class="bi bi-lock" aria-hidden="true"></i> Tu usuario no tiene acceso al panel web.</div>
+        <div th:if="${param.salir}" class="hs-notice hs-notice--success" role="status"><i class="bi bi-check-circle" aria-hidden="true"></i> La sesión se cerró correctamente.</div>
+        <form method="post" th:action="@{/admin/login}" class="hs-login-form">
+            <div class="hs-field"><label for="admin-username">USUARIO</label><input id="admin-username" class="hs-admin-input" name="username" type="text" autocomplete="username" placeholder="Ingresa tu usuario" required autofocus></div>
+            <div class="hs-field"><label for="admin-password">CONTRASEÑA</label><input id="admin-password" class="hs-admin-input" type="password" name="password" autocomplete="current-password" placeholder="••••••••" required></div>
+            <button class="hs-admin-btn hs-admin-btn--primary hs-login-submit" type="submit" th:disabled="${param.bloqueado != null}">Iniciar sesión <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
+        </form>
+        <p class="hs-login-footnote">Acceso exclusivo para personal autorizado.</p>
+    </section>
 </main>
 </body>
 </html>
