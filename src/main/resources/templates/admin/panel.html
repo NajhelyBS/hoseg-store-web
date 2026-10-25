@@ -11,7 +11,6 @@
 -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/admin :: pagina(titulo='Panel · HÖSÉG', activa='panel', contenido=~{::main})}">
 <body><main class="hs-admin-page hs-panel-page">
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
     <div class="hs-page-heading"><div><p class="hs-eyebrow">RESUMEN GENERAL</p><h1>Panel</h1><p class="hs-page-desc">Resumen de la actividad de HÖSÉG Store.</p></div>
         <form method="get" th:action="@{/admin/panel}" class="hs-date-filter" aria-label="Filtrar indicadores y pedidos por fecha">
             <div class="hs-field"><label for="desde">Desde</label><input class="hs-admin-input" id="desde" type="date" name="desde" th:value="${desde}" required></div>
@@ -42,5 +41,4 @@
             </tr><tr th:if="${pedidos.isEmpty()}"><td colspan="7" class="hs-empty-row">No hay pedidos en el periodo seleccionado.</td></tr><tr class="hs-filter-empty" hidden><td colspan="7" class="hs-empty-row">No hay pedidos con este estado.</td></tr></tbody>
         </table></div>
     </section>
-    <script defer th:src="@{/js/admin.js}"></script>
 </main></body></html>

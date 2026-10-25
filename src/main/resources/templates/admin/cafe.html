@@ -13,7 +13,6 @@
 -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/admin :: pagina(titulo='Höség Café · HÖSÉG', activa='cafe', contenido=~{::main})}">
 <body><main class="hs-admin-page hs-cafe-page">
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
     <header class="hs-page-heading"><div><p class="hs-eyebrow">ADMINISTRACIÓN</p><h1>Höség Café</h1><p class="hs-page-desc">Gestiona la carta, los locales y el contador de impacto del café.</p></div></header>
     <nav class="hs-tab-strip hs-section-tabs" aria-label="Secciones de Höség Café">
         <a class="hs-tab" th:classappend="${pestana == 'carta'} ? 'is-active'" th:href="@{/admin/cafe(pestana='carta')}">Carta</a>
@@ -49,5 +48,4 @@
                 <div class="hs-field"><label for="local-direccion">Dirección</label><input id="local-direccion" class="hs-admin-input" th:field="*{direccion}" maxlength="255" required><p class="hs-field-error" th:errors="*{direccion}"></p></div><div class="hs-field"><label for="local-horario">Horario</label><input id="local-horario" class="hs-admin-input" th:field="*{horario}" maxlength="150"></div><div class="hs-field"><label for="local-telefono">Teléfono</label><input id="local-telefono" class="hs-admin-input" th:field="*{telefono}"><p class="hs-field-error" th:errors="*{telefono}"></p></div><div class="hs-field"><label for="local-mapa">Enlace del mapa</label><input id="local-mapa" class="hs-admin-input" th:field="*{urlMapa}" placeholder="https://maps..." type="url"><p class="hs-field-error" th:errors="*{urlMapa}"></p></div><label class="hs-check-row"><input type="checkbox" th:field="*{activo}"> Local activo</label></div><div class="modal-footer"><button class="hs-admin-btn hs-admin-btn--primary" type="submit">Guardar local</button><button type="button" class="hs-admin-btn hs-admin-btn--outline" data-bs-dismiss="modal">Cancelar</button></div></form>
         </div></div>
     </div>
-    <script defer th:src="@{/js/admin.js}"></script>
 </main></body></html>

@@ -13,7 +13,6 @@
 -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/admin :: pagina(titulo='Catálogo web · HÖSÉG', activa='catalogo', contenido=~{::main})}">
 <body><main class="hs-admin-page hs-catalog-page">
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
     <header class="hs-page-heading"><div><p class="hs-eyebrow">GESTIÓN DE TIENDA</p><h1>Catálogo web</h1><p class="hs-page-desc">Controla la publicación de las tallas y los modelos destacados de tu tienda.</p></div></header>
     <div class="hs-notice hs-notice--warning hs-margin-bottom"><i class="bi bi-info-circle" aria-hidden="true"></i> El stock se sincroniza desde el sistema de escritorio y no puede editarse aquí.</div>
     <div class="hs-catalog-grid">
@@ -32,5 +31,4 @@
             <p class="hs-preview-note"><i class="bi bi-info-circle" aria-hidden="true"></i> Máximo 8 modelos. La acción se aplica a todas las tallas del modelo.</p>
         </aside>
     </div>
-    <script defer th:src="@{/js/admin.js}"></script>
 </main></body></html>

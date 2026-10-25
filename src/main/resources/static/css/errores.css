@@ -14,8 +14,8 @@
     animation: hsPulso 2.2s var(--hs-ease) infinite;
 }
 
-.hs-icono-pulso--terracota { --hs-pulso-color: rgba(196, 98, 45, 0.35); }
-.hs-icono-pulso--salvia    { --hs-pulso-color: rgba(90, 122, 92, 0.35); }
+.hs-icono-pulso--terracota { --hs-pulso-color: color-mix(in srgb, var(--hs-terracotta) 35%, transparent); }
+.hs-icono-pulso--salvia    { --hs-pulso-color: color-mix(in srgb, var(--hs-sage) 35%, transparent); }
 
 @keyframes hsProgreso {
     from { width: 100%; }
@@ -52,7 +52,7 @@
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: url('/images/comunidad-cusco.jpg') center/cover no-repeat;
+    background: url('../images/comunidad-cusco.jpg') center/cover no-repeat;
     opacity: 0.08;
 }
 
