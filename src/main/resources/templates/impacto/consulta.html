@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!-- =========================================================================
   ESQUELETO · Bloque 3 · 3.1 Consulta de impacto (GET /consulta-impacto, ImpactoController).
   Pública y sin datos personales. Acepta ?boleta=WEB-000110 (también "110") y ?donacion=id (QR de la boleta).
@@ -10,7 +11,6 @@
     noEncontrado boolean (variante "Código no encontrado")
   La línea de tiempo usa EstadoDonacion: En espera de pago → Pendiente de asignar → Lote asignado → Entregada.
 ========================================================================= -->
-<!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: pagina(titulo='Consulta tu impacto · HÖSÉG', activa='impacto',
                                           transparente=false, contenido=~{::main}, estilos=~{}, scripts=~{})}">
 
@@ -45,8 +45,8 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h2 class="h4 mb-0 fw-bold" th:text="${consulta.codigoComprobante}">WEB-000110</h2>
                             <span class="badge bg-opacity-10 text-dark"
-                                th:classappend="${consulta.estadoVenta.name() == 'PAGADO'} ? 'bg-success text-success' : 'bg-warning text-warning'"
-                                th:text="${consulta.estadoVenta.name() == 'PAGADO' ? 'Pagado' : 'Pendiente'}">Pagado</span>
+                                th:classappend="${consulta.estadoVenta.name() == 'PAGADO'} ? 'bg-success text-success' : (${consulta.estadoVenta.name() == 'ANULADO'} ? 'bg-danger text-danger' : 'bg-warning text-warning')"
+                                th:text="${consulta.estadoVenta.etiqueta}">Pagado</span>
                         </div>
 
                         <p class="hs-texto-secundario small mb-4"
