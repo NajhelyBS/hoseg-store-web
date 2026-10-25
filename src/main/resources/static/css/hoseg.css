@@ -816,5 +816,34 @@
     .hs-carousel-mobile .col {
         flex: 0 0 85% !important;
         max-width: 85% !important;
+        scroll-snap-align: start;
     }
+    /* Carta del café: cada deslizamiento se detiene al inicio de una categoría */
+    .hs-carrusel-carta {
+        scroll-snap-type: x mandatory;
+    }
+}
+
+/* Aviso "Desliza hacia los lados" sobre la carta del café (solo móvil, d-md-none) */
+.hs-aviso-deslizar {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin-bottom: .75rem;
+    font-size: .85rem;
+    color: var(--hs-muted);
+}
+
+.hs-aviso-deslizar__flecha {
+    color: var(--hs-terracotta);
+    animation: hsDeslizar 1.6s var(--hs-ease) infinite;
+}
+
+@keyframes hsDeslizar {
+    0%, 100% { transform: translateX(0); }
+    50%      { transform: translateX(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hs-aviso-deslizar__flecha { animation: none; }
 }

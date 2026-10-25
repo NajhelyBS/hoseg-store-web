@@ -34,8 +34,14 @@
             </div>
             
             <p th:if="${carta.isEmpty()}" class="text-muted">Pronto publicaremos nuestras opciones en cocina.</p>
-            
-            <div class="w-100 overflow-x-auto pb-3" style="scrollbar-width: none; -ms-overflow-style: none;">
+
+            <!-- Solo en móvil: la carta es un carrusel horizontal y el resto de categorías queda fuera de pantalla -->
+            <p th:if="${carta.size() > 1}" class="hs-aviso-deslizar d-md-none" aria-hidden="true">
+                <i class="bi bi-hand-index"></i> Desliza hacia los lados para ver toda la carta
+                <i class="bi bi-arrow-right hs-aviso-deslizar__flecha"></i>
+            </p>
+
+            <div class="w-100 overflow-x-auto pb-3 hs-carrusel-carta" style="scrollbar-width: none; -ms-overflow-style: none;">
                 
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 hs-carousel-mobile">
                     <div th:each="c : ${carta}" class="col">
