@@ -6,27 +6,59 @@
     restablecerForm RestablecerContrasenaForm (token oculto, nueva, confirmacion; global contrasenasCoinciden)
   Éxito: redirige a /login?restablecida.
 -->
+
+
+<!DOCTYPE html>
+<!-- Nueva contraseña: POST /restablecer. -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Nueva contraseña · HÖSÉG', activa='cuenta',
-                                          transparente=false, contenido=~{::main}, estilos=~{}, scripts=~{})}">
+                                          transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">
+<link rel="stylesheet" th:href="@{/css/cuenta.css}">
 <body>
 <main class="hs-main--bajo-nav">
-    <section class="hs-seccion">
-        <div class="container hs-ancho-form">
-            <h1 class="hs-h2 mb-3">Nueva contraseña</h1>
-            <div th:if="${vencido}">
-                <p>El enlace venció o ya se usó.</p>
-                <a class="hs-btn hs-btn--primario" th:href="@{/recuperar}">Pedir otro enlace</a>
+    <th:block th:replace="~{fragments/avisos :: avisos}"/>
+    <section class="hs-cuenta">
+        <div class="hs-cuenta__contenedor">
+            <h1 class="hs-h2 hs-cuenta__titulo">Nueva contraseña</h1>
+            <p class="hs-cuenta__intro">
+                Elige una contraseña nueva para volver a acceder a tu cuenta.
+            </p>
+
+            <div class="alert alert-warning" role="alert" th:if="${vencido}">
+                <p class="mb-2">El enlace venció o ya se usó.</p>
+                <a class="hs-btn hs-btn--primario" th:href="@{/recuperar}">
+                    Pedir otro enlace
+                </a>
             </div>
-            <form th:unless="${vencido}" th:object="${restablecerForm}" method="post" th:action="@{/restablecer}">
+
+            <form th:unless="${vencido}" th:object="${restablecerForm}"
+                  method="post" th:action="@{/restablecer}">
                 <input type="hidden" th:field="*{token}">
-                <input class="hs-input mt-2" type="password" th:field="*{nueva}" placeholder="Contraseña nueva" autocomplete="new-password">
-                <div class="text-danger" th:errors="*{nueva}"></div>
-                <input class="hs-input mt-2" type="password" th:field="*{confirmacion}" placeholder="Repítela" autocomplete="new-password">
-                <div class="text-danger" th:errors="*{confirmacion}"></div>
-                <div class="text-danger" th:errors="*{contrasenasCoinciden}"></div>
-                <button class="hs-btn hs-btn--primario mt-3" type="submit">Guardar</button>
+
+                <label class="hs-cuenta__campo" for="nueva">
+                    Contraseña nueva
+                    <input class="hs-input" id="nueva" type="password" th:field="*{nueva}"
+                           autocomplete="new-password" required>
+                </label>
+                <div class="text-danger hs-cuenta__error" th:errors="*{nueva}"></div>
+
+                <label class="hs-cuenta__campo" for="confirmacion">
+                    Repite la contraseña
+                    <input class="hs-input" id="confirmacion" type="password"
+                           th:field="*{confirmacion}" autocomplete="new-password" required>
+                </label>
+                <div class="text-danger hs-cuenta__error" th:errors="*{confirmacion}"></div>
+                <div class="text-danger hs-cuenta__error"
+                     th:errors="*{contrasenasCoinciden}"></div>
+
+                <button class="hs-btn hs-btn--primario hs-cuenta__boton mt-3" type="submit">
+                    Guardar contraseña
+                </button>
             </form>
+
+            <p class="hs-cuenta__enlaces">
+                <a th:href="@{/login}">Volver a iniciar sesión</a>
+            </p>
         </div>
     </section>
 </main>
