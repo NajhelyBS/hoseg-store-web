@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <!--
-  ESQUELETO · Bloque 2 · 2.4 Nueva contraseña (GET/POST /restablecer?token=…, AuthController).
+  Bloque 2 · 2.4 Nueva contraseña (GET/POST /restablecer?token=…, AuthController).
   Modelo:
     vencido         boolean: el enlace venció o ya se usó (variante "Enlace vencido")
     restablecerForm RestablecerContrasenaForm (token oculto, nueva, confirmacion; global contrasenasCoinciden)
   Éxito: redirige a /login?restablecida.
 -->
-
-
-<!DOCTYPE html>
-<!-- Nueva contraseña: POST /restablecer. -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Nueva contraseña · HÖSÉG', activa='cuenta',
                                           transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">

@@ -1,6 +1,9 @@
-
 <!DOCTYPE html>
-<!-- Recuperación de contraseña: POST /recuperar, campo email. -->
+<!--
+  Bloque 2 · 2.3 Recuperar contraseña (GET/POST /recuperar, AuthController).
+  POST con el campo "email". Variante ?enviado: el mensaje es el mismo exista o no el correo.
+  Sin SMTP configurado, el enlace aparece en la consola del servidor (CorreoService).
+-->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Recuperar contraseña · HÖSÉG', activa='cuenta',
                                           transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">

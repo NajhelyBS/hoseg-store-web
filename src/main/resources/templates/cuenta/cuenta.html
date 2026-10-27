@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ESQUELETO · Bloque 2 · 2.5 y 2.7 Mi cuenta (GET /cuenta?seccion=pedidos|datos, CuentaController).
+  Bloque 2 · 2.5 y 2.7 Mi cuenta (GET /cuenta?seccion=pedidos|datos, CuentaController).
   Modelo:
     seccion        "pedidos" | "datos" (pestaña activa)
     nombre         nombre del cliente ("Hola, Ana")
@@ -10,7 +10,6 @@
     datosForm      DatosClienteForm (email solo lectura, nombre, apellido, telefono, direccion) → POST /cuenta/datos
     contrasenaForm CambioContrasenaForm (actual, nueva, confirmacion) → POST /cuenta/contrasena
 -->
-<!-- Mi cuenta: pedidos, impacto y datos personales. -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Mi cuenta · HÖSÉG', activa='cuenta',
           transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">

@@ -1,6 +1,6 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--
-  ESQUELETO · Bloque 2 · 2.1 Iniciar sesión (GET /login, AuthController; el POST lo procesa Spring Security).
+  Bloque 2 · 2.1 Iniciar sesión (GET /login, AuthController; el POST lo procesa Spring Security).
   El formulario DEBE enviar los campos "email" y "password" por POST a /login (th:action añade el CSRF).
   Variantes por parámetro de la URL: ?error · ?bloqueado=5 (minutos) · ?registrado · ?restablecida
   Modelo:
@@ -9,9 +9,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Iniciar sesión · HÖSÉG', activa='cuenta',
                                           transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">
-
-
- <link rel="stylesheet" th:href="@{/css/cuenta.css}">
+<link rel="stylesheet" th:href="@{/css/cuenta.css}">
 <body>
 <main class="hs-main--bajo-nav">
     <th:block th:replace="~{fragments/avisos :: avisos}"/>

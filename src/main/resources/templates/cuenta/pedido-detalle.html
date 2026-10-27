@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ESQUELETO · Bloque 2 · 2.6 Detalle de pedido (GET /cuenta/pedidos/{codigo}, CuentaController).
+  Bloque 2 · 2.6 Detalle de pedido (GET /cuenta/pedidos/{codigo}, CuentaController).
   Modelo:
     pedido  DetallePedido: codigoComprobante, fecha, estado, totalProductos, totalAPagar, impacto, puedeResenar,
             lineas List<LineaPedido> (codigoProducto, nombre, talla, cantidad, precioUnitario, subtotal, tipoCompromiso),
@@ -10,7 +10,6 @@
                   comunidad, ong, fechaEntrega) ← misma línea de tiempo que la consulta pública (bloque 3).
   "Reseñar" lleva a /tienda/{codigoProducto}#resenas.
 -->
-<!-- Detalle de pedido: productos, envío e impacto de las donaciones. -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo=${pedido.codigoComprobante} + ' · HÖSÉG',
           activa='cuenta', transparente=false, contenido=~{::main},
@@ -240,7 +239,8 @@
                             </strong>
                         </div>
                         <div class="hs-detalle__resumen-total">
-                            <span>Total pagado o por pagar</span>
+                            <span th:text="${pedido.estado.name() == 'PAGADO'} ? 'Total pagado'
+                                           : (${pedido.estado.name() == 'PENDIENTE'} ? 'Total por pagar' : 'Total del pedido')">Total por pagar</span>
                             <strong th:text="'S/ ' + ${#numbers.formatDecimal(pedido.totalAPagar, 1, 'COMMA', 2, 'POINT')}">
                                 S/ 269.90
                             </strong>
