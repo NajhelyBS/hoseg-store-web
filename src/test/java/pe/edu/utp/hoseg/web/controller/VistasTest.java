@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.matchesRegex;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -238,9 +239,12 @@ class VistasTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("2 abrigos + 1 árbol")))
                 .andExpect(content().string(containsString("WEB-000113")));
+        // Celular y dirección son opcionales (DatosClienteForm): el navegador no debe exigirlos.
         mvc.perform(get("/cuenta").param("seccion", "datos").with(user(ANA)))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Cambiar contraseña")));
+                .andExpect(content().string(containsString("Cambiar contraseña")))
+                .andExpect(content().string(not(matchesRegex("(?s).*id=\"telefono\"[^>]*required.*"))))
+                .andExpect(content().string(not(matchesRegex("(?s).*id=\"direccion\"[^>]*required.*"))));
     }
 
     @Test
@@ -256,7 +260,10 @@ class VistasTest {
         mvc.perform(get("/cuenta/pedidos/WEB-000106").with(user(ANA)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Ccatca")))
-                .andExpect(content().string(containsString("Reseñar")))
+                .andExpect(content().string(containsString("/tienda/HSG-ACC-005#resenas")))
+                // Provincia y departamento vienen null: la ubicación no debe imprimir "null".
+                .andExpect(content().string(containsString("Cusco")))
+                .andExpect(content().string(not(containsString(", null"))))
                 .andExpect(content().string(containsString("En camino")));
     }
 

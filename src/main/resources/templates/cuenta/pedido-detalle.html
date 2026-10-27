@@ -142,9 +142,8 @@
                                 <p th:text="${pedido.envio.direccion}">Av. Principal 123</p>
                                 <p th:if="${pedido.envio.referencia != null and !pedido.envio.referencia.isEmpty()}"
                                    th:text="'Referencia: ' + ${pedido.envio.referencia}">Referencia</p>
-                                <p th:text="${pedido.envio.distrito} + ', ' + ${pedido.envio.provincia} + ', ' + ${pedido.envio.departamento}">
-                                    Distrito, provincia, departamento
-                                </p>
+                                <p th:unless="${#strings.isEmpty(pedido.envio.ubicacion)}"
+                                   th:text="${pedido.envio.ubicacion}">Distrito, provincia, departamento</p>
                             </div>
                         </div>
 

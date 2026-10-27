@@ -184,18 +184,18 @@
                                  th:errors="*{apellido}"></div>
 
                             <label class="hs-cuenta__campo" for="telefono">
-                                Celular
+                                Celular <span class="hs-cuenta__opcional">(opcional)</span>
                                 <input class="hs-input" id="telefono"
                                        th:field="*{telefono}" type="tel"
-                                       autocomplete="tel" required>
+                                       autocomplete="tel">
                             </label>
                             <div class="text-danger hs-cuenta__error"
                                  th:errors="*{telefono}"></div>
 
                             <label class="hs-cuenta__campo" for="direccion">
-                                Dirección
+                                Dirección <span class="hs-cuenta__opcional">(opcional)</span>
                                 <input class="hs-input" id="direccion"
-                                       th:field="*{direccion}" autocomplete="street-address" required>
+                                       th:field="*{direccion}" autocomplete="street-address">
                             </label>
                             <div class="text-danger hs-cuenta__error"
                                  th:errors="*{direccion}"></div>
