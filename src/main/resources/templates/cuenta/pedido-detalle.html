@@ -10,40 +10,270 @@
                   comunidad, ong, fechaEntrega) ← misma línea de tiempo que la consulta pública (bloque 3).
   "Reseñar" lleva a /tienda/{codigoProducto}#resenas.
 -->
+<!-- Detalle de pedido: productos, envío e impacto de las donaciones. -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: pagina(titulo=${pedido.codigoComprobante} + ' · HÖSÉG', activa='cuenta',
-                                          transparente=false, contenido=~{::main}, estilos=~{}, scripts=~{})}">
+      th:replace="~{layout/base :: pagina(titulo=${pedido.codigoComprobante} + ' · HÖSÉG',
+          activa='cuenta', transparente=false, contenido=~{::main},
+          estilos=~{::link}, scripts=~{})}">
+<link rel="stylesheet" th:href="@{/css/cuenta.css}">
 <body>
 <main class="hs-main--bajo-nav">
-    <section class="hs-seccion">
+    <th:block th:replace="~{fragments/avisos :: avisos}"/>
+
+    <section class="hs-cuenta hs-cuenta--detalle">
         <div class="container">
-            <a th:href="@{/cuenta}">← Mis pedidos</a>
-            <h1 class="hs-h2" th:text="${pedido.codigoComprobante}">WEB-000110</h1>
-            <p th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')} + ' · ' + ${pedido.estado.etiqueta}">Fecha · Estado</p>
+            <a class="hs-detalle__volver" th:href="@{/cuenta}">
+                <span aria-hidden="true">←</span> Volver a mis pedidos
+            </a>
 
-            <div class="border-bottom py-2" th:each="l : ${pedido.lineas}">
-                <span th:text="${l.cantidad} + ' × ' + ${l.nombre} + ' (' + ${l.talla} + ')'">1 × Casaca (M)</span>
-                · <span th:text="'S/ ' + ${#numbers.formatDecimal(l.subtotal, 1, 'COMMA', 2, 'POINT')}">S/ 259.90</span>
-                <a th:if="${pedido.puedeResenar}" th:href="@{/tienda/{c}(c=${l.codigoProducto})} + '#resenas'">Reseñar</a>
-            </div>
-            <p class="mt-2" th:text="'Total: S/ ' + ${#numbers.formatDecimal(pedido.totalAPagar, 1, 'COMMA', 2, 'POINT')}">Total</p>
-
-            <section th:if="${pedido.envio != null}" class="mt-4">
-                <h2 class="h5">Envío</h2>
-                <p th:text="${pedido.envio.tipo.etiqueta} + ' · ' + ${pedido.envio.estado.etiqueta}">Delivery · Preparando</p>
-                <p th:if="${pedido.envio.direccion}" th:text="${pedido.envio.direccion} + ', ' + ${pedido.envio.distrito}">Dirección</p>
-                <p th:if="${pedido.envio.codigoSeguimiento}" th:text="${pedido.envio.courier} + ' · ' + ${pedido.envio.codigoSeguimiento}">Courier</p>
-            </section>
-
-            <section class="mt-4" th:unless="${pedido.donaciones.isEmpty()}">
-                <h2 class="h5" th:text="'Tu impacto: ' + ${pedido.impacto.texto}">Tu impacto</h2>
-                <div class="border-bottom py-2" th:each="d : ${pedido.donaciones}">
-                    <strong th:text="${d.unidades}">1 abrigo</strong> · <span th:text="${d.producto}">Casaca</span>
-                    · <span th:text="${d.estado.etiqueta}">Pendiente de asignar</span>
-                    <span th:if="${d.comunidad}" th:text="'· ' + ${d.comunidad} + ' (' + ${d.ong} + ')'">Omacha</span>
-                    <span th:if="${d.fechaEntrega}" th:text="'· entregado el ' + ${#temporals.format(d.fechaEntrega, 'dd/MM/yyyy')}">fecha</span>
+            <header class="hs-detalle__cabecera">
+                <div>
+                    <p class="hs-cuenta__eyebrow">RESUMEN DE COMPRA</p>
+                    <h1 class="hs-h2 hs-detalle__titulo"
+                        th:text="${pedido.codigoComprobante}">WEB-000110</h1>
+                    <p class="hs-detalle__fecha">
+                        Realizado el
+                        <span th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}">
+                            23/10/2026 10:30
+                        </span>
+                    </p>
                 </div>
-            </section>
+                <span class="hs-chip hs-detalle__estado"
+                      th:text="${pedido.estado.etiqueta}">Pagado</span>
+            </header>
+
+            <div class="hs-detalle__columnas">
+                <div class="hs-detalle__principal">
+                    <!-- PRODUCTOS -->
+                    <section class="hs-detalle__tarjeta">
+                        <div class="hs-detalle__seccion-cabecera">
+                            <h2>Productos del pedido</h2>
+                            <span th:text="${pedido.lineas.size()} + (${pedido.lineas.size() == 1} ? ' producto' : ' productos')">
+                                2 productos
+                            </span>
+                        </div>
+
+                        <article class="hs-detalle__producto" th:each="l : ${pedido.lineas}">
+                            <div class="hs-detalle__producto-icono" aria-hidden="true">H</div>
+                            <div class="hs-detalle__producto-info">
+                                <h3 th:text="${l.nombre}">Casaca</h3>
+                                <p>
+                                    Talla:
+                                    <strong th:text="${l.talla}">M</strong>
+                                </p>
+                                <p>
+                                    Cantidad:
+                                    <strong th:text="${l.cantidad}">1</strong>
+                                </p>
+                                <p class="hs-detalle__precio-unitario">
+                                    Precio unitario:
+                                    <span th:text="'S/ ' + ${#numbers.formatDecimal(l.precioUnitario, 1, 'COMMA', 2, 'POINT')}">
+                                        S/ 259.90
+                                    </span>
+                                </p>
+                                <a class="hs-detalle__resenar"
+                                   th:if="${pedido.puedeResenar}"
+                                   th:href="@{/tienda/{c}(c=${l.codigoProducto})} + '#resenas'">
+                                    Escribir una reseña
+                                    <span aria-hidden="true">→</span>
+                                </a>
+                            </div>
+                            <strong class="hs-detalle__subtotal"
+                                    th:text="'S/ ' + ${#numbers.formatDecimal(l.subtotal, 1, 'COMMA', 2, 'POINT')}">
+                                S/ 259.90
+                            </strong>
+                        </article>
+
+                        <div class="hs-detalle__totales">
+                            <div>
+                                <span>Subtotal de productos</span>
+                                <strong th:text="'S/ ' + ${#numbers.formatDecimal(pedido.totalProductos, 1, 'COMMA', 2, 'POINT')}">
+                                    S/ 259.90
+                                </strong>
+                            </div>
+                            <div th:if="${pedido.envio != null}">
+                                <span>Costo de envío</span>
+                                <strong th:text="'S/ ' + ${#numbers.formatDecimal(pedido.envio.costo, 1, 'COMMA', 2, 'POINT')}">
+                                    S/ 10.00
+                                </strong>
+                            </div>
+                            <div class="hs-detalle__total-final">
+                                <span>Total del pedido</span>
+                                <strong th:text="'S/ ' + ${#numbers.formatDecimal(pedido.totalAPagar, 1, 'COMMA', 2, 'POINT')}">
+                                    S/ 269.90
+                                </strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ENVÍO -->
+                    <section class="hs-detalle__tarjeta"
+                             th:if="${pedido.envio != null}">
+                        <div class="hs-detalle__seccion-cabecera">
+                            <h2>Información del envío</h2>
+                            <span class="hs-chip hs-chip--pequeno"
+                                  th:text="${pedido.envio.estado.etiqueta}">Preparando</span>
+                        </div>
+
+                        <div class="hs-detalle__envio-resumen">
+                            <div>
+                                <span class="hs-cuenta__eyebrow">MODALIDAD</span>
+                                <strong th:text="${pedido.envio.tipo.etiqueta}">Delivery</strong>
+                            </div>
+                            <div th:if="${pedido.envio.courier != null and !pedido.envio.courier.isEmpty()}">
+                                <span class="hs-cuenta__eyebrow">EMPRESA DE ENVÍO</span>
+                                <strong th:text="${pedido.envio.courier}">Courier</strong>
+                            </div>
+                            <div th:if="${pedido.envio.codigoSeguimiento != null and !pedido.envio.codigoSeguimiento.isEmpty()}">
+                                <span class="hs-cuenta__eyebrow">CÓDIGO DE SEGUIMIENTO</span>
+                                <strong th:text="${pedido.envio.codigoSeguimiento}">TRACK123</strong>
+                            </div>
+                        </div>
+
+                        <div class="hs-detalle__direccion"
+                             th:if="${pedido.envio.direccion != null and !pedido.envio.direccion.isEmpty()}">
+                            <span class="hs-detalle__direccion-icono" aria-hidden="true">⌖</span>
+                            <div>
+                                <h3>Dirección de entrega</h3>
+                                <p th:if="${pedido.envio.nombreReceptor != null}"
+                                   th:text="${pedido.envio.nombreReceptor}">Nombre del receptor</p>
+                                <p th:if="${pedido.envio.telefonoReceptor != null}"
+                                   th:text="${pedido.envio.telefonoReceptor}">999 999 999</p>
+                                <p th:text="${pedido.envio.direccion}">Av. Principal 123</p>
+                                <p th:if="${pedido.envio.referencia != null and !pedido.envio.referencia.isEmpty()}"
+                                   th:text="'Referencia: ' + ${pedido.envio.referencia}">Referencia</p>
+                                <p th:text="${pedido.envio.distrito} + ', ' + ${pedido.envio.provincia} + ', ' + ${pedido.envio.departamento}">
+                                    Distrito, provincia, departamento
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="hs-detalle__fechas-envio">
+                            <p th:if="${pedido.envio.fechaDespacho != null}">
+                                <span>Fecha de despacho</span>
+                                <strong th:text="${#temporals.format(pedido.envio.fechaDespacho, 'dd/MM/yyyy')}">
+                                    24/10/2026
+                                </strong>
+                            </p>
+                            <p th:if="${pedido.envio.fechaEntrega != null}">
+                                <span>Fecha de entrega</span>
+                                <strong th:text="${#temporals.format(pedido.envio.fechaEntrega, 'dd/MM/yyyy')}">
+                                    25/10/2026
+                                </strong>
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- IMPACTO Y SEGUIMIENTO DE DONACIONES -->
+                    <section class="hs-detalle__tarjeta"
+                             th:if="${!pedido.donaciones.isEmpty()}">
+                        <div class="hs-detalle__impacto-cabecera">
+                            <p class="hs-cuenta__eyebrow">MÁS QUE UNA COMPRA</p>
+                            <h2>El impacto que compartes</h2>
+                            <p th:if="${pedido.impacto.tieneImpacto()}"
+                               th:text="'Tu pedido representa ' + ${pedido.impacto.texto} + '.'">
+                                Tu pedido representa 2 abrigos + 1 árbol.
+                            </p>
+                            <p th:unless="${pedido.impacto.tieneImpacto()}">
+                                Aquí puedes seguir el recorrido de las donaciones de tu pedido.
+                            </p>
+                        </div>
+
+                        <article class="hs-detalle__donacion" th:each="d : ${pedido.donaciones}">
+                            <div class="hs-detalle__donacion-cabecera">
+                                <div>
+                                    <span class="hs-detalle__donacion-icono" aria-hidden="true">♡</span>
+                                    <h3 th:text="${d.producto}">Casaca</h3>
+                                    <p th:text="${d.unidades}">2 abrigos</p>
+                                </div>
+                                <span class="hs-chip hs-chip--pequeno"
+                                      th:text="${d.estado.etiqueta}">Pendiente de asignar</span>
+                            </div>
+
+                            <div class="hs-detalle__linea-tiempo"
+                                 aria-label="Etapas de la donación">
+                                <div class="hs-detalle__paso"
+                                     th:classappend="${d.estado.paso >= 0} ? ' is-completado' : ' is-pendiente'">
+                                    <span class="hs-detalle__paso-punto">1</span>
+                                    <span>En espera de pago</span>
+                                </div>
+                                <div class="hs-detalle__paso"
+                                     th:classappend="${d.estado.paso >= 1} ? ' is-completado' : ' is-pendiente'">
+                                    <span class="hs-detalle__paso-punto">2</span>
+                                    <span>Pendiente de asignar</span>
+                                </div>
+                                <div class="hs-detalle__paso"
+                                     th:classappend="${d.estado.paso >= 2} ? ' is-completado' : ' is-pendiente'">
+                                    <span class="hs-detalle__paso-punto">3</span>
+                                    <span>Lote asignado</span>
+                                </div>
+                                <div class="hs-detalle__paso"
+                                     th:classappend="${d.estado.paso >= 3} ? ' is-completado' : ' is-pendiente'">
+                                    <span class="hs-detalle__paso-punto">4</span>
+                                    <span>Entregada</span>
+                                </div>
+                            </div>
+
+                            <div class="hs-detalle__donacion-destino"
+                                 th:if="${d.comunidad != null or d.ong != null}">
+                                <p th:if="${d.comunidad != null}">
+                                    <span>Comunidad beneficiaria</span>
+                                    <strong th:text="${d.comunidad}">Comunidad</strong>
+                                </p>
+                                <p th:if="${d.ong != null}">
+                                    <span>Organización</span>
+                                    <strong th:text="${d.ong}">Organización</strong>
+                                </p>
+                            </div>
+
+                            <div class="hs-detalle__donacion-fechas">
+                                <p th:if="${d.fechaDespacho != null}">
+                                    <span>Asignación o despacho</span>
+                                    <strong th:text="${#temporals.format(d.fechaDespacho, 'dd/MM/yyyy')}">
+                                        24/10/2026
+                                    </strong>
+                                </p>
+                                <p th:if="${d.fechaEntrega != null}">
+                                    <span>Entrega registrada</span>
+                                    <strong th:text="${#temporals.format(d.fechaEntrega, 'dd/MM/yyyy')}">
+                                        25/10/2026
+                                    </strong>
+                                </p>
+                            </div>
+                        </article>
+                    </section>
+                </div>
+
+                <!-- RESUMEN LATERAL -->
+                <aside class="hs-detalle__lateral">
+                    <section class="hs-detalle__tarjeta hs-detalle__resumen">
+                        <p class="hs-cuenta__eyebrow">TU COMPRA</p>
+                        <h2>Resumen del pedido</h2>
+                        <p class="hs-detalle__resumen-codigo"
+                           th:text="${pedido.codigoComprobante}">WEB-000110</p>
+                        <div>
+                            <span>Productos</span>
+                            <strong th:text="'S/ ' + ${#numbers.formatDecimal(pedido.totalProductos, 1, 'COMMA', 2, 'POINT')}">
+                                S/ 259.90
+                            </strong>
+                        </div>
+                        <div class="hs-detalle__resumen-total">
+                            <span>Total pagado o por pagar</span>
+                            <strong th:text="'S/ ' + ${#numbers.formatDecimal(pedido.totalAPagar, 1, 'COMMA', 2, 'POINT')}">
+                                S/ 269.90
+                            </strong>
+                        </div>
+                        <a class="hs-btn hs-btn--secundario hs-cuenta__boton"
+                           th:href="@{/tienda}">Seguir explorando</a>
+                    </section>
+
+                    <div class="hs-detalle__mensaje">
+                        <span aria-hidden="true">♡</span>
+                        <h2>Gracias por ser parte</h2>
+                        <p>Tu compra forma parte de una manera más consciente de consumir y compartir.</p>
+                    </div>
+                </aside>
+            </div>
         </div>
     </section>
 </main>
