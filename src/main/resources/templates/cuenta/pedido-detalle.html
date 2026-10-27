@@ -194,29 +194,7 @@
                                       th:text="${d.estado.etiqueta}">Pendiente de asignar</span>
                             </div>
 
-                            <div class="hs-detalle__linea-tiempo"
-                                 aria-label="Etapas de la donación">
-                                <div class="hs-detalle__paso"
-                                     th:classappend="${d.estado.paso >= 0} ? ' is-completado' : ' is-pendiente'">
-                                    <span class="hs-detalle__paso-punto">1</span>
-                                    <span>En espera de pago</span>
-                                </div>
-                                <div class="hs-detalle__paso"
-                                     th:classappend="${d.estado.paso >= 1} ? ' is-completado' : ' is-pendiente'">
-                                    <span class="hs-detalle__paso-punto">2</span>
-                                    <span>Pendiente de asignar</span>
-                                </div>
-                                <div class="hs-detalle__paso"
-                                     th:classappend="${d.estado.paso >= 2} ? ' is-completado' : ' is-pendiente'">
-                                    <span class="hs-detalle__paso-punto">3</span>
-                                    <span>Lote asignado</span>
-                                </div>
-                                <div class="hs-detalle__paso"
-                                     th:classappend="${d.estado.paso >= 3} ? ' is-completado' : ' is-pendiente'">
-                                    <span class="hs-detalle__paso-punto">4</span>
-                                    <span>Entregada</span>
-                                </div>
-                            </div>
+                            <th:block th:replace="~{fragments/donacion :: lineaTiempo(${d.estado})}"/>
 
                             <div class="hs-detalle__donacion-destino"
                                  th:if="${d.comunidad != null or d.ong != null}">

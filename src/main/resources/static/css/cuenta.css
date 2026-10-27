@@ -645,48 +645,8 @@
     font-size: 0.9rem;
 }
 
-.hs-detalle__linea-tiempo {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.5rem;
+.hs-detalle__donacion .hs-linea-tiempo {
     margin: 1.5rem 0;
-}
-
-.hs-detalle__paso {
-    display: grid;
-    justify-items: center;
-    align-content: start;
-    gap: 0.5rem;
-    min-width: 0;
-    color: var(--hs-muted);
-    text-align: center;
-    font-size: 0.75rem;
-    overflow-wrap: anywhere;
-}
-
-.hs-detalle__paso-punto {
-    display: grid;
-    width: 2rem;
-    height: 2rem;
-    place-items: center;
-    border: 1px solid var(--hs-sand);
-    border-radius: 50%;
-    background: var(--hs-card);
-    font-weight: 700;
-}
-
-.hs-detalle__paso.is-completado {
-    color: var(--hs-bark);
-}
-
-.hs-detalle__paso.is-completado .hs-detalle__paso-punto {
-    border-color: var(--hs-terracotta);
-    background: var(--hs-terracotta);
-    color: var(--hs-sobre-acento);
-}
-
-.hs-detalle__paso.is-pendiente .hs-detalle__paso-punto {
-    opacity: 0.65;
 }
 
 .hs-detalle__donacion-destino {
@@ -784,18 +744,5 @@
 
     .hs-detalle__envio-resumen {
         grid-template-columns: minmax(0, 1fr);
-    }
-
-    .hs-detalle__linea-tiempo {
-        gap: 0.25rem;
-    }
-
-    .hs-detalle__paso {
-        font-size: 0.68rem;
-    }
-
-    .hs-detalle__paso-punto {
-        width: 1.75rem;
-        height: 1.75rem;
     }
 }

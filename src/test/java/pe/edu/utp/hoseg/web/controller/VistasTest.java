@@ -261,6 +261,7 @@ class VistasTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Ccatca")))
                 .andExpect(content().string(containsString("/tienda/HSG-ACC-005#resenas")))
+                .andExpect(content().string(containsString("hs-linea-tiempo")))
                 // Provincia y departamento vienen null: la ubicación no debe imprimir "null".
                 .andExpect(content().string(containsString("Cusco")))
                 .andExpect(content().string(not(containsString(", null"))))
