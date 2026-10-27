@@ -23,7 +23,7 @@
     <section class="hs-cuenta hs-cuenta--detalle">
         <div class="container">
             <a class="hs-detalle__volver" th:href="@{/cuenta}">
-                <span aria-hidden="true">←</span> Volver a mis pedidos
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver a mis pedidos
             </a>
 
             <header class="hs-detalle__cabecera">
@@ -54,7 +54,10 @@
                         </div>
 
                         <article class="hs-detalle__producto" th:each="l : ${pedido.lineas}">
-                            <div class="hs-detalle__producto-icono" aria-hidden="true">H</div>
+                            <div class="hs-detalle__producto-icono" aria-hidden="true">
+                                <i class="bi"
+                                   th:classappend="${l.tipoCompromiso == null} ? 'bi-bag' : (${l.tipoCompromiso.name() == 'ARBOL'} ? 'bi-tree' : 'bi-gift')"></i>
+                            </div>
                             <div class="hs-detalle__producto-info">
                                 <h3 th:text="${l.nombre}">Casaca</h3>
                                 <p>
@@ -75,7 +78,7 @@
                                    th:if="${pedido.puedeResenar}"
                                    th:href="@{/tienda/{c}(c=${l.codigoProducto})} + '#resenas'">
                                     Escribir una reseña
-                                    <span aria-hidden="true">→</span>
+                                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                                 </a>
                             </div>
                             <strong class="hs-detalle__subtotal"
@@ -132,7 +135,7 @@
 
                         <div class="hs-detalle__direccion"
                              th:if="${pedido.envio.direccion != null and !pedido.envio.direccion.isEmpty()}">
-                            <span class="hs-detalle__direccion-icono" aria-hidden="true">⌖</span>
+                            <span class="hs-detalle__direccion-icono" aria-hidden="true"><i class="bi bi-geo-alt"></i></span>
                             <div>
                                 <h3>Dirección de entrega</h3>
                                 <p th:if="${pedido.envio.nombreReceptor != null}"
@@ -181,7 +184,9 @@
                         <article class="hs-detalle__donacion" th:each="d : ${pedido.donaciones}">
                             <div class="hs-detalle__donacion-cabecera">
                                 <div>
-                                    <span class="hs-detalle__donacion-icono" aria-hidden="true">♡</span>
+                                    <span class="hs-detalle__donacion-icono" aria-hidden="true">
+                                        <i class="bi" th:classappend="${d.tipo.name() == 'ARBOL'} ? 'bi-tree' : 'bi-gift'"></i>
+                                    </span>
                                     <h3 th:text="${d.producto}">Casaca</h3>
                                     <p th:text="${d.unidades}">2 abrigos</p>
                                 </div>
@@ -267,7 +272,7 @@
                     </section>
 
                     <div class="hs-detalle__mensaje">
-                        <span aria-hidden="true">♡</span>
+                        <span aria-hidden="true"><i class="bi bi-heart"></i></span>
                         <h2>Gracias por ser parte</h2>
                         <p>Tu compra forma parte de una manera más consciente de consumir y compartir.</p>
                     </div>

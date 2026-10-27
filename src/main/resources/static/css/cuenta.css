@@ -1,4 +1,3 @@
-
 /* HÖSÉG — Estilos específicos del bloque de cuenta */
 
 .hs-cuenta {
@@ -12,7 +11,7 @@
     background: var(--hs-card);
     border: 1px solid var(--hs-sand);
     border-radius: 1.25rem;
-    box-shadow: 0 12px 32px rgb(0 0 0 / 6%);
+    box-shadow: var(--hs-shadow-card);
 }
 
 .hs-cuenta__contenedor--registro {
@@ -28,7 +27,7 @@
 .hs-cuenta__intro {
     margin-bottom: 1.5rem;
     text-align: center;
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
 }
 
 .hs-cuenta__campo {
@@ -68,7 +67,7 @@
 .hs-cuenta__opcional {
     font-size: 0.85rem;
     font-weight: 400;
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
 }
 
 .hs-cuenta__terminos {
@@ -104,7 +103,7 @@
 
 .hs-cuenta__eyebrow {
     margin-bottom: 0.4rem;
-    color: var(--hs-texto-secundario, #777);
+    color: var(--hs-muted);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -122,7 +121,7 @@
 
 .hs-cuenta__pestanas a {
     padding: 0.7rem 1rem;
-    border-radius: 999px;
+    border-radius: var(--hs-radius-pill);
     color: inherit;
     text-decoration: none;
     transition: background-color 160ms ease, color 160ms ease;
@@ -133,8 +132,8 @@
 }
 
 .hs-cuenta__pestanas a.is-activa {
-    background: var(--hs-primary, #344b3b);
-    color: #fff;
+    background: var(--hs-terracotta);
+    color: var(--hs-sobre-acento);
 }
 
 .hs-cuenta__bloque {
@@ -156,7 +155,7 @@
 }
 
 .hs-cuenta__nota {
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
     font-size: 0.925rem;
 }
 
@@ -182,7 +181,8 @@
     place-items: center;
     margin-bottom: 0.75rem;
     border-radius: 50%;
-    background: var(--hs-sand);
+    background: var(--hs-terracotta-light);
+    color: var(--hs-terracotta);
     font-size: 1.25rem;
 }
 
@@ -208,7 +208,7 @@
 }
 
 .hs-cuenta__vacio p {
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
 }
 
 .hs-cuenta__pedidos {
@@ -247,14 +247,14 @@
 
 .hs-cuenta__pedido-principal p {
     margin-bottom: 0;
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
     font-size: 0.9rem;
 }
 
 .hs-cuenta__etiqueta {
     display: block;
     margin-bottom: 0.25rem;
-    color: var(--hs-texto-secundario, #777);
+    color: var(--hs-muted);
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -313,7 +313,7 @@
 }
 
 .hs-cuenta__email span {
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
     font-size: 0.85rem;
 }
 
@@ -370,7 +370,7 @@
 
 .hs-detalle__fecha {
     margin-bottom: 0;
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
 }
 
 .hs-detalle__estado {
@@ -417,7 +417,7 @@
 }
 
 .hs-detalle__seccion-cabecera > span:not(.hs-chip) {
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
     font-size: 0.875rem;
 }
 
@@ -437,7 +437,7 @@
     place-items: center;
     border-radius: 0.75rem;
     background: var(--hs-sand);
-    font-family: serif;
+    font-family: var(--hs-font-display);
     font-size: 1.5rem;
     font-weight: 700;
 }
@@ -454,7 +454,7 @@
 
 .hs-detalle__producto-info p {
     margin-bottom: 0.25rem;
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
     font-size: 0.9rem;
     overflow-wrap: anywhere;
 }
@@ -500,7 +500,7 @@
 
 .hs-detalle__totales > div > span,
 .hs-detalle__resumen > div > span {
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
 }
 
 .hs-detalle__totales strong,
@@ -579,7 +579,7 @@
 .hs-detalle__fechas-envio span,
 .hs-detalle__donacion-fechas span,
 .hs-detalle__donacion-destino span {
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
     font-size: 0.8rem;
 }
 
@@ -641,7 +641,7 @@
 
 .hs-detalle__donacion-cabecera p {
     margin: 0;
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
     font-size: 0.9rem;
 }
 
@@ -658,7 +658,7 @@
     align-content: start;
     gap: 0.5rem;
     min-width: 0;
-    color: var(--hs-texto-secundario, #777);
+    color: var(--hs-muted);
     text-align: center;
     font-size: 0.75rem;
     overflow-wrap: anywhere;
@@ -676,13 +676,13 @@
 }
 
 .hs-detalle__paso.is-completado {
-    color: var(--hs-texto, #333);
+    color: var(--hs-bark);
 }
 
 .hs-detalle__paso.is-completado .hs-detalle__paso-punto {
-    border-color: var(--hs-primary, #344b3b);
-    background: var(--hs-primary, #344b3b);
-    color: #fff;
+    border-color: var(--hs-terracotta);
+    background: var(--hs-terracotta);
+    color: var(--hs-sobre-acento);
 }
 
 .hs-detalle__paso.is-pendiente .hs-detalle__paso-punto {
@@ -749,7 +749,7 @@
 
 .hs-detalle__mensaje p {
     margin-bottom: 0;
-    color: var(--hs-texto-secundario, #666);
+    color: var(--hs-muted);
 }
 
 @media (max-width: 900px) {
