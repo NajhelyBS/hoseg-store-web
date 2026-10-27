@@ -79,14 +79,9 @@
                                             Cusco</span>
                                     </div>
 
-                                    <!-- LÍNEA DE TIEMPO CORREGIDA: Utiliza th:styleappend seguro para evitar el quiebre del compilador -->
-                                    <div class="my-2">
-                                        <ol class="d-flex flex-wrap gap-2 list-unstyled mb-0 p-0 row">
-                                            <li th:each="e : ${T(pe.edu.utp.hoseg.web.model.EstadoDonacion).values()}"
-                                                class="col-auto rounded-pill px-2 py-0 border"
-                                                th:styleappend="${e.paso <= d.estado.paso} ? 'background-color: var(--hs-cream-dark); border-color: var(--hs-terracotta); font-size: 0.8rem; font-weight: 600;' : 'background-color: transparent; color: var(--hs-muted); border-color: var(--hs-sand); font-size: 0.8rem;'"
-                                                th:text="${e.etiqueta}">Paso</li>
-                                        </ol>
+                                    <!-- Línea de tiempo: el mismo componente que "Detalle de pedido" (bloque 2) -->
+                                    <div class="my-3">
+                                        <th:block th:replace="~{fragments/donacion :: lineaTiempo(${d.estado})}"/>
                                     </div>
 
                                     <!-- Detalles de Destino -->

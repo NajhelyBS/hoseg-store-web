@@ -1,22 +1,42 @@
 <!DOCTYPE html>
 <!--
-  ESQUELETO · Bloque 2 · 2.3 Recuperar contraseña (GET/POST /recuperar, AuthController).
+  Bloque 2 · 2.3 Recuperar contraseña (GET/POST /recuperar, AuthController).
   POST con el campo "email". Variante ?enviado: el mensaje es el mismo exista o no el correo.
   Sin SMTP configurado, el enlace aparece en la consola del servidor (CorreoService).
 -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Recuperar contraseña · HÖSÉG', activa='cuenta',
-                                          transparente=false, contenido=~{::main}, estilos=~{}, scripts=~{})}">
+                                          transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">
+<link rel="stylesheet" th:href="@{/css/cuenta.css}">
 <body>
 <main class="hs-main--bajo-nav">
-    <section class="hs-seccion">
-        <div class="container hs-ancho-form">
-            <h1 class="hs-h2 mb-3">Recuperar contraseña</h1>
-            <p th:if="${param.enviado}">Si el correo está registrado, te enviamos un enlace para elegir una contraseña nueva.</p>
-            <form th:unless="${param.enviado}" method="post" th:action="@{/recuperar}">
-                <input class="hs-input" type="email" name="email" placeholder="tu@correo.com" required>
-                <button class="hs-btn hs-btn--primario mt-2" type="submit">Enviar enlace</button>
+    <th:block th:replace="~{fragments/avisos :: avisos}"/>
+    <section class="hs-cuenta">
+        <div class="hs-cuenta__contenedor">
+            <h1 class="hs-h2 hs-cuenta__titulo">Recuperar contraseña</h1>
+            <p class="hs-cuenta__intro">
+                No te preocupes. Te ayudaremos a recuperar el acceso a tu cuenta.
+            </p>
+
+            <div class="alert alert-success" role="status" th:if="${param.enviado}">
+                Si el correo está registrado, te enviamos un enlace para elegir una contraseña nueva.
+            </div>
+
+            <form method="post" th:action="@{/recuperar}">
+                <label class="hs-cuenta__campo" for="email">
+                    Correo electrónico
+                    <input class="hs-input" id="email" type="email" name="email"
+                           autocomplete="email" placeholder="tu@correo.com" required>
+                </label>
+
+                <button class="hs-btn hs-btn--primario hs-cuenta__boton mt-3" type="submit">
+                    Enviar enlace
+                </button>
             </form>
+
+            <p class="hs-cuenta__enlaces">
+                <a th:href="@{/login}">Volver a iniciar sesión</a>
+            </p>
         </div>
     </section>
 </main>

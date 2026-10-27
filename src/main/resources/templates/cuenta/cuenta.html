@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ESQUELETO · Bloque 2 · 2.5 y 2.7 Mi cuenta (GET /cuenta?seccion=pedidos|datos, CuentaController).
+  Bloque 2 · 2.5 y 2.7 Mi cuenta (GET /cuenta?seccion=pedidos|datos, CuentaController).
   Modelo:
     seccion        "pedidos" | "datos" (pestaña activa)
     nombre         nombre del cliente ("Hola, Ana")
@@ -12,61 +12,238 @@
 -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Mi cuenta · HÖSÉG', activa='cuenta',
-                                          transparente=false, contenido=~{::main}, estilos=~{}, scripts=~{})}">
+          transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">
+<link rel="stylesheet" th:href="@{/css/cuenta.css}">
 <body>
 <main class="hs-main--bajo-nav">
     <th:block th:replace="~{fragments/avisos :: avisos}"/>
-    <section class="hs-seccion">
+
+    <section class="hs-cuenta hs-cuenta--panel">
         <div class="container">
-            <h1 class="hs-h2" th:text="'Hola, ' + ${nombre}">Hola, Ana</h1>
-            <nav class="mb-4">
-                <a th:href="@{/cuenta}" th:classappend="${seccion == 'pedidos'} ? 'fw-bold'">Pedidos e impacto</a> ·
-                <a th:href="@{/cuenta(seccion='datos')}" th:classappend="${seccion == 'datos'} ? 'fw-bold'">Mis datos</a>
+            <header class="hs-cuenta__cabecera">
+                <p class="hs-cuenta__eyebrow">TU ESPACIO PERSONAL</p>
+                <h1 class="hs-h2 hs-cuenta__titulo"
+                    th:text="'Hola, ' + ${nombre}">Hola, Ana</h1>
+                <p class="hs-cuenta__intro">
+                    Consulta tus pedidos, revisa tu impacto y mantén tus datos al día.
+                </p>
+            </header>
+
+            <nav class="hs-cuenta__pestanas" aria-label="Secciones de mi cuenta">
+                <a th:href="@{/cuenta}"
+                   th:classappend="${seccion == 'pedidos'} ? ' is-activa' : ''"
+                   th:attr="aria-current=${seccion == 'pedidos'} ? 'page' : null">
+                    Mis pedidos e impacto
+                </a>
+                <a th:href="@{/cuenta(seccion='datos')}"
+                   th:classappend="${seccion == 'datos'} ? ' is-activa' : ''"
+                   th:attr="aria-current=${seccion == 'datos'} ? 'page' : null">
+                    Mis datos
+                </a>
             </nav>
 
+            <!-- PEDIDOS E IMPACTO -->
             <th:block th:if="${seccion == 'pedidos'}">
-                <h2 class="h4">Tu impacto</h2>
-                <p th:text="${impacto.generado.tieneImpacto()} ? 'Tus compras generaron ' + ${impacto.generado.texto} + '.' : 'Aún no tienes compras pagadas.'">Impacto</p>
-                <p th:if="${impacto.entregado.tieneImpacto()}" th:text="'Ya llegaron: ' + ${impacto.entregado.texto} + '.'">Entregado</p>
-                <p th:if="${impacto.enEsperaDePago.tieneImpacto()}" th:text="'En espera de pago: ' + ${impacto.enEsperaDePago.texto} + '.'">En espera</p>
+                <section class="hs-cuenta__bloque">
+                    <div class="hs-cuenta__bloque-cabecera">
+                        <div>
+                            <p class="hs-cuenta__eyebrow">COMPRA CON PROPÓSITO</p>
+                            <h2 class="hs-cuenta__subtitulo">Tu impacto</h2>
+                        </div>
+                        <p class="hs-cuenta__nota">Cada compra puede ayudar a transformar vidas.</p>
+                    </div>
 
-                <h2 class="h4 mt-4">Tus pedidos</h2>
-                <p th:if="${pedidos.isEmpty()}">Todavía no tienes pedidos. <a th:href="@{/tienda}">Ir a la tienda</a></p>
-                <div class="border-bottom py-2" th:each="p : ${pedidos}">
-                    <a th:href="@{/cuenta/pedidos/{c}(c=${p.codigoComprobante})}" th:text="${p.codigoComprobante}">WEB-000110</a>
-                    · <span th:text="${#temporals.format(p.fecha, 'dd/MM/yyyy')}">23/10/2026</span>
-                    · <span th:text="'S/ ' + ${#numbers.formatDecimal(p.totalAPagar, 1, 'COMMA', 2, 'POINT')}">S/ 259.90</span>
-                    · <span class="hs-chip hs-chip--pequeno" th:text="${p.estado.etiqueta}">Pendiente</span>
-                    <span th:if="${p.estadoEnvio != null}" th:text="'· Envío: ' + ${p.estadoEnvio.etiqueta}">Envío</span>
-                </div>
+                    <div class="hs-cuenta__impactos">
+                        <article class="hs-cuenta__impacto">
+                            <span class="hs-cuenta__impacto-icono" aria-hidden="true"><i class="bi bi-heart"></i></span>
+                            <h3>Impacto generado</h3>
+                            <p th:if="${impacto.generado.tieneImpacto()}"
+                               th:text="${impacto.generado.texto}">2 abrigos + 1 árbol</p>
+                            <p th:unless="${impacto.generado.tieneImpacto()}">
+                                Tus primeras compras te esperan.
+                            </p>
+                        </article>
+
+                        <article class="hs-cuenta__impacto">
+                            <span class="hs-cuenta__impacto-icono" aria-hidden="true"><i class="bi bi-check2-circle"></i></span>
+                            <h3>Impacto entregado</h3>
+                            <p th:if="${impacto.entregado.tieneImpacto()}"
+                               th:text="${impacto.entregado.texto}">1 abrigo</p>
+                            <p th:unless="${impacto.entregado.tieneImpacto()}">
+                                Aquí verás el impacto que ya llegó a su destino.
+                            </p>
+                        </article>
+
+                        <article class="hs-cuenta__impacto">
+                            <span class="hs-cuenta__impacto-icono" aria-hidden="true"><i class="bi bi-hourglass-split"></i></span>
+                            <h3>En espera de pago</h3>
+                            <p th:if="${impacto.enEsperaDePago.tieneImpacto()}"
+                               th:text="${impacto.enEsperaDePago.texto}">1 árbol</p>
+                            <p th:unless="${impacto.enEsperaDePago.tieneImpacto()}">
+                                No tienes impacto pendiente de pago.
+                            </p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="hs-cuenta__bloque">
+                    <div class="hs-cuenta__bloque-cabecera">
+                        <div>
+                            <p class="hs-cuenta__eyebrow">TU HISTORIAL</p>
+                            <h2 class="hs-cuenta__subtitulo">Tus pedidos</h2>
+                        </div>
+                        <a class="hs-btn hs-btn--secundario"
+                           th:href="@{/tienda}">Explorar tienda</a>
+                    </div>
+
+                    <div class="hs-cuenta__vacio" th:if="${pedidos.isEmpty()}">
+                        <span class="hs-cuenta__vacio-icono" aria-hidden="true"><i class="bi bi-bag-heart"></i></span>
+                        <h3>Aún no tienes pedidos</h3>
+                        <p>Cuando hagas tu primera compra, podrás seguirla desde aquí.</p>
+                        <a class="hs-btn hs-btn--primario" th:href="@{/tienda}">
+                            Descubrir productos
+                        </a>
+                    </div>
+
+                    <div class="hs-cuenta__pedidos" th:unless="${pedidos.isEmpty()}">
+                        <article class="hs-cuenta__pedido" th:each="p : ${pedidos}">
+                            <div class="hs-cuenta__pedido-principal">
+                                <div>
+                                    <span class="hs-cuenta__etiqueta">PEDIDO</span>
+                                    <h3>
+                                        <a th:href="@{/cuenta/pedidos/{c}(c=${p.codigoComprobante})}"
+                                           th:text="${p.codigoComprobante}">WEB-000110</a>
+                                    </h3>
+                                    <p th:text="${#temporals.format(p.fecha, 'dd/MM/yyyy')}">
+                                        23/10/2026
+                                    </p>
+                                </div>
+                                <span class="hs-chip hs-chip--pequeno"
+                                      th:text="${p.estado.etiqueta}">Pendiente</span>
+                            </div>
+
+                            <div class="hs-cuenta__pedido-datos">
+                                <div>
+                                    <span class="hs-cuenta__etiqueta">TOTAL</span>
+                                    <strong th:text="'S/ ' + ${#numbers.formatDecimal(p.totalAPagar, 1, 'COMMA', 2, 'POINT')}">
+                                        S/ 259.90
+                                    </strong>
+                                </div>
+                                <div th:if="${p.estadoEnvio != null}">
+                                    <span class="hs-cuenta__etiqueta">ENVÍO</span>
+                                    <strong th:text="${p.estadoEnvio.etiqueta}">Preparando</strong>
+                                </div>
+                                <div th:if="${p.impacto.tieneImpacto()}">
+                                    <span class="hs-cuenta__etiqueta">TU APORTE</span>
+                                    <strong th:text="${p.impacto.texto}">1 abrigo</strong>
+                                </div>
+                            </div>
+
+                            <a class="hs-cuenta__pedido-enlace"
+                               th:href="@{/cuenta/pedidos/{c}(c=${p.codigoComprobante})}">
+                                Ver detalle del pedido <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            </a>
+                        </article>
+                    </div>
+                </section>
             </th:block>
 
+            <!-- DATOS PERSONALES -->
             <th:block th:if="${seccion == 'datos'}">
-                <form th:object="${datosForm}" method="post" th:action="@{/cuenta/datos}" class="hs-ancho-form">
-                    <h2 class="h4">Mis datos</h2>
-                    <p>Email: <strong th:text="*{email}">ana@correo.pe</strong></p>
-                    <input class="hs-input mt-2" th:field="*{nombre}" placeholder="Nombre">
-                    <div class="text-danger" th:errors="*{nombre}"></div>
-                    <input class="hs-input mt-2" th:field="*{apellido}" placeholder="Apellido">
-                    <div class="text-danger" th:errors="*{apellido}"></div>
-                    <input class="hs-input mt-2" th:field="*{telefono}" placeholder="Celular">
-                    <div class="text-danger" th:errors="*{telefono}"></div>
-                    <input class="hs-input mt-2" th:field="*{direccion}" placeholder="Dirección">
-                    <div class="text-danger" th:errors="*{direccion}"></div>
-                    <button class="hs-btn hs-btn--primario mt-2" type="submit">Guardar</button>
-                </form>
+                <div class="hs-cuenta__formularios">
+                    <section class="hs-cuenta__form-card">
+                        <p class="hs-cuenta__eyebrow">TU PERFIL</p>
+                        <h2 class="hs-cuenta__subtitulo">Datos personales</h2>
+                        <p class="hs-cuenta__nota">
+                            Mantén tu información actualizada para tus próximas compras.
+                        </p>
 
-                <form th:object="${contrasenaForm}" method="post" th:action="@{/cuenta/contrasena}" class="hs-ancho-form mt-5">
-                    <h2 class="h4">Cambiar contraseña</h2>
-                    <input class="hs-input mt-2" type="password" th:field="*{actual}" placeholder="Contraseña actual" autocomplete="current-password">
-                    <div class="text-danger" th:errors="*{actual}"></div>
-                    <input class="hs-input mt-2" type="password" th:field="*{nueva}" placeholder="Contraseña nueva" autocomplete="new-password">
-                    <div class="text-danger" th:errors="*{nueva}"></div>
-                    <input class="hs-input mt-2" type="password" th:field="*{confirmacion}" placeholder="Repítela" autocomplete="new-password">
-                    <div class="text-danger" th:errors="*{confirmacion}"></div>
-                    <div class="text-danger" th:errors="*{contrasenasCoinciden}"></div>
-                    <button class="hs-btn hs-btn--secundario mt-2" type="submit">Cambiar contraseña</button>
-                </form>
+                        <form th:object="${datosForm}" method="post"
+                              th:action="@{/cuenta/datos}">
+                            <p class="hs-cuenta__email">
+                                Correo electrónico
+                                <strong th:text="*{email}">ana@correo.pe</strong>
+                                <span>No se puede modificar desde aquí.</span>
+                            </p>
+
+                            <label class="hs-cuenta__campo" for="nombre">
+                                Nombre
+                                <input class="hs-input" id="nombre"
+                                       th:field="*{nombre}" autocomplete="given-name" required>
+                            </label>
+                            <div class="text-danger hs-cuenta__error"
+                                 th:errors="*{nombre}"></div>
+
+                            <label class="hs-cuenta__campo" for="apellido">
+                                Apellido
+                                <input class="hs-input" id="apellido"
+                                       th:field="*{apellido}" autocomplete="family-name" required>
+                            </label>
+                            <div class="text-danger hs-cuenta__error"
+                                 th:errors="*{apellido}"></div>
+
+                            <label class="hs-cuenta__campo" for="telefono">
+                                Celular <span class="hs-cuenta__opcional">(opcional)</span>
+                                <input class="hs-input" id="telefono"
+                                       th:field="*{telefono}" type="tel"
+                                       autocomplete="tel">
+                            </label>
+                            <div class="text-danger hs-cuenta__error"
+                                 th:errors="*{telefono}"></div>
+
+                            <label class="hs-cuenta__campo" for="direccion">
+                                Dirección <span class="hs-cuenta__opcional">(opcional)</span>
+                                <input class="hs-input" id="direccion"
+                                       th:field="*{direccion}" autocomplete="street-address">
+                            </label>
+                            <div class="text-danger hs-cuenta__error"
+                                 th:errors="*{direccion}"></div>
+
+                            <button class="hs-btn hs-btn--primario hs-cuenta__boton mt-3"
+                                    type="submit">Guardar cambios</button>
+                        </form>
+                    </section>
+
+                    <section class="hs-cuenta__form-card">
+                        <p class="hs-cuenta__eyebrow">SEGURIDAD</p>
+                        <h2 class="hs-cuenta__subtitulo">Cambiar contraseña</h2>
+                        <p class="hs-cuenta__nota">
+                            Elige una contraseña segura que no utilices en otros sitios.
+                        </p>
+
+                        <form th:object="${contrasenaForm}" method="post"
+                              th:action="@{/cuenta/contrasena}">
+                            <label class="hs-cuenta__campo" for="actual">
+                                Contraseña actual
+                                <input class="hs-input" id="actual" type="password"
+                                       th:field="*{actual}" autocomplete="current-password" required>
+                            </label>
+                            <div class="text-danger hs-cuenta__error"
+                                 th:errors="*{actual}"></div>
+
+                            <label class="hs-cuenta__campo" for="nueva">
+                                Contraseña nueva
+                                <input class="hs-input" id="nueva" type="password"
+                                       th:field="*{nueva}" autocomplete="new-password" required>
+                            </label>
+                            <div class="text-danger hs-cuenta__error"
+                                 th:errors="*{nueva}"></div>
+
+                            <label class="hs-cuenta__campo" for="confirmacion">
+                                Repite la contraseña nueva
+                                <input class="hs-input" id="confirmacion" type="password"
+                                       th:field="*{confirmacion}" autocomplete="new-password" required>
+                            </label>
+                            <div class="text-danger hs-cuenta__error"
+                                 th:errors="*{confirmacion}"></div>
+                            <div class="text-danger hs-cuenta__error"
+                                 th:errors="*{contrasenasCoinciden}"></div>
+
+                            <button class="hs-btn hs-btn--secundario hs-cuenta__boton mt-3"
+                                    type="submit">Actualizar contraseña</button>
+                        </form>
+                    </section>
+                </div>
             </th:block>
         </div>
     </section>
