@@ -4,7 +4,8 @@
      banner arranca transparente y aquí se vuelve opaca).
    - El indicador del óvalo se coloca sobre el destino activo y, al tocar
      otro, se estira hasta cubrir ambos y luego se encoge sobre el nuevo
-     (dos fases de 0,22 s, como en el diseño).
+     (dos fases de 0,22 s, como en el diseño). "Cuenta" del cliente abre su
+     menú (dropdown de Bootstrap) y no mueve el indicador.
    - Expone window.hsNavActivar(seccion) para que la Home marque la
      sección visible al hacer scroll.
    ===================================================================== */
@@ -73,7 +74,9 @@
         colocarSinAnimar();
         window.addEventListener('resize', colocarSinAnimar);
         document.fonts?.ready.then(colocarSinAnimar); // el ancho cambia al cargar Outfit
-        itemsPill.forEach((item) => item.addEventListener('click', () => moverA(item)));
+        // El botón de cuenta del cliente solo abre su menú: el indicador se queda donde está
+        itemsPill.filter((item) => !item.matches('[data-bs-toggle]'))
+            .forEach((item) => item.addEventListener('click', () => moverA(item)));
     }
 
     /* ---------- Marcar sección activa (barra y óvalo) ---------- */
