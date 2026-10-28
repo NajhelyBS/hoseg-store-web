@@ -276,6 +276,18 @@
     color: var(--hs-card);
 }
 
+/* "Cuenta" del cliente es un botón que abre su menú hacia arriba */
+button.hs-pill__item {
+    border: 0;
+    background: none;
+}
+
+/* Hacia arriba el margen superior del escritorio lo encimaría sobre el
+   óvalo: la separación la da data-bs-offset. */
+.hs-pill .hs-menu-cuenta {
+    margin: 0 !important;
+}
+
 /* ---------- Botones ------------------------------------------------- */
 .hs-btn {
     display: inline-flex;
