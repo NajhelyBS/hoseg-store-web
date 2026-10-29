@@ -24,8 +24,31 @@ public enum TipoDocumento {
         return etiqueta;
     }
 
-    /** true si el número tiene el formato que acepta la base para este tipo. */
+    /**
+     * true si el número tiene el formato que acepta la base para este tipo.
+     * Para el RUC además se comprueba el prefijo y el dígito verificador.
+     */
     public boolean admite(String numero) {
-        return numero != null && formato.matcher(numero).matches();
+        if (numero == null || !formato.matcher(numero).matches()) {
+            return false;
+        }
+        return this != RUC || rucValido(numero);
+    }
+
+    private static final int[] PESOS_RUC = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+
+    /** Prefijos de RUC vigentes (10, 15, 16, 17 y 20) y dígito verificador módulo 11. */
+    private static boolean rucValido(String ruc) {
+        String prefijo = ruc.substring(0, 2);
+        if (!prefijo.equals("10") && !prefijo.equals("15") && !prefijo.equals("16")
+                && !prefijo.equals("17") && !prefijo.equals("20")) {
+            return false;
+        }
+        int suma = 0;
+        for (int i = 0; i < PESOS_RUC.length; i++) {
+            suma += (ruc.charAt(i) - '0') * PESOS_RUC[i];
+        }
+        int verificador = (11 - suma % 11) % 10;
+        return verificador == ruc.charAt(10) - '0';
     }
 }
