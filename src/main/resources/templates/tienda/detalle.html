@@ -218,7 +218,7 @@
                         <p class="mb-2" th:text="${r.comentario}">Comentario</p>
                         <p class="hs-resena__autor mb-0">
                             <span th:text="${r.autor}">María G.</span> · talla <span th:text="${r.talla}">M</span> ·
-                            <time th:datetime="${r.fecha}" th:text="${#temporals.format(r.fecha, 'dd/MM/yyyy')}">23/10/2026</time>
+                            <time th:datetime="${r.fecha}" th:text="${@fechas.formato(r.fecha, 'dd/MM/yyyy')}">23/10/2026</time>
                             <span th:if="${r.editada}">· editada</span> ·
                             <span class="hs-verificada"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Compra verificada</span>
                         </p>

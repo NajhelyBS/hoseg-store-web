@@ -114,7 +114,7 @@
                                         <a th:href="@{/cuenta/pedidos/{c}(c=${p.codigoComprobante})}"
                                            th:text="${p.codigoComprobante}">WEB-000110</a>
                                     </h3>
-                                    <p th:text="${#temporals.format(p.fecha, 'dd/MM/yyyy')}">
+                                    <p th:text="${@fechas.formato(p.fecha, 'dd/MM/yyyy')}">
                                         23/10/2026
                                     </p>
                                 </div>

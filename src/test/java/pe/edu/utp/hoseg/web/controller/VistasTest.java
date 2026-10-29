@@ -3,7 +3,9 @@ package pe.edu.utp.hoseg.web.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import pe.edu.utp.hoseg.web.config.FormatoFechas;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -55,6 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * plantilla, falla aquí y no en la demo.
  */
 @WebMvcTest
+@Import(FormatoFechas.class)
 @ConSeguridadDelPortal
 class VistasTest {
 

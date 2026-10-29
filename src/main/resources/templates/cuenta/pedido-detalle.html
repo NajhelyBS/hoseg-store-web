@@ -32,7 +32,7 @@
                         th:text="${pedido.codigoComprobante}">WEB-000110</h1>
                     <p class="hs-detalle__fecha">
                         Realizado el
-                        <span th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}">
+                        <span th:text="${@fechas.formato(pedido.fecha, 'dd/MM/yyyy HH:mm')}">
                             23/10/2026 10:30
                         </span>
                     </p>
@@ -152,13 +152,13 @@
                         <div class="hs-detalle__fechas-envio">
                             <p th:if="${pedido.envio.fechaDespacho != null}">
                                 <span>Fecha de despacho</span>
-                                <strong th:text="${#temporals.format(pedido.envio.fechaDespacho, 'dd/MM/yyyy')}">
+                                <strong th:text="${@fechas.formato(pedido.envio.fechaDespacho, 'dd/MM/yyyy')}">
                                     24/10/2026
                                 </strong>
                             </p>
                             <p th:if="${pedido.envio.fechaEntrega != null}">
                                 <span>Fecha de entrega</span>
-                                <strong th:text="${#temporals.format(pedido.envio.fechaEntrega, 'dd/MM/yyyy')}">
+                                <strong th:text="${@fechas.formato(pedido.envio.fechaEntrega, 'dd/MM/yyyy')}">
                                     25/10/2026
                                 </strong>
                             </p>
@@ -210,13 +210,13 @@
                             <div class="hs-detalle__donacion-fechas">
                                 <p th:if="${d.fechaDespacho != null}">
                                     <span>Asignación o despacho</span>
-                                    <strong th:text="${#temporals.format(d.fechaDespacho, 'dd/MM/yyyy')}">
+                                    <strong th:text="${@fechas.formato(d.fechaDespacho, 'dd/MM/yyyy')}">
                                         24/10/2026
                                     </strong>
                                 </p>
                                 <p th:if="${d.fechaEntrega != null}">
                                     <span>Entrega registrada</span>
-                                    <strong th:text="${#temporals.format(d.fechaEntrega, 'dd/MM/yyyy')}">
+                                    <strong th:text="${@fechas.formato(d.fechaEntrega, 'dd/MM/yyyy')}">
                                         25/10/2026
                                     </strong>
                                 </p>

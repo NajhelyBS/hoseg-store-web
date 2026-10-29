@@ -50,7 +50,7 @@
                         </div>
 
                         <p class="hs-texto-secundario small mb-4"
-                            th:text="'Compra del ' + ${#temporals.format(consulta.fechaCompra, 'dd/MM/yyyy')}"></p>
+                            th:text="'Compra del ' + ${@fechas.formato(consulta.fechaCompra, 'dd/MM/yyyy')}"></p>
 
                         <div th:unless="${consulta.tieneDonaciones()}" class="text-muted py-2">
                             <i class="bi bi-info-circle me-2"></i>Esta compra no generó donaciones asociadas.
@@ -90,7 +90,7 @@
                                         <span th:text="${d.comunidad} + ' · ONG: ' + ${d.ong}">Omacha · Pachamama
                                             Raymi</span>
                                         <span th:if="${d.fechaEntrega}"
-                                            th:text="' · Entregado el ' + ${#temporals.format(d.fechaEntrega, 'dd/MM/yyyy')}">fecha</span>
+                                            th:text="' · Entregado el ' + ${@fechas.formato(d.fechaEntrega, 'dd/MM/yyyy')}">fecha</span>
                                     </div>
                                 </div>
                             </div>
