@@ -31,4 +31,15 @@ public interface ProductoRepository extends JpaRepository<Producto, String> {
     @Modifying
     @Query("update Producto p set p.destacado = :destacado where p.nombre = :nombre")
     int marcarDestacado(@Param("nombre") String nombre, @Param("destacado") boolean destacado);
+
+    /** Descuenta stock comercial de forma atómica; devuelve 0 si no alcanzó el stock. */
+    @Modifying
+    @Query("update Producto p set p.stockComercial = p.stockComercial - :cantidad where p.codigo = :codigo and p.stockComercial >= :cantidad")
+    int descontarStockComercial(@Param("codigo") String codigo, @Param("cantidad") int cantidad);
+
+    /** Suma stock comprometido cuando el producto tiene compromiso social (abrigo/árbol). */
+    @Modifying
+    @Query("update Producto p set p.stockComprometido = p.stockComprometido + :cantidad where p.codigo = :codigo")
+    int sumarStockComprometido(@Param("codigo") String codigo, @Param("cantidad") int cantidad);
+
 }
