@@ -19,6 +19,8 @@ import pe.edu.utp.hoseg.web.repository.ProveedorRepository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.math.BigDecimal;
+import pe.edu.utp.hoseg.web.model.TipoCompromiso;
 
 @Service
 @Transactional(readOnly = true)
@@ -100,6 +102,38 @@ public class LogisticaService {
         }
     }
 
+        @Transactional
+    public void crearProducto(String codigo, String nombre, String categoria, String coleccion,
+                              String talla, BigDecimal precio, int stockInicial, int stockMinimo,
+                              TipoCompromiso tipoCompromiso) {
+        if (codigo == null || codigo.isBlank() || nombre == null || nombre.isBlank()) {
+            throw new NegocioException("El código y el nombre del producto son obligatorios.");
+        }
+        String codLimpio = codigo.trim().toUpperCase();
+        if (productoRepository.existsById(codLimpio)) {
+            throw new NegocioException("Ya existe un producto con el código " + codLimpio + ".");
+        }
+        if (precio == null || precio.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new NegocioException("El precio debe ser mayor a cero.");
+        }
+        Producto p = new Producto();
+        p.setCodigo(codLimpio);
+        p.setNombre(nombre.trim());
+        p.setMarca("HÖSÉG");
+        p.setCategoria(categoria == null || categoria.isBlank() ? "Prendas" : categoria.trim());
+        p.setColeccion(limpio(coleccion));
+        p.setTalla(limpio(talla));
+        p.setPrecio(precio);
+        p.setStockComercial(Math.max(0, stockInicial));
+        p.setStockComprometido(0);
+        p.setStockMinimo(Math.max(0, stockMinimo));
+        p.setTipoCompromiso(tipoCompromiso);
+        p.setVisibleWeb(true);
+        p.setActivo(true);
+        p.setDestacado(false);
+        productoRepository.save(p);
+    }
+
     // ---------- 3. Proveedores y órdenes a talleres ----------
 
     public List<Proveedor> proveedoresActivos() {
@@ -143,17 +177,18 @@ public class LogisticaService {
         orden.setProducto(producto);
         orden.setDescripcion(limpio(descripcion));
         orden.setCantidad(cantidad);
-        orden.setEstado(EstadoPedidoProveedor.PENDIENTE);
+        orden.setEstado(EstadoPedidoProveedor.SOLICITADO);
         orden.setIdUsuario(idUsuario);
         pedidoProveedorRepository.save(orden);
     }
 
-    @Transactional
+        @Transactional
     public void recibirOrdenProveedor(Integer idOrden) {
         PedidoProveedor orden = pedidoProveedorRepository.findById(idOrden)
                 .orElseThrow(() -> new RecursoNoEncontradoException("Orden no encontrada: " + idOrden));
-        if (orden.getEstado() != EstadoPedidoProveedor.PENDIENTE) {
-            throw new NegocioException("Solo se pueden recibir órdenes en estado Pendiente.");
+        if (orden.getEstado() != EstadoPedidoProveedor.SOLICITADO
+                && orden.getEstado() != EstadoPedidoProveedor.EN_PROCESO) {
+            throw new NegocioException("Solo se pueden recibir órdenes en estado Solicitado.");
         }
         orden.setEstado(EstadoPedidoProveedor.RECIBIDO);
         pedidoProveedorRepository.save(orden);
@@ -162,6 +197,7 @@ public class LogisticaService {
             productoRepository.sumarStockComercial(orden.getProducto().getCodigo(), orden.getCantidad());
         }
     }
+
 
     private static PedidoLogisticaVista aVista(Envio e) {
         List<LineaLogisticaVista> lineas = e.getVenta().getDetalles().stream()

@@ -1,0 +1,146 @@
+/* =====================================================================
+   HÖSÉG Web · Estilos para Logística y Gestor de Impacto
+   Consume exclusivamente variables de tokens.css y la cápsula glassmorphism.
+   ===================================================================== */
+
+.hs-op-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 992px) {
+    .hs-op-grid--lotes {
+        grid-template-columns: 5fr 7fr;
+    }
+}
+
+.hs-op-form {
+    padding: 0 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hs-op-form .hs-admin-input,
+.hs-op-toolbar .hs-admin-input {
+    width: 100%;
+    min-height: 2.65rem;
+}
+
+.hs-op-toolbar {
+    padding: 0 1.25rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    align-items: flex-end;
+}
+
+.hs-op-toolbar__select {
+    flex: 1 1 240px;
+}
+
+.hs-op-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .28rem .7rem;
+    border-radius: var(--hs-radius-pill);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    background: var(--hs-cream-dark);
+    color: var(--hs-bark);
+}
+
+.hs-op-badge--ok {
+    background: var(--hs-sage-light);
+    color: var(--hs-sage);
+}
+
+.hs-op-badge--ruta {
+    background: var(--hs-terracotta-light);
+    color: var(--hs-terracotta);
+}
+
+.hs-op-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+}
+
+.hs-op-dispatch-form {
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+    min-width: 185px;
+}
+
+.hs-op-dispatch-form .hs-admin-input {
+    min-height: 2.15rem;
+    font-size: .84rem;
+    padding: .35rem .65rem;
+}
+
+/* Cápsula móvil glassmorphism para Logística e Impacto */
+.hs-op-pill {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    z-index: 1030;
+    transform: translateX(-50%);
+    padding: 7px 10px;
+    border-radius: var(--hs-radius-pill);
+    background: var(--hs-pill-bg);
+    -webkit-backdrop-filter: var(--hs-pill-blur);
+    backdrop-filter: var(--hs-pill-blur);
+    border: 1px solid var(--hs-pill-border);
+    box-shadow: var(--hs-shadow-pill);
+}
+
+.hs-op-pill__list {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hs-op-pill__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 66px;
+    padding: 6px 12px;
+    border-radius: var(--hs-radius-pill);
+    color: var(--hs-pill-inactive);
+    text-decoration: none;
+    transition: background var(--hs-t-fast), color var(--hs-t-fast);
+}
+
+.hs-op-pill__link i {
+    font-size: 1.15rem;
+    line-height: 1;
+}
+
+.hs-op-pill__link span {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.hs-op-pill__link.is-active {
+    background: var(--hs-terracotta);
+    color: var(--hs-card);
+    font-weight: 600;
+}
+
+@media (max-width: 767.98px) {
+    .hs-admin-page {
+        padding-bottom: 6rem;
+    }
+}

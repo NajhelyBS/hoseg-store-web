@@ -1,9 +1,10 @@
 package pe.edu.utp.hoseg.web.model;
 
 public enum EstadoPedidoProveedor {
-    PENDIENTE("Pendiente"),
+    SOLICITADO("Solicitado"),
+    EN_PROCESO("En proceso"),
     RECIBIDO("Recibido"),
-    CANCELADO("Cancelado");
+    ANULADO("Anulado");
 
     private final String etiqueta;
 

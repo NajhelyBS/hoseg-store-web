@@ -41,7 +41,8 @@ public class PedidoProveedor {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 15)
-    private EstadoPedidoProveedor estado = EstadoPedidoProveedor.PENDIENTE;
+    private EstadoPedidoProveedor estado = EstadoPedidoProveedor.SOLICITADO;
+
 
     @Column(name = "id_usuario")
     private Integer idUsuario;

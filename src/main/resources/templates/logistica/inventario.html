@@ -1,107 +1,214 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://thymeleaf.org"
-      th:replace="~{layout/admin :: pagina(titulo='Inventario · Logística HÖSÉG', activa='inventario', contenido=~{::main})}">
+    th:replace="~{layout/admin :: pagina(titulo='Inventario · Logística HÖSÉG', activa='inventario', contenido=~{::main})}">
+
 <body>
-<main class="hs-admin-page">
-    <div class="hs-page-heading">
-        <div>
-            <p class="hs-eyebrow">LOGÍSTICA · ALMACÉN</p>
-            <h1>Control de inventario</h1>
-            <p class="hs-page-desc">Supervisa el stock comercial disponible, las unidades comprometidas y repone stock crítico.</p>
-        </div>
-        <span class="hs-soft-label" th:if="${totalCriticos > 0}">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-            <span th:text="${totalCriticos} + ' variante(s) en stock crítico'">0 variantes críticas</span>
-        </span>
-    </div>
-
-    <section class="hs-admin-card">
-        <div class="hs-card-head hs-card-head--wrap">
+    <main class="hs-admin-page">
+        <div class="hs-page-heading">
             <div>
-                <h2>Existencias por variante</h2>
-                <p>Cuando el stock comercial es menor o igual al mínimo, se marca en estado crítico.</p>
+                <p class="hs-eyebrow">LOGÍSTICA · ALMACÉN</p>
+                <h1>Control de inventario</h1>
+                <p class="hs-page-desc">Supervisa el stock comercial, registra prendas nuevas o solicita reposición a
+                    talleres.</p>
             </div>
-            <span class="hs-soft-label" th:text="${#lists.size(productos)} + ' variantes activas'">0 variantes</span>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <span class="hs-soft-label" th:if="${totalCriticos > 0}">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                    <span th:text="${totalCriticos} + ' crítico(s)'">0 críticos</span>
+                </span>
+                <button type="button" class="hs-admin-btn hs-admin-btn--primary" data-bs-toggle="modal"
+                    data-bs-target="#modal-nuevo-producto">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> Nuevo producto
+                </button>
+            </div>
         </div>
 
-        <div class="hs-tab-strip" role="group" aria-label="Filtrar inventario">
-            <button type="button" class="hs-tab is-active" data-inv-filter="TODOS">Todos</button>
-            <button type="button" class="hs-tab" data-inv-filter="CRITICO">
-                Stock crítico (<span th:text="${totalCriticos}">0</span>)
-            </button>
-        </div>
+        <section class="hs-admin-card">
+            <div class="hs-card-head hs-card-head--wrap">
+                <div>
+                    <h2>Existencias por variante</h2>
+                    <p>Cuando el stock comercial es menor o igual al mínimo, puedes solicitar reposición a un taller.
+                    </p>
+                </div>
+                <span class="hs-soft-label" th:text="${#lists.size(productos)} + ' variantes activas'">0
+                    variantes</span>
+            </div>
 
-        <p class="hs-aviso-deslizar d-md-none px-3 pt-2 mb-1">
-            <span>Desliza la tabla para ver acciones</span>
-            <i class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i>
-        </p>
+            <div class="hs-tab-strip" role="group" aria-label="Filtrar inventario">
+                <button type="button" class="hs-tab is-active" data-inv-filter="TODOS">Todos</button>
+                <button type="button" class="hs-tab" data-inv-filter="CRITICO">
+                    Stock crítico (<span th:text="${totalCriticos}">0</span>)
+                </button>
+            </div>
 
-        <div class="hs-table-scroll">
-            <table class="hs-admin-table">
-                <thead>
-                <tr>
-                    <th scope="col">Código</th>
-                    <th scope="col">Producto</th>
-                    <th scope="col">Talla</th>
-                    <th scope="col">Stock comercial</th>
-                    <th scope="col">Comprometido</th>
-                    <th scope="col">Mínimo</th>
-                    <th scope="col">Ingreso rápido</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="p : ${productos}" class="hs-inv-row"
-                    th:attr="data-critico=${p.stockComercial <= p.stockMinimo}">
-                    <td><span class="hs-code-pill" th:text="${p.codigo}">HSG-001</span></td>
-                    <td>
-                        <strong th:text="${p.nombre}">Casaca</strong>
-                        <span class="hs-table-sub" th:text="${p.categoria}">Categoría</span>
-                    </td>
-                    <td><span class="hs-talla-badge" th:text="${p.tallaMostrada}">M</span></td>
-                    <td>
-                        <span class="hs-op-badge"
-                              th:classappend="${p.stockComercial <= p.stockMinimo} ? 'hs-op-badge--ruta' : 'hs-op-badge--ok'">
-                            <i class="bi" th:classappend="${p.stockComercial <= p.stockMinimo} ? 'bi-exclamation-circle' : 'bi-check-circle'"></i>
-                            <span th:text="${p.stockComercial} + ' u.'">10 u.</span>
-                        </span>
-                    </td>
-                    <td th:text="${p.stockComprometido} + ' u.'">0 u.</td>
-                    <td th:text="${p.stockMinimo} + ' u.'">3 u.</td>
-                    <td>
-                        <form method="post" th:action="@{/logistica/inventario/{c}/reponer(c=${p.codigo})}"
-                              class="d-flex align-items-center gap-2">
-                            <input type="number" name="cantidad" min="1" max="500" value="5"
-                                   class="hs-admin-input" style="width: 75px;" aria-label="Cantidad a ingresar" required>
-                            <button type="submit" class="hs-admin-btn hs-admin-btn--secondary">
-                                <i class="bi bi-plus-lg" aria-hidden="true"></i> Ingresar
+            <p class="hs-aviso-deslizar d-md-none px-3 pt-2 mb-1">
+                <span>Desliza la tabla para ver acciones</span>
+                <i class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i>
+            </p>
+
+            <div class="hs-table-scroll">
+                <table class="hs-admin-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Código</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Talla</th>
+                            <th scope="col">Stock comercial</th>
+                            <th scope="col">Comprometido</th>
+                            <th scope="col">Mínimo</th>
+                            <th scope="col">Reposición</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${productos}" class="hs-inv-row"
+                            th:attr="data-critico=${p.stockComercial <= p.stockMinimo}">
+                            <td><span class="hs-code-pill" th:text="${p.codigo}">HSG-001</span></td>
+                            <td>
+                                <strong th:text="${p.nombre}">Casaca</strong>
+                                <span class="hs-table-sub" th:text="${p.categoria}">Categoría</span>
+                            </td>
+                            <td><span class="hs-talla-badge" th:text="${p.tallaMostrada}">M</span></td>
+                            <td>
+                                <span class="hs-op-badge"
+                                    th:classappend="${p.stockComercial <= p.stockMinimo} ? 'hs-op-badge--ruta' : 'hs-op-badge--ok'">
+                                    <i class="bi"
+                                        th:classappend="${p.stockComercial <= p.stockMinimo} ? 'bi-exclamation-circle' : 'bi-check-circle'"></i>
+                                    <span th:text="${p.stockComercial} + ' u.'">10 u.</span>
+                                </span>
+                            </td>
+                            <td th:text="${p.stockComprometido} + ' u.'">0 u.</td>
+                            <td th:text="${p.stockMinimo} + ' u.'">3 u.</td>
+                            <td>
+                                <div class="d-flex flex-wrap align-items-center gap-2">
+                                    <form method="post" th:action="@{/logistica/inventario/{c}/reponer(c=${p.codigo})}"
+                                        class="d-flex align-items-center gap-1">
+                                        <input type="number" name="cantidad" min="1" max="500" value="5"
+                                            class="hs-admin-input" style="width: 68px;" aria-label="Cantidad a ingresar"
+                                            required>
+                                        <button type="submit" class="hs-admin-btn hs-admin-btn--secondary"
+                                            title="Ingreso directo a almacén">
+                                            <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                    <a class="hs-admin-btn hs-admin-btn--ghost"
+                                        th:href="@{/logistica/proveedores(producto=${p.codigo})}"
+                                        title="Solicitar lote a taller proveedor">
+                                        <i class="bi bi-building" aria-hidden="true"></i> Pedir a taller
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${productos.isEmpty()}">
+                            <td colspan="7" class="hs-empty-row">No hay productos activos en el inventario.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="hs-pagination" id="inv-paginacion" hidden>
+                <span class="hs-pagination__info" id="inv-paginacion-info">Mostrando 1–10</span>
+                <div class="hs-pagination__controls">
+                    <button type="button" class="hs-admin-btn hs-admin-btn--ghost hs-admin-btn--sm" id="inv-prev">
+                        <i class="bi bi-chevron-left" aria-hidden="true"></i> Anterior
+                    </button>
+                    <span class="hs-pagination__page" id="inv-paginacion-num">1 / 1</span>
+                    <button type="button" class="hs-admin-btn hs-admin-btn--ghost hs-admin-btn--sm" id="inv-next">
+                        Siguiente <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Modal: Registrar nuevo producto en inventario -->
+        <div class="modal fade hs-admin-modal" id="modal-nuevo-producto" tabindex="-1"
+            aria-labelledby="titulo-modal-prod" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="titulo-modal-prod">Registrar nuevo producto</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                                        <form method="post" th:action="@{/logistica/inventario/nuevo}">
+                        <div class="modal-body">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="hs-field">
+                                        <label for="prod-codigo">CÓDIGO *</label>
+                                        <input id="prod-codigo" name="codigo" class="hs-admin-input w-100"
+                                               placeholder="Ej. HSG-PON-001" required maxlength="30">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="hs-field">
+                                        <label for="prod-talla">TALLA</label>
+                                        <input id="prod-talla" name="talla" class="hs-admin-input w-100"
+                                               placeholder="S, M, L o Única" maxlength="10">
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="hs-field">
+                                        <label for="prod-nombre">NOMBRE DEL PRODUCTO *</label>
+                                        <input id="prod-nombre" name="nombre" class="hs-admin-input w-100"
+                                               placeholder="Ej. Poncho Andino Alpaca" required maxlength="150">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="hs-field">
+                                        <label for="prod-cat">CATEGORÍA *</label>
+                                        <input id="prod-cat" name="categoria" class="hs-admin-input w-100"
+                                               placeholder="Casacas, Chullos..." required maxlength="60">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="hs-field">
+                                        <label for="prod-precio">PRECIO (S/) *</label>
+                                        <input id="prod-precio" name="precio" type="number" step="0.01" min="1"
+                                               class="hs-admin-input w-100" placeholder="189.90" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-6 col-md-3">
+                                    <div class="hs-field">
+                                        <label for="prod-stock">STOCK INICIAL *</label>
+                                        <input id="prod-stock" name="stockInicial" type="number" min="0" value="10"
+                                               class="hs-admin-input w-100" required>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="hs-field">
+                                        <label for="prod-min">MÍNIMO *</label>
+                                        <input id="prod-min" name="stockMinimo" type="number" min="0" value="3"
+                                               class="hs-admin-input w-100" required>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="hs-field">
+                                        <label for="prod-impacto">COMPROMISO SOCIAL</label>
+                                        <select id="prod-impacto" name="tipoCompromiso" class="hs-admin-input w-100">
+                                            <option value="">Sin compromiso</option>
+                                            <option value="ABRIGO">ABRIGO (1 compra = 1 abrigo)</option>
+                                            <option value="ARBOL">ÁRBOL (1 compra = 1 árbol)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="hs-admin-btn hs-admin-btn--ghost"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="hs-admin-btn hs-admin-btn--primary">
+                                <i class="bi bi-check2" aria-hidden="true"></i> Guardar producto
                             </button>
-                        </form>
-                    </td>
-                </tr>
-                <tr th:if="${productos.isEmpty()}">
-                    <td colspan="7" class="hs-empty-row">No hay productos activos en el inventario.</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
+                        </div>
+                    </form>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const tabs = document.querySelectorAll('[data-inv-filter]');
-            const filas = document.querySelectorAll('.hs-inv-row');
-            tabs.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('is-active'));
-                    btn.classList.add('is-active');
-                    const soloCritico = btn.dataset.invFilter === 'CRITICO';
-                    filas.forEach(f => {
-                        f.hidden = soloCritico && f.dataset.critico !== 'true';
-                    });
-                });
-            });
-        });
-    </script>
-</main>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
+
 </html>

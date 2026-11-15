@@ -83,4 +83,23 @@ public class GestorImpactoController {
         }
         return "redirect:/gestion-impacto/lotes";
     }
+
+        @GetMapping(value = "/lotes.csv", produces = "text/csv;charset=UTF-8")
+    @org.springframework.web.bind.annotation.ResponseBody
+    public org.springframework.http.ResponseEntity<String> exportarCsv() {
+        StringBuilder sb = new StringBuilder("\uFEFFCodigo Lote;Comunidad;ONG Aliada;Estado;Fecha Creacion;Observaciones\n");
+        for (var l : gestorImpactoService.lotes()) {
+            sb.append(l.getCodigoLote()).append(';')
+              .append(l.getComunidad().getNombre()).append(';')
+              .append(l.getOng().getNombre()).append(';')
+              .append(l.getEstado().name()).append(';')
+              .append(l.getFechaCreacion().toLocalDate()).append(';')
+              .append(l.getObservaciones() != null ? l.getObservaciones().replace(';', ',') : "")
+              .append('\n');
+        }
+        return org.springframework.http.ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Reporte-Impacto-Hoseg.csv\"")
+                .body(sb.toString());
+    }
+
 }

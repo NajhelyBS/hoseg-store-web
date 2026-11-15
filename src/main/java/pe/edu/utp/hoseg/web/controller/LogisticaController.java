@@ -74,13 +74,15 @@ public class LogisticaController {
         return "redirect:/logistica/inventario";
     }
 
-    @GetMapping("/proveedores")
-    public String proveedores(Model model) {
+        @GetMapping("/proveedores")
+    public String proveedores(@RequestParam(required = false) String producto, Model model) {
         model.addAttribute("proveedores", logisticaService.proveedoresActivos());
         model.addAttribute("ordenes", logisticaService.pedidosProveedores());
         model.addAttribute("productos", logisticaService.inventarioActivo());
+        model.addAttribute("productoPreseleccionado", producto);
         return "logistica/proveedores";
     }
+
 
     @PostMapping("/proveedores")
     public String crearProveedor(@RequestParam String nombreTaller,
@@ -123,4 +125,25 @@ public class LogisticaController {
         }
         return "redirect:/logistica/proveedores";
     }
+
+        @PostMapping("/inventario/nuevo")
+    public String crearProducto(@RequestParam String codigo,
+                                @RequestParam String nombre,
+                                @RequestParam String categoria,
+                                @RequestParam(required = false) String coleccion,
+                                @RequestParam(required = false) String talla,
+                                @RequestParam java.math.BigDecimal precio,
+                                @RequestParam(defaultValue = "0") int stockInicial,
+                                @RequestParam(defaultValue = "3") int stockMinimo,
+                                @RequestParam(required = false) pe.edu.utp.hoseg.web.model.TipoCompromiso tipoCompromiso,
+                                RedirectAttributes flash) {
+        try {
+            logisticaService.crearProducto(codigo, nombre, categoria, coleccion, talla, precio, stockInicial, stockMinimo, tipoCompromiso);
+            flash.addFlashAttribute("exito", "Producto " + codigo.toUpperCase() + " registrado en el catálogo e inventario.");
+        } catch (NegocioException e) {
+            flash.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/logistica/inventario";
+    }
+
 }

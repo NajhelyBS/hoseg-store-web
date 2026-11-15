@@ -1,51 +1,335 @@
 <!DOCTYPE html>
 <!--
   PLANTILLA · Bloque 4 · 4.4 Höség Café (GET /admin/cafe?pestana=carta|local|arboles, AdminContenidoController).
-  Modelo:
-    pestana   "carta" | "local" | "arboles"
-    carta     List<CafeCarta> (id, nombre, descripcion, categoria, precio, disponible, activo, orden)
-    itemForm  ItemCartaForm (id oculto: null = nuevo; ?item=5 lo carga para editar) → POST /admin/cafe/carta
-    locales   List<CafeLocal> (id, nombre, direccion, horario, telefono, urlMapa, activo)
-    localForm LocalCafeForm (?local=2 lo carga) → POST /admin/cafe/locales
-    arboles   long → POST /admin/cafe/arboles?arboles=5018
   Desactivar/activar un ítem: POST /admin/cafe/carta/{id}/activo?activo=false|true (baja lógica).
-  Adaptación de interfaz: pestañas de carta, locales y árboles; formularios de edición en ventanas modales.
 -->
-<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/admin :: pagina(titulo='Höség Café · HÖSÉG', activa='cafe', contenido=~{::main})}">
-<body><main class="hs-admin-page hs-cafe-page">
-    <header class="hs-page-heading"><div><p class="hs-eyebrow">ADMINISTRACIÓN</p><h1>Höség Café</h1><p class="hs-page-desc">Gestiona la carta, los locales y el contador de impacto del café.</p></div></header>
-    <nav class="hs-tab-strip hs-section-tabs" aria-label="Secciones de Höség Café">
-        <a class="hs-tab" th:classappend="${pestana == 'carta'} ? 'is-active'" th:href="@{/admin/cafe(pestana='carta')}">Carta</a>
-        <a class="hs-tab" th:classappend="${pestana == 'local'} ? 'is-active'" th:href="@{/admin/cafe(pestana='local')}">Locales</a>
-        <a class="hs-tab" th:classappend="${pestana == 'arboles'} ? 'is-active'" th:href="@{/admin/cafe(pestana='arboles')}">Árboles del Café</a>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/admin :: pagina(titulo='Höség Café · HÖSÉG', activa='cafe', contenido=~{::main})}">
+<body>
+<main class="hs-admin-page hs-cafe-page">
+    <header class="hs-page-heading">
+        <div>
+            <p class="hs-eyebrow">ADMINISTRACIÓN · HÖSÉG CAFÉ</p>
+            <h1>Höség Café</h1>
+            <p class="hs-page-desc">Gestiona la carta, los locales y el contador de impacto del café.</p>
+        </div>
+    </header>
+
+    <!-- Pestañas de navegación -->
+    <nav class="hs-tab-strip hs-page-tabs" aria-label="Secciones de Höség Café">
+        <a th:href="@{/admin/cafe(pestana='carta')}" class="hs-tab"
+           th:classappend="${pestana == 'carta'} ? 'is-active'"
+           th:attr="aria-current=${pestana == 'carta'} ? 'page'">
+            <i class="bi bi-cup-hot" aria-hidden="true"></i> Carta
+        </a>
+        <a th:href="@{/admin/cafe(pestana='local')}" class="hs-tab"
+           th:classappend="${pestana == 'local'} ? 'is-active'"
+           th:attr="aria-current=${pestana == 'local'} ? 'page'">
+            <i class="bi bi-shop" aria-hidden="true"></i> Locales
+        </a>
+        <a th:href="@{/admin/cafe(pestana='arboles')}" class="hs-tab"
+           th:classappend="${pestana == 'arboles'} ? 'is-active'"
+           th:attr="aria-current=${pestana == 'arboles'} ? 'page'">
+            <i class="bi bi-tree" aria-hidden="true"></i> Árboles del Café
+        </a>
     </nav>
-    <section th:if="${pestana == 'carta'}" class="hs-admin-card" aria-labelledby="cafe-carta-heading">
-        <div class="hs-card-head hs-card-head--wrap"><div><h2 id="cafe-carta-heading">Carta del café</h2><p>Edita o desactiva bebidas y otros productos de la carta.</p></div><button type="button" class="hs-admin-btn hs-admin-btn--primary" data-open-modal="cafe-item-modal"><i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar ítem</button></div>
-        <div class="hs-table-scroll"><table class="hs-admin-table"><thead><tr><th scope="col">Categoría</th><th scope="col">Nombre</th><th scope="col">Precio</th><th scope="col">Disponibilidad</th><th scope="col">Publicación</th><th scope="col">Acciones</th></tr></thead><tbody>
-            <tr th:each="c : ${carta}"><td th:text="${c.categoria}">Bebidas</td><td class="hs-cell-strong" th:text="${c.nombre}">Americano</td><td th:text="'S/ ' + ${#numbers.formatDecimal(c.precio, 1, 'COMMA', 2, 'POINT')}">S/ 8.50</td><td><span class="hs-state" th:classappend="${c.disponible} ? 'hs-state--pagado' : 'hs-state--pendiente'" th:text="${c.disponible} ? 'Disponible' : 'No disponible'">Disponible</span></td><td><span class="hs-state" th:classappend="${c.activo} ? 'hs-state--pagado' : 'hs-state--anulado'" th:text="${c.activo} ? 'Activo' : 'Inactivo'">Activo</span></td><td><div class="hs-inline-actions"><a class="hs-link-action" th:href="@{/admin/cafe(pestana='carta',item=${c.id})}"><i class="bi bi-pencil" aria-hidden="true"></i> Editar</a><form method="post" th:action="@{/admin/cafe/carta/{id}/activo(id=${c.id})}"><input type="hidden" name="activo" th:value="${!c.activo}"><button class="hs-link-action" type="submit" th:text="${c.activo} ? 'Desactivar' : 'Activar'">Desactivar</button></form></div></td></tr>
-            <tr th:if="${carta.isEmpty()}"><td colspan="6" class="hs-empty-row">No hay ítems en la carta.</td></tr>
-        </tbody></table></div>
+
+    <!-- PESTAÑA 1: CARTA -->
+    <section th:if="${pestana == 'carta'}" class="hs-admin-card hs-anim-card-1" aria-labelledby="titulo-carta">
+        <div class="hs-card-head hs-card-head--wrap">
+            <div>
+                <h2 id="titulo-carta">Carta del café</h2>
+                <p>Edita o desactiva bebidas y otros productos de la carta.</p>
+            </div>
+            <div class="hs-cafe-head-actions">
+                <div class="hs-input-icon-wrap hs-cafe-search">
+                    <i class="bi bi-search hs-input-icon" aria-hidden="true"></i>
+                    <input type="search" id="filtro-cafe" class="hs-admin-input hs-admin-input--con-icono"
+                           placeholder="Buscar en carta..." aria-label="Buscar ítem en la carta">
+                </div>
+                <button type="button" class="hs-admin-btn hs-admin-btn--primary" data-open-modal="modal-item">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar ítem
+                </button>
+            </div>
+        </div>
+
+        <!-- Aviso de desplazamiento horizontal en móvil -->
+        <p class="hs-aviso-deslizar d-md-none px-3 pt-3 mb-1">
+            <span>Desliza la tabla para editar o desactivar</span>
+            <i class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i>
+        </p>
+
+        <div class="hs-table-scroll">
+            <table class="hs-admin-table">
+                <thead>
+                <tr>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Disponibilidad</th>
+                    <th scope="col">Publicación</th>
+                    <th scope="col" class="hs-col-actions">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${carta}" class="hs-cafe-row"
+                    th:classappend="${!c.activo} ? 'is-muted'"
+                    th:attr="data-search=${#strings.toLowerCase((c.nombre ?: '') + ' ' + (c.categoria ?: '') + ' ' + (c.descripcion ?: ''))}">
+                    <td><span class="hs-code-pill" th:text="${c.categoria}">Bebidas</span></td>
+                    <td>
+                        <strong th:text="${c.nombre}">Americano</strong>
+                        <span class="hs-table-sub" th:if="${c.descripcion != null and !#strings.isEmpty(c.descripcion)}"
+                              th:text="${c.descripcion}">Descripción</span>
+                    </td>
+                    <td class="hs-cell-strong" th:text="'S/ ' + ${#numbers.formatDecimal(c.precio, 1, 'COMMA', 2, 'POINT')}">S/ 8.50</td>
+                    <td>
+                        <span class="hs-state"
+                              th:classappend="${c.disponible} ? 'hs-state--pagado' : 'hs-state--pendiente'"
+                              th:text="${c.disponible} ? 'Disponible' : 'Agotado hoy'">Disponible</span>
+                    </td>
+                    <td>
+                        <span class="hs-state"
+                              th:classappend="${c.activo} ? 'hs-state--pagado' : 'hs-state--anulado'"
+                              th:text="${c.activo} ? 'Activo' : 'Inactivo'">Activo</span>
+                    </td>
+                    <td class="hs-col-actions">
+                        <div class="hs-row-actions">
+                            <a th:href="@{/admin/cafe(pestana='carta', item=${c.id})}"
+                               class="hs-admin-btn hs-admin-btn--ghost hs-admin-btn--sm">
+                                <i class="bi bi-pencil" aria-hidden="true"></i> Editar
+                            </a>
+                            <form method="post" th:action="@{/admin/cafe/carta/{id}/activo(id=${c.id})}">
+                                <input type="hidden" name="activo" th:value="${!c.activo}">
+                                <button class="hs-admin-btn hs-admin-btn--ghost hs-admin-btn--sm" type="submit"
+                                        th:text="${c.activo} ? 'Desactivar' : 'Activar'">Desactivar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${carta.isEmpty()}">
+                    <td colspan="6" class="hs-empty-row">
+                        <div class="hs-empty-box">
+                            <i class="bi bi-cup" aria-hidden="true"></i>
+                            <span>No hay ítems en la carta todavía.</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="hs-cafe-search-empty" hidden>
+                    <td colspan="6" class="hs-empty-row">
+                        <div class="hs-empty-box">
+                            <i class="bi bi-search" aria-hidden="true"></i>
+                            <span>No encontramos productos en la carta con esa búsqueda.</span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </section>
-    <section th:if="${pestana == 'local'}" class="hs-admin-card" aria-labelledby="cafe-local-heading">
-        <div class="hs-card-head hs-card-head--wrap"><div><h2 id="cafe-local-heading">Locales de Höség Café</h2><p>Información publicada en la página del café.</p></div><button type="button" class="hs-admin-btn hs-admin-btn--primary" data-open-modal="cafe-local-modal"><i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar local</button></div>
-        <div class="hs-local-grid"><article class="hs-local-card" th:each="l : ${locales}"><div class="hs-local-icon"><i class="bi bi-geo-alt" aria-hidden="true"></i></div><div><h3 th:text="${l.nombre}">Local Höség</h3><p th:text="${l.direccion}">Dirección</p><p th:if="${l.horario}" th:text="${l.horario}">Horario</p><span class="hs-state" th:classappend="${l.activo} ? 'hs-state--pagado' : 'hs-state--anulado'" th:text="${l.activo} ? 'Activo' : 'Inactivo'">Activo</span><a class="hs-link-action hs-local-edit" th:href="@{/admin/cafe(pestana='local',local=${l.id})}"><i class="bi bi-pencil" aria-hidden="true"></i> Editar local</a></div></article></div>
-        <p class="hs-empty-msg" th:if="${locales.isEmpty()}">Todavía no hay locales registrados.</p>
+
+    <!-- PESTAÑA 2: LOCALES -->
+    <section th:if="${pestana == 'local'}" class="hs-admin-card hs-anim-card-1" aria-labelledby="titulo-locales">
+        <div class="hs-card-head hs-card-head--wrap">
+            <div>
+                <h2 id="titulo-locales">Locales de Höség Café</h2>
+                <p>Información de sedes publicada en la página del café.</p>
+            </div>
+            <button type="button" class="hs-admin-btn hs-admin-btn--primary" data-open-modal="modal-local">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar local
+            </button>
+        </div>
+
+        <div class="hs-local-grid" th:if="${!locales.isEmpty()}">
+            <article class="hs-local-card" th:each="l : ${locales}" th:classappend="${!l.activo} ? 'is-muted'">
+                <div>
+                    <div class="hs-local-head">
+                        <h3>
+                            <i class="bi bi-geo-alt-fill hs-text-terracotta" aria-hidden="true"></i>
+                            <span th:text="${l.nombre}">Local Höség</span>
+                        </h3>
+                        <span class="hs-state"
+                              th:classappend="${l.activo} ? 'hs-state--pagado' : 'hs-state--anulado'"
+                              th:text="${l.activo} ? 'Activo' : 'Inactivo'">Activo</span>
+                    </div>
+                    <p th:text="${l.direccion}">Dirección</p>
+                    <p class="hs-muted" th:if="${l.horario != null and !#strings.isEmpty(l.horario)}">
+                        <i class="bi bi-clock" aria-hidden="true"></i> <span th:text="${l.horario}">Horario</span>
+                    </p>
+                    <p class="hs-muted" th:if="${l.telefono != null and !#strings.isEmpty(l.telefono)}">
+                        <i class="bi bi-telephone" aria-hidden="true"></i> <span th:text="${l.telefono}">Teléfono</span>
+                    </p>
+                </div>
+                <div class="hs-local-foot">
+                    <a th:href="@{/admin/cafe(pestana='local', local=${l.id})}"
+                       class="hs-admin-btn hs-admin-btn--ghost hs-admin-btn--sm">
+                        <i class="bi bi-pencil" aria-hidden="true"></i> Editar local
+                    </a>
+                </div>
+            </article>
+        </div>
+
+        <div class="hs-empty-box py-5 px-3" th:if="${locales.isEmpty()}">
+            <i class="bi bi-shop" aria-hidden="true"></i>
+            <p class="hs-empty-block p-0">Todavía no hay locales registrados.</p>
+        </div>
     </section>
-    <section th:if="${pestana == 'arboles'}" class="hs-admin-card hs-tree-panel" aria-labelledby="cafe-arbol-heading"><div class="hs-card-head"><div><h2 id="cafe-arbol-heading">Árboles plantados</h2><p>Contador público de árboles sembrados por Höség Café.</p></div></div><div class="hs-tree-stat"><i class="bi bi-tree" aria-hidden="true"></i><strong th:text="${#numbers.formatInteger(arboles, 1, 'COMMA')}">5,018</strong><span>ÁRBOLES SEMBRADOS</span></div>
-        <form method="post" th:action="@{/admin/cafe/arboles}" class="hs-tree-form"><div class="hs-field"><label for="arboles">Actualizar contador</label><input class="hs-admin-input" id="arboles" name="arboles" type="number" min="0" step="1" th:value="${arboles}" required></div><button class="hs-admin-btn hs-admin-btn--primary" type="submit">Publicar</button></form><p class="hs-muted hs-form-note">Esta cifra se muestra en la página pública del café.</p>
+
+        <!-- PESTAÑA 3: ÁRBOLES DEL CAFÉ -->
+    <section th:if="${pestana == 'arboles'}" class="hs-admin-card hs-tree-card hs-anim-card-1" aria-labelledby="titulo-arboles">
+        <div class="hs-card-head">
+            <div>
+                <h2 id="titulo-arboles">Árboles plantados</h2>
+                <p>Contador público de árboles sembrados por Höség Café.</p>
+            </div>
+        </div>
+
+        <div class="hs-tree-hero hs-tree-hero--sage">
+            <span class="hs-tree-icon"><i class="bi bi-tree-fill" aria-hidden="true"></i></span>
+            <div>
+                <strong class="hs-tree-number" th:text="${#numbers.formatInteger(arboles, 1, 'COMMA')}">5,018</strong>
+                <span class="hs-tree-caption">ÁRBOLES SEMBRADOS</span>
+            </div>
+        </div>
+
+        <form method="post" th:action="@{/admin/cafe/arboles}" class="hs-form-block">
+            <div class="hs-field">
+                <label for="cafe-arboles">ACTUALIZAR CONTADOR</label>
+                <div class="hs-inline-submit">
+                    <input id="cafe-arboles" class="hs-admin-input" type="number" min="0" name="arboles"
+                           th:value="${arboles}" required>
+                    <button class="hs-admin-btn hs-admin-btn--primary" type="submit">
+                        <i class="bi bi-check2-circle" aria-hidden="true"></i> Publicar
+                    </button>
+                </div>
+            </div>
+            <p class="hs-muted hs-form-hint">Esta cifra se muestra en tiempo real en la página pública de Höség Café.</p>
+        </form>
     </section>
-    <div th:if="${pestana == 'carta'}" class="modal fade hs-admin-modal" id="cafe-item-modal" tabindex="-1" aria-labelledby="cafe-item-title" aria-hidden="true" th:attr="data-auto-open=${itemForm.id != null}">
-        <div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 class="modal-title" id="cafe-item-title" th:text="${itemForm.id == null} ? 'Nuevo ítem' : 'Editar ítem'">Nuevo ítem</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
-            <form th:object="${itemForm}" method="post" th:action="@{/admin/cafe/carta}"><div class="modal-body"><input type="hidden" th:field="*{id}"><div class="hs-field"><label for="item-nombre">Nombre</label><input id="item-nombre" class="hs-admin-input" th:field="*{nombre}" required maxlength="120" placeholder="Nombre del ítem"><p class="hs-field-error" th:errors="*{nombre}"></p></div>
-                <div class="hs-field"><label for="item-categoria">Categoría</label><input id="item-categoria" class="hs-admin-input" th:field="*{categoria}" maxlength="40" required placeholder="Ej. Espresso"><p class="hs-field-error" th:errors="*{categoria}"></p></div><div class="hs-field"><label for="item-descripcion">Descripción</label><textarea id="item-descripcion" class="hs-admin-input" rows="2" maxlength="255" th:field="*{descripcion}" placeholder="Descripción breve"></textarea><p class="hs-field-error" th:errors="*{descripcion}"></p></div>
-                <div class="hs-form-row"><div class="hs-field"><label for="item-precio">Precio (S/)</label><input id="item-precio" class="hs-admin-input" type="number" min="0" step="0.01" th:field="*{precio}" required><p class="hs-field-error" th:errors="*{precio}"></p></div><div class="hs-field"><label for="item-orden">Orden</label><input id="item-orden" class="hs-admin-input" type="number" min="0" step="1" th:field="*{orden}"><p class="hs-field-error" th:errors="*{orden}"></p></div></div>
-                <label class="hs-check-row"><input type="checkbox" th:field="*{disponible}"> Disponible hoy</label></div><div class="modal-footer"><button type="submit" class="hs-admin-btn hs-admin-btn--primary">Guardar</button><button type="button" class="hs-admin-btn hs-admin-btn--outline" data-bs-dismiss="modal">Cancelar</button></div></form>
-        </div></div>
+
+    <!-- MODAL 1: AGREGAR / EDITAR ÍTEM DE CARTA -->
+    <div th:if="${pestana == 'carta'}" class="modal fade hs-admin-modal" id="modal-item" tabindex="-1"
+         aria-labelledby="titulo-modal-item" aria-hidden="true"
+         th:attr="data-auto-open=${itemForm.id != null or #fields.hasErrors('${itemForm.*}')}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="titulo-modal-item"
+                        th:text="${itemForm.id == null} ? 'Nuevo ítem de carta' : 'Editar ítem de carta'">Nuevo ítem</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form th:object="${itemForm}" method="post" th:action="@{/admin/cafe/carta}">
+                    <div class="modal-body hs-modal-fields">
+                        <input type="hidden" th:field="*{id}">
+                        <div class="hs-field">
+                            <label for="item-nombre">NOMBRE *</label>
+                            <input id="item-nombre" class="hs-admin-input" th:field="*{nombre}"
+                                   placeholder="Ej. Café Latte" required>
+                            <p class="hs-field-error" th:errors="*{nombre}"></p>
+                        </div>
+                        <div class="hs-two-cols">
+                            <div class="hs-field">
+                                <label for="item-categoria">CATEGORÍA *</label>
+                                <input id="item-categoria" class="hs-admin-input" th:field="*{categoria}"
+                                       placeholder="Ej. Bebidas calientes" required>
+                                <p class="hs-field-error" th:errors="*{categoria}"></p>
+                            </div>
+                            <div class="hs-field">
+                                <label for="item-precio">PRECIO (S/) *</label>
+                                <input id="item-precio" class="hs-admin-input" type="number" step="0.01" min="0"
+                                       th:field="*{precio}" placeholder="9.50" required>
+                                <p class="hs-field-error" th:errors="*{precio}"></p>
+                            </div>
+                        </div>
+                        <div class="hs-field">
+                            <label for="item-descripcion">DESCRIPCIÓN</label>
+                            <textarea id="item-descripcion" class="hs-admin-input" rows="2"
+                                      th:field="*{descripcion}" placeholder="Notas de sabor o ingredientes..."></textarea>
+                        </div>
+                        <div class="hs-two-cols">
+                            <div class="hs-field">
+                                <label for="item-orden">ORDEN DE VISUALIZACIÓN</label>
+                                <input id="item-orden" class="hs-admin-input" type="number" min="0"
+                                       th:field="*{orden}" placeholder="1">
+                            </div>
+                            <div class="hs-field justify-content-end">
+                                <label class="hs-check">
+                                    <input type="checkbox" th:field="*{disponible}">
+                                    <span>Disponible hoy</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="hs-admin-btn hs-admin-btn--ghost" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="hs-admin-btn hs-admin-btn--primary" type="submit">
+                            <i class="bi bi-check2" aria-hidden="true"></i> Guardar ítem
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div th:if="${pestana == 'local'}" class="modal fade hs-admin-modal" id="cafe-local-modal" tabindex="-1" aria-labelledby="cafe-local-title" aria-hidden="true" th:attr="data-auto-open=${localForm.id != null}">
-        <div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 class="modal-title" id="cafe-local-title" th:text="${localForm.id == null} ? 'Nuevo local' : 'Editar local'">Nuevo local</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button></div>
-            <form method="post" th:object="${localForm}" th:action="@{/admin/cafe/locales}"><div class="modal-body"><input type="hidden" th:field="*{id}"><div class="hs-field"><label for="local-nombre">Nombre del local</label><input id="local-nombre" class="hs-admin-input" th:field="*{nombre}" maxlength="120" required><p class="hs-field-error" th:errors="*{nombre}"></p></div>
-                <div class="hs-field"><label for="local-direccion">Dirección</label><input id="local-direccion" class="hs-admin-input" th:field="*{direccion}" maxlength="255" required><p class="hs-field-error" th:errors="*{direccion}"></p></div><div class="hs-field"><label for="local-horario">Horario</label><input id="local-horario" class="hs-admin-input" th:field="*{horario}" maxlength="150"></div><div class="hs-field"><label for="local-telefono">Teléfono</label><input id="local-telefono" class="hs-admin-input" th:field="*{telefono}"><p class="hs-field-error" th:errors="*{telefono}"></p></div><div class="hs-field"><label for="local-mapa">Enlace del mapa</label><input id="local-mapa" class="hs-admin-input" th:field="*{urlMapa}" placeholder="https://maps..." type="url"><p class="hs-field-error" th:errors="*{urlMapa}"></p></div><label class="hs-check-row"><input type="checkbox" th:field="*{activo}"> Local activo</label></div><div class="modal-footer"><button class="hs-admin-btn hs-admin-btn--primary" type="submit">Guardar local</button><button type="button" class="hs-admin-btn hs-admin-btn--outline" data-bs-dismiss="modal">Cancelar</button></div></form>
-        </div></div>
+
+    <!-- MODAL 2: AGREGAR / EDITAR LOCAL -->
+    <div th:if="${pestana == 'local'}" class="modal fade hs-admin-modal" id="modal-local" tabindex="-1"
+         aria-labelledby="titulo-modal-local" aria-hidden="true"
+         th:attr="data-auto-open=${localForm.id != null or #fields.hasErrors('${localForm.*}')}">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="titulo-modal-local"
+                        th:text="${localForm.id == null} ? 'Nuevo local' : 'Editar local'">Nuevo local</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form th:object="${localForm}" method="post" th:action="@{/admin/cafe/locales}">
+                    <div class="modal-body hs-modal-fields">
+                        <input type="hidden" th:field="*{id}">
+                        <div class="hs-field">
+                            <label for="local-nombre">NOMBRE DEL LOCAL *</label>
+                            <input id="local-nombre" class="hs-admin-input" th:field="*{nombre}"
+                                   placeholder="Ej. Höség Café · Miraflores" required>
+                            <p class="hs-field-error" th:errors="*{nombre}"></p>
+                        </div>
+                        <div class="hs-field">
+                            <label for="local-direccion">DIRECCIÓN *</label>
+                            <input id="local-direccion" class="hs-admin-input" th:field="*{direccion}"
+                                   placeholder="Av. Larco 123, Miraflores" required>
+                            <p class="hs-field-error" th:errors="*{direccion}"></p>
+                        </div>
+                        <div class="hs-two-cols">
+                            <div class="hs-field">
+                                <label for="local-horario">HORARIO</label>
+                                <input id="local-horario" class="hs-admin-input" th:field="*{horario}"
+                                       placeholder="Lun–Dom 8:00 a 21:00">
+                            </div>
+                            <div class="hs-field">
+                                <label for="local-telefono">TELÉFONO</label>
+                                <input id="local-telefono" class="hs-admin-input" th:field="*{telefono}"
+                                       placeholder="987 654 321">
+                                <p class="hs-field-error" th:errors="*{telefono}"></p>
+                            </div>
+                        </div>
+                        <div class="hs-field">
+                            <label for="local-mapa">ENLACE DEL MAPA (GOOGLE MAPS)</label>
+                            <input id="local-mapa" class="hs-admin-input" th:field="*{urlMapa}"
+                                   placeholder="https://google.com...">
+                            <p class="hs-field-error" th:errors="*{urlMapa}"></p>
+                        </div>
+                        <label class="hs-check">
+                            <input type="checkbox" th:field="*{activo}">
+                            <span>Local activo y visible en la web</span>
+                        </label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="hs-admin-btn hs-admin-btn--ghost" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="hs-admin-btn hs-admin-btn--primary" type="submit">
+                            <i class="bi bi-check2" aria-hidden="true"></i> Guardar local
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</main></body></html>
+</main>
+</body>
+</html>

@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/tokens.css}">
     <link rel="stylesheet" th:href="@{/css/hoseg.css}">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/operaciones.css}">
 </head>
 <body>
 <div class="d-flex min-vh-100">
@@ -36,21 +37,64 @@
                 <li><a th:href="@{/logistica/proveedores}" th:classappend="${activa == 'proveedores'} ? 'fw-bold'">Proveedores y talleres</a></li>
             </th:block>
 
-
             <th:block sec:authorize="hasRole('GESTOR_IMPACTO')">
                 <li><a th:href="@{/gestion-impacto/lotes}" th:classappend="${activa == 'impacto'} ? 'fw-bold'">Lotes y donaciones</a></li>
             </th:block>
         </ul>
     </nav>
 
-    <!-- Botón flotante para desplegar el menú en arco en móvil -->
-    <button type="button" class="hs-admin-fab" aria-label="Abrir menú del panel" aria-expanded="false">
-        <i class="bi bi-grid" aria-hidden="true"></i>
-    </button>
-    <div class="hs-admin-fab-backdrop" hidden></div>
+    <!-- Menú radial móvil exclusivo de ADMINISTRADOR -->
+    <th:block sec:authorize="hasRole('ADMINISTRADOR')">
+        <button type="button" class="hs-admin-fab" aria-label="Abrir menú del panel" aria-expanded="false">
+            <i class="bi bi-grid" aria-hidden="true"></i>
+        </button>
+        <div class="hs-admin-fab-backdrop" hidden></div>
+    </th:block>
+
+    <!-- Cápsula glassmorphism móvil para LOGÍSTICA -->
+    <nav class="hs-op-pill d-md-none" sec:authorize="hasRole('LOGISTICA')" aria-label="Navegación logística">
+        <ul class="hs-op-pill__list">
+            <li>
+                <a class="hs-op-pill__link" th:href="@{/logistica/pedidos}" th:classappend="${activa == 'logistica'} ? 'is-active'">
+                    <i class="bi bi-truck" aria-hidden="true"></i>
+                    <span>Pedidos</span>
+                </a>
+            </li>
+            <li>
+                <a class="hs-op-pill__link" th:href="@{/logistica/inventario}" th:classappend="${activa == 'inventario'} ? 'is-active'">
+                    <i class="bi bi-box-seam" aria-hidden="true"></i>
+                    <span>Inventario</span>
+                </a>
+            </li>
+            <li>
+                <a class="hs-op-pill__link" th:href="@{/logistica/proveedores}" th:classappend="${activa == 'proveedores'} ? 'is-active'">
+                    <i class="bi bi-building" aria-hidden="true"></i>
+                    <span>Talleres</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Cápsula glassmorphism móvil para GESTOR DE IMPACTO -->
+    <nav class="hs-op-pill d-md-none" sec:authorize="hasRole('GESTOR_IMPACTO')" aria-label="Navegación impacto">
+        <ul class="hs-op-pill__list">
+            <li>
+                <a class="hs-op-pill__link" th:href="@{/gestion-impacto/lotes}" th:classappend="${activa == 'impacto'} ? 'is-active'">
+                    <i class="bi bi-heart" aria-hidden="true"></i>
+                    <span>Lotes</span>
+                </a>
+            </li>
+            <li>
+                <a class="hs-op-pill__link" th:href="@{/}" target="_blank">
+                    <i class="bi bi-shop" aria-hidden="true"></i>
+                    <span>Tienda</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
     <div class="flex-grow-1">
-               <header class="d-flex justify-content-between align-items-center gap-2 px-3 py-2 border-bottom">
+        <header class="d-flex justify-content-between align-items-center gap-2 px-3 py-2 border-bottom">
             <span class="hs-side-role-badge" sec:authorize="hasRole('ADMINISTRADOR')">Administración</span>
             <span class="hs-side-role-badge" sec:authorize="hasRole('LOGISTICA')">Logística</span>
             <span class="hs-side-role-badge" sec:authorize="hasRole('GESTOR_IMPACTO')">Impacto Social</span>
@@ -83,5 +127,8 @@
 </div>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" defer></script>
 <script th:src="@{/js/admin.js}" defer></script>
+<script th:src="@{/js/logistica.js}" defer></script>
+<script th:src="@{/js/impacto.js}" defer></script>
+
 </body>
 </html>

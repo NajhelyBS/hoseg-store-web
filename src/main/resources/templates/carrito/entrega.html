@@ -43,9 +43,17 @@
                                             <span th:text="${t.name() == 'DELIVERY'} ? 'S/ ' + ${#numbers.formatDecimal(costoDelivery, 1, 'COMMA', 2, 'POINT')} : 'Gratis'">Gratis</span>
                                         </span>
                                         <span class="hs-entrega__texto d-block" th:if="${t.name() == 'DELIVERY'}">Te lo llevamos a la dirección que indiques.</span>
-                                        <span class="hs-entrega__texto d-block" th:if="${t.name() == 'RECOJO_TIENDA'}"
-                                              th:each="l : ${localesRecojo}" th:text="${l.nombre} + ' · ' + ${l.direccion} + (${l.horario} != null ? ' · ' + ${l.horario} : '')">
-                                            Höség Café Cusco · Calle Palacio 110 int. 2</span>
+                                        <span class="hs-entrega__texto d-block" th:if="${t.name() == 'RECOJO_TIENDA'}">
+    <select class="form-select form-select-sm mt-1" th:field="*{referencia}"
+            onclick="event.stopPropagation()">
+        <option th:each="l : ${localesRecojo}"
+                th:value="'Recojo en ' + ${l.nombre} + ' (' + ${l.direccion} + ')'"
+                th:text="${l.nombre} + ' · ' + ${l.direccion}">
+            Höség Café Cusco · Calle Palacio 110
+        </option>
+    </select>
+</span>
+
                                     </span>
                                 </span>
                             </label>

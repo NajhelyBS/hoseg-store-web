@@ -3,25 +3,40 @@
   Bloque 2 · 2.1 Iniciar sesión (GET /login, AuthController; el POST lo procesa Spring Security).
   El formulario DEBE enviar los campos "email" y "password" por POST a /login (th:action añade el CSRF).
   Variantes por parámetro de la URL: ?error · ?bloqueado=5 (minutos) · ?registrado · ?restablecida
-  Modelo:
-    desdeCompra boolean: llegó desde "Confirmar compra" (aviso "tu carrito se conserva")
 -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Iniciar sesión · HÖSÉG', activa='cuenta',
-                                          transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">
+                                          transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{::script})}">
 <link rel="stylesheet" th:href="@{/css/cuenta.css}">
 <body>
 <main class="hs-main--bajo-nav">
     <th:block th:replace="~{fragments/avisos :: avisos}"/>
-    <section class="hs-cuenta">
-        <div class="hs-cuenta__contenedor">
+
+    <section class="hs-cuenta hs-cuenta--atmosferica">
+        <!-- Fondo atmosférico con foto difuminada y halos cálidos -->
+        <div class="hs-cuenta__fondo" aria-hidden="true">
+            <img th:src="@{/images/comunidad-cusco.jpg}" alt="" class="hs-cuenta__fondo-img">
+            <div class="hs-cuenta__fondo-capa"></div>
+        </div>
+
+        <div class="hs-cuenta__contenedor hs-cuenta__contenedor--glass">
+            <!-- Emblema superior de bienvenida -->
+            <div class="hs-cuenta__emblema" aria-hidden="true">
+                <i class="bi bi-person-heart"></i>
+            </div>
+
+            <p class="hs-cuenta__eyebrow text-center">COMUNIDAD HÖSÉG</p>
             <h1 class="hs-h2 hs-cuenta__titulo">Iniciar sesión</h1>
-            <p class="hs-cuenta__intro">
-                ¡Qué bueno tenerte de vuelta!
+                        <p class="hs-cuenta__intro">
+                ¡Qué bueno tenerte de vuelta!<br>
+                Accede a tus pedidos e impacto social.
             </p>
 
-            <div class="alert alert-info" th:if="${desdeCompra}">
-                Inicia sesión para confirmar; tu carrito se conserva.
+
+            <!-- Alertas dinámicas intactas -->
+            <div class="hs-cuenta__aviso hs-cuenta__aviso--compra" th:if="${desdeCompra}">
+                <i class="bi bi-bag-heart" aria-hidden="true"></i>
+                <span>Inicia sesión para confirmar; tu carrito se conserva.</span>
             </div>
             <div class="alert alert-danger" th:if="${param.error}">
                 Email o contraseña incorrectos.
@@ -37,32 +52,46 @@
                 Cambiamos tu contraseña. Inicia sesión.
             </div>
 
-            <form method="post" th:action="@{/login}">
+            <form method="post" th:action="@{/login}" class="hs-cuenta__form">
                 <label class="hs-cuenta__campo">
-                    Email
-                    <input class="hs-input" type="email" name="email"
-                           autocomplete="email" required>
+                    <span>Email</span>
+                    <div class="hs-cuenta__input-wrap">
+                        <i class="bi bi-envelope hs-cuenta__input-icono" aria-hidden="true"></i>
+                        <input class="hs-input hs-cuenta__input--icono" type="email" name="email"
+                               placeholder="tu@correo.com" autocomplete="email" required>
+                    </div>
                 </label>
 
                 <label class="hs-cuenta__campo">
-                    Contraseña
-                    <input class="hs-input" type="password" name="password"
-                           autocomplete="current-password" required>
+                    <span class="hs-cuenta__label-fila">
+                        <span>Contraseña</span>
+                        <a th:href="@{/recuperar}" class="hs-cuenta__link-olvido">¿Olvidaste tu contraseña?</a>
+                    </span>
+                    <div class="hs-cuenta__input-wrap">
+                        <i class="bi bi-lock hs-cuenta__input-icono" aria-hidden="true"></i>
+                        <input id="login-password" class="hs-input hs-cuenta__input--icono hs-cuenta__input--pass"
+                               type="password" name="password" placeholder="••••••••"
+                               autocomplete="current-password" required>
+                        <button type="button" class="hs-cuenta__ojo" data-toggle-pass="login-password"
+                                aria-label="Mostrar u ocultar contraseña">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </label>
 
-                <button class="hs-btn hs-btn--primario hs-cuenta__boton mt-3"
-                        type="submit">
-                    Ingresar
+                <button class="hs-btn hs-btn--primario hs-cuenta__boton mt-4" type="submit">
+                    <span>Ingresar a mi cuenta</span>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </button>
             </form>
 
-            <p class="hs-cuenta__enlaces">
-                <a th:href="@{/recuperar}">¿Olvidaste tu contraseña?</a>
-                <span aria-hidden="true"> · </span>
-                <a th:href="@{/registro}">Crear cuenta</a>
-            </p>
+            <div class="hs-cuenta__pie">
+                <span>¿Aún no eres parte de HÖSÉG?</span>
+                <a th:href="@{/registro}" class="hs-cuenta__cta-registro">Crear cuenta</a>
+            </div>
         </div>
     </section>
 </main>
+<script th:src="@{/js/cuenta.js}" defer></script>
 </body>
 </html>

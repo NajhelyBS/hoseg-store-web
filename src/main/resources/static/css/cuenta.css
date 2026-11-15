@@ -746,3 +746,751 @@
         grid-template-columns: minmax(0, 1fr);
     }
 }
+
+
+/* =====================================================================
+   Auth Atmosférico + Glassmorphism Luminoso (Login / Registro / Recuperar)
+   ===================================================================== */
+
+@keyframes hsCuentaEntrada {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.hs-cuenta--atmosferica {
+    position: relative;
+    min-height: calc(100vh - 80px);
+    display: grid;
+    place-items: center;
+    padding: 2.5rem 1rem 4rem;
+    overflow: hidden;
+}
+
+.hs-cuenta__fondo {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hs-cuenta__fondo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(6px) saturate(1.1);
+    transform: scale(1.04);
+    opacity: 0.58;
+}
+
+.hs-cuenta__fondo-capa {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 18% 20%, var(--hs-terracotta-light) 0%, transparent 52%),
+        radial-gradient(circle at 85% 80%, var(--hs-sage-light) 0%, transparent 55%),
+        linear-gradient(180deg, var(--hs-cream) 0%, var(--hs-cream-dark) 100%);
+    opacity: 0.65;
+}
+
+.hs-cuenta__contenedor--glass {
+    position: relative;
+    z-index: 1;
+    background: color-mix(in srgb, var(--hs-card) 82%, transparent);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--hs-card);
+    box-shadow: var(--hs-shadow-card-hover);
+    animation: hsCuentaEntrada 0.55s var(--hs-ease) both;
+}
+
+.hs-cuenta__emblema {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: var(--hs-terracotta-light);
+    border: 1px solid var(--hs-badge-abrigo-borde);
+    color: var(--hs-terracotta);
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+    box-shadow: var(--hs-shadow-card-reposo);
+}
+
+.hs-cuenta__aviso--compra {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.25rem;
+    border-radius: 0.85rem;
+    background: var(--hs-terracotta-light);
+    border: 1px solid var(--hs-badge-abrigo-borde);
+    color: var(--hs-bark);
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.hs-cuenta__aviso--compra i {
+    color: var(--hs-terracotta);
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.hs-cuenta__label-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.hs-cuenta__link-olvido {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--hs-terracotta);
+    text-decoration: none;
+}
+
+.hs-cuenta__link-olvido:hover {
+    text-decoration: underline;
+}
+
+.hs-cuenta__input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-top: 0.4rem;
+}
+
+.hs-cuenta__input-wrap .hs-input {
+    margin-top: 0;
+}
+
+.hs-cuenta__input-icono {
+    position: absolute;
+    left: 14px;
+    color: var(--hs-muted);
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.hs-input.hs-cuenta__input--icono {
+    padding-left: 40px;
+}
+
+.hs-input.hs-cuenta__input--pass {
+    padding-right: 42px;
+}
+
+.hs-cuenta__ojo {
+    position: absolute;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--hs-muted);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: color var(--hs-t-fast), background var(--hs-t-fast);
+}
+
+.hs-cuenta__ojo:hover {
+    color: var(--hs-bark);
+    background: var(--hs-cream-dark);
+}
+
+.hs-cuenta__pie {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--hs-cream-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: var(--hs-muted);
+}
+
+.hs-cuenta__cta-registro {
+    font-weight: 700;
+    color: var(--hs-terracotta);
+    text-decoration: none;
+}
+
+.hs-cuenta__cta-registro:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .hs-cuenta--atmosferica {
+        padding: 1.25rem 0.75rem 5.5rem;
+    }
+    .hs-cuenta__input-wrap .hs-input {
+        font-size: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hs-cuenta__contenedor--glass {
+        animation: none;
+    }
+}
+
+/* =====================================================================
+   Registro de Cliente · Grilla de 2 columnas en Desktop + Responsivo
+   ===================================================================== */
+
+.hs-cuenta__contenedor--registro-ancho {
+    width: min(calc(100% - 2rem), 52rem);
+    padding: 2.25rem 2.5rem;
+}
+
+.hs-cuenta__subtitulo {
+    color: var(--hs-bark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hs-cuenta__subtitulo i {
+    color: var(--hs-terracotta);
+}
+
+.hs-cuenta__grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem 1.25rem;
+    margin-top: 0.75rem;
+}
+
+.hs-cuenta__grid-2 .hs-cuenta__campo {
+    margin-top: 0;
+}
+
+.hs-cuenta__campo--full {
+    grid-column: 1 / -1;
+}
+
+.hs-cuenta__grid-2 .form-select {
+    min-height: 44px;
+    border-radius: 0.75rem;
+    border: 1px solid var(--hs-sand);
+    background-color: var(--hs-card);
+    color: var(--hs-bark);
+    font-size: 0.95rem;
+}
+
+.hs-cuenta__grid-2 .form-select:focus {
+    border-color: var(--hs-terracotta);
+    box-shadow: 0 0 0 3px var(--hs-terracotta-light);
+}
+
+.hs-cuenta__terminos--card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 1.5rem;
+    padding: 0.9rem 1rem;
+    border-radius: 0.85rem;
+    background: var(--hs-cream);
+    border: 1px solid var(--hs-sand);
+    font-size: 0.9rem;
+}
+
+.hs-cuenta__terminos--card input[type="checkbox"] {
+    margin-top: 0.25rem;
+    margin-right: 0;
+    accent-color: var(--hs-terracotta);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 680px) {
+    .hs-cuenta__contenedor--registro-ancho {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .hs-cuenta__grid-2 {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+    }
+
+    .hs-cuenta__grid-2 .form-select {
+        font-size: 16px;
+    }
+}
+
+
+/* =====================================================================
+   Recuperar / Restablecer · Estado de éxito animado y caja de consejo
+   ===================================================================== */
+
+@keyframes hsPopExito {
+    0% {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    70% {
+        transform: scale(1.08);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.hs-cuenta__exito {
+    animation: hsCuentaEntrada 0.45s var(--hs-ease) both;
+}
+
+.hs-cuenta__emblema--exito {
+    background: var(--hs-sage-light);
+    border-color: var(--hs-badge-arbol-borde);
+    color: var(--hs-sage);
+    animation: hsPopExito 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hs-cuenta__tip-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0.9rem 1rem;
+    border-radius: 0.85rem;
+    background: var(--hs-cream);
+    border: 1px solid var(--hs-sand);
+    color: var(--hs-muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.hs-cuenta__tip-box i {
+    color: var(--hs-sage);
+    font-size: 1.1rem;
+    margin-top: 1px;
+    flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hs-cuenta__exito,
+    .hs-cuenta__emblema--exito {
+        animation: none;
+    }
+}
+
+/* Emblema ámbar de enlace vencido e indicador de coincidencia de clave */
+.hs-cuenta__emblema--alerta {
+    background: var(--hs-amber-light);
+    border-color: var(--hs-badge-abrigo-borde);
+    color: var(--hs-terracotta);
+    animation: hsPopExito 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hs-cuenta__match {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0.75rem 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--hs-sage);
+}
+
+.hs-cuenta__match[hidden] {
+    display: none;
+}
+
+/* =====================================================================
+   Panel Mi Cuenta · Cabecera cálida, Tarjetas de Impacto y Acordeón
+   ===================================================================== */
+
+.hs-cuenta__hero-card {
+    max-width: 100%;
+    padding: 2.25rem 1.5rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--hs-sand);
+    background:
+        radial-gradient(circle at 15% 20%, var(--hs-terracotta-light) 0%, transparent 50%),
+        radial-gradient(circle at 85% 80%, var(--hs-sage-light) 0%, transparent 55%),
+        var(--hs-card);
+    box-shadow: var(--hs-shadow-card-reposo);
+    animation: hsCuentaEntrada 0.5s var(--hs-ease) both;
+}
+
+.hs-cuenta__avatar-grande {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 0.9rem;
+    border-radius: 50%;
+    background: var(--hs-terracotta);
+    color: var(--hs-sobre-acento);
+    font-family: var(--hs-font-display);
+    font-size: 24px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    box-shadow: var(--hs-shadow-card);
+}
+
+.hs-cuenta__pestanas a {
+    background: var(--hs-card);
+    border: 1px solid var(--hs-sand);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.hs-cuenta__pestanas a.is-activa {
+    border-color: var(--hs-terracotta);
+}
+
+/* Tarjetas de Impacto Social con acentos diferenciados */
+.hs-cuenta__impacto {
+    opacity: 0;
+    animation: hsCuentaEntrada 0.5s var(--hs-ease) forwards;
+    transition: transform var(--hs-t-fast), box-shadow var(--hs-t-fast);
+}
+
+.hs-cuenta__impacto:nth-child(1) { animation-delay: 0.08s; }
+.hs-cuenta__impacto:nth-child(2) { animation-delay: 0.16s; }
+.hs-cuenta__impacto:nth-child(3) { animation-delay: 0.24s; }
+
+.hs-cuenta__impacto:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--hs-shadow-card);
+}
+
+.hs-cuenta__impacto-cifra {
+    font-family: var(--hs-font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--hs-bark);
+    margin: 0.25rem 0 0.35rem;
+}
+
+.hs-cuenta__impacto-sub {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--hs-muted);
+}
+
+.hs-cuenta__impacto--entregado {
+    background: var(--hs-sage-light);
+    border-color: var(--hs-badge-arbol-borde);
+}
+.hs-cuenta__impacto--entregado .hs-cuenta__impacto-icono {
+    background: var(--hs-card);
+    color: var(--hs-sage);
+}
+.hs-cuenta__impacto--entregado .hs-cuenta__impacto-cifra {
+    color: var(--hs-sage);
+}
+
+.hs-cuenta__impacto--espera .hs-cuenta__impacto-icono {
+    background: var(--hs-amber-light);
+    color: var(--hs-terracotta);
+}
+
+/* Tarjetas de Pedidos con hover suave */
+.hs-cuenta__pedido {
+    transition: transform var(--hs-t-fast), box-shadow var(--hs-t-fast), border-color var(--hs-t-fast);
+}
+
+.hs-cuenta__pedido:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--hs-shadow-card);
+    border-color: var(--hs-terracotta);
+}
+
+.hs-cuenta__aporte-texto {
+    color: var(--hs-sage);
+}
+
+.hs-cuenta__pedido-enlace {
+    color: var(--hs-terracotta);
+}
+
+/* Layout de Mis Datos + Acordeón desplegable de contraseña */
+.hs-cuenta__datos-layout {
+    max-width: 46rem;
+    margin-inline: auto;
+    display: grid;
+    gap: 1.25rem;
+}
+
+.hs-cuenta__acordeon {
+    padding: 0;
+    overflow: hidden;
+}
+
+.hs-cuenta__acordeon-resumen {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.35rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--hs-t-fast);
+}
+
+.hs-cuenta__acordeon-resumen::-webkit-details-marker {
+    display: none;
+}
+
+.hs-cuenta__acordeon-resumen:hover {
+    background: var(--hs-cream);
+}
+
+.hs-cuenta__acordeon-titulo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.hs-cuenta__acordeon-icono {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--hs-terracotta-light);
+    color: var(--hs-terracotta);
+    display: grid;
+    place-items: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.hs-cuenta__acordeon-flecha {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--hs-cream);
+    border: 1px solid var(--hs-sand);
+    color: var(--hs-bark);
+    display: grid;
+    place-items: center;
+    transition: transform var(--hs-t-fast);
+}
+
+.hs-cuenta__acordeon[open] .hs-cuenta__acordeon-flecha {
+    transform: rotate(180deg);
+}
+
+.hs-cuenta__acordeon-cuerpo {
+    padding: 0.25rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--hs-cream-dark);
+    animation: hsCuentaEntrada 0.3s var(--hs-ease) both;
+}
+
+@media (max-width: 640px) {
+    .hs-cuenta__hero-card {
+        padding: 1.75rem 1rem;
+    }
+    .hs-cuenta__acordeon-resumen {
+        padding: 1.1rem 1.25rem;
+    }
+    .hs-cuenta__acordeon-cuerpo {
+        padding: 0.25rem 1.25rem 1.25rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hs-cuenta__hero-card,
+    .hs-cuenta__impacto,
+    .hs-cuenta__acordeon-cuerpo {
+        animation: none;
+        opacity: 1;
+    }
+}
+
+
+/* Transición suave entre pestañas de Mi Cuenta */
+.hs-cuenta__contenido-tab {
+    animation: hsCuentaEntrada 0.4s var(--hs-ease) both;
+    transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.hs-cuenta__contenido-tab.is-leaving {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+
+/* =====================================================================
+   Detalle de Pedido · Acentos salvia, botón copiar y tarjeta cálida
+   ===================================================================== */
+
+.hs-detalle__volver {
+    color: var(--hs-terracotta);
+    font-weight: 600;
+}
+
+.hs-detalle__resenar {
+    color: var(--hs-terracotta);
+}
+
+.hs-detalle__direccion {
+    background: var(--hs-cream);
+    border: 1px solid var(--hs-sand);
+}
+
+.hs-detalle__direccion-icono {
+    color: var(--hs-terracotta);
+}
+
+.hs-detalle__impacto-cabecera--sage {
+    background: var(--hs-sage-light);
+    border: 1px solid var(--hs-badge-arbol-borde);
+}
+
+.hs-detalle__donacion-icono {
+    background: var(--hs-sage-light);
+    color: var(--hs-sage);
+}
+
+.hs-detalle__mensaje--calido {
+    background: var(--hs-cream);
+}
+
+.hs-detalle__mensaje--calido > span {
+    background: var(--hs-terracotta-light);
+    color: var(--hs-terracotta);
+}
+
+.hs-detalle__copiar-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--hs-sand);
+    background: var(--hs-cream);
+    color: var(--hs-bark);
+    display: inline-grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background var(--hs-t-fast), color var(--hs-t-fast);
+}
+
+.hs-detalle__copiar-btn:hover {
+    background: var(--hs-terracotta);
+    border-color: var(--hs-terracotta);
+    color: var(--hs-sobre-acento);
+}
+
+/* =====================================================================
+   Arreglo Sticky Lateral + Línea de Tiempo de Impacto (PC y Móvil)
+   ===================================================================== */
+
+/* 1. Evitar que "Resumen del pedido" tape "Gracias por ser parte" al hacer scroll */
+.hs-detalle__resumen {
+    position: static !important;
+}
+
+@media (min-width: 901px) {
+    .hs-detalle__lateral {
+        position: sticky;
+        top: 6rem;
+    }
+}
+
+/* 2. Línea de tiempo visual de 4 pasos (Registrado → Asignado → En ruta → Entregado) */
+.hs-detalle__donacion .hs-linea-tiempo {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    position: relative;
+}
+
+.hs-detalle__donacion .hs-linea-tiempo li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--hs-muted);
+}
+
+/* Línea horizontal conectora entre pasos */
+.hs-detalle__donacion .hs-linea-tiempo li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: calc(50% + 14px);
+    width: calc(100% - 28px);
+    height: 2px;
+    background: var(--hs-sand);
+    z-index: 0;
+}
+
+.hs-detalle__donacion .hs-linea-tiempo li.is-hecho:not(:last-child)::after {
+    background: var(--hs-sage);
+}
+
+/* Círculo indicador de cada paso */
+.hs-detalle__donacion .hs-linea-tiempo li::before {
+    content: "";
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--hs-card);
+    border: 2px solid var(--hs-sand);
+    display: grid;
+    place-items: center;
+    font-family: "bootstrap-icons";
+    font-size: 13px;
+    color: var(--hs-card);
+    position: relative;
+    z-index: 1;
+    transition: background var(--hs-t-fast), border-color var(--hs-t-fast);
+}
+
+.hs-detalle__donacion .hs-linea-tiempo li.is-hecho {
+    color: var(--hs-bark);
+    font-weight: 700;
+}
+
+.hs-detalle__donacion .hs-linea-tiempo li.is-hecho::before {
+    content: "\F26E"; /* bi-check */
+    background: var(--hs-sage);
+    border-color: var(--hs-sage);
+}
+
+.hs-detalle__donacion .hs-linea-tiempo li span {
+    line-height: 1.2;
+    word-break: break-word;
+}
+
+/* Ajuste limpio en pantallas de celular pequeñas */
+@media (max-width: 480px) {
+    .hs-detalle__donacion .hs-linea-tiempo li {
+        font-size: 10.5px;
+        gap: 6px;
+    }
+
+    .hs-detalle__donacion .hs-linea-tiempo li::before {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+    }
+
+    .hs-detalle__donacion .hs-linea-tiempo li:not(:last-child)::after {
+        top: 10px;
+        left: calc(50% + 11px);
+        width: calc(100% - 22px);
+    }
+}
