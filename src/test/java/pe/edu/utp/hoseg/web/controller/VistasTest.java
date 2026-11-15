@@ -20,7 +20,9 @@ import pe.edu.utp.hoseg.web.model.RolUsuario;
 import pe.edu.utp.hoseg.web.model.TipoCompromiso;
 import pe.edu.utp.hoseg.web.model.TipoEnvio;
 import pe.edu.utp.hoseg.web.service.*;
+import pe.edu.utp.hoseg.web.service.BoletaPdfService;
 import pe.edu.utp.hoseg.web.service.LogisticaService;
+import pe.edu.utp.hoseg.web.config.JwtTokenProvider;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -86,6 +88,10 @@ class VistasTest {
     @MockitoBean private PanelAdminService panelAdminService;
     @MockitoBean private LogisticaService logisticaService;
     @MockitoBean private GestorImpactoService gestorImpactoService;
+    @MockitoBean private BoletaPdfService boletaPdfService;
+    @MockitoBean private JwtTokenProvider jwtTokenProvider;
+
+
 
     // ---------- Bloque 1 ----------
 
