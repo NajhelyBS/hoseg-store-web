@@ -8,9 +8,10 @@
     tiposDocumento TipoDocumento[] (DNI, CE, PASAPORTE, RUC; etiqueta)
   Éxito: redirige a /login?registrado.
 -->
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
+<html lang="es" xmlns:th="http://thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Crear cuenta · HÖSÉG', activa='cuenta',
-                                          transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">
+                                          transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{::script})}">
+
 <link rel="stylesheet" th:href="@{/css/cuenta.css}">
 <body>
 <main class="hs-main--bajo-nav">

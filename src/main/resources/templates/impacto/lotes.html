@@ -11,17 +11,8 @@
         </div>
     </div>
 
-    <div class="alert alert-success d-flex align-items-center mb-3" role="alert" th:if="${exito}">
-        <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>
-        <span th:text="${exito}">Operación realizada.</span>
-    </div>
-    <div class="alert alert-danger d-flex align-items-center mb-3" role="alert" th:if="${error}">
-        <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
-        <span th:text="${error}">Error.</span>
-    </div>
-
     <div class="row g-4 mb-4">
-        <!-- Crear nuevo lote -->
+        <!-- 1. Crear nuevo lote -->
         <div class="col-12 col-lg-5">
             <section class="hs-admin-card h-100">
                 <div class="hs-card-head">
@@ -35,8 +26,7 @@
                         <label class="hs-label" for="idComunidad">Comunidad destino</label>
                         <select class="hs-admin-input w-100" id="idComunidad" name="idComunidad" required>
                             <option value="">Selecciona una comunidad...</option>
-                            <option th:each="c : ${comunidades}" th:value="${c.id}"
-                                    th:text="${c.nombre + (c.region != null ? ' (' + c.region + ')' : '')}">Ccatca (Cusco)</option>
+                            <option th:each="c : ${comunidades}" th:value="${c.id}" th:text="${c.nombre}">Ccatca</option>
                         </select>
                     </div>
                     <div>
@@ -58,7 +48,7 @@
             </section>
         </div>
 
-        <!-- Donaciones pendientes de asignar -->
+        <!-- 2. Donaciones pendientes de asignar -->
         <div class="col-12 col-lg-7">
             <section class="hs-admin-card h-100">
                 <div class="hs-card-head">
@@ -69,14 +59,13 @@
                 </div>
 
                 <form th:if="${!pendientes.isEmpty()}" method="post" id="formAsignarLote"
-                      th:action="@{/gestion-impacto/lotes/0/asignar}"
-                      onsubmit="const id = document.getElementById('selectLoteDestino').value; if(!id){alert('Elige un lote destino.'); return false;} this.action = this.action.replace('/0/', '/' + id + '/');">
+                      th:action="@{/gestion-impacto/lotes/0/asignar}">
                     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
                         <select id="selectLoteDestino" class="hs-admin-input flex-grow-1" required>
                             <option value="">Elige lote destino...</option>
                             <option th:each="l : ${lotes}" th:if="${l.estado.name() != 'ENTREGADO'}"
                                     th:value="${l.id}"
-                                    th:text="${l.codigoLote + ' · ' + l.comunidad.nombre + ' (' + l.estado.etiqueta + ')'}">
+                                    th:text="${l.codigoLote + ' · ' + l.comunidad.nombre}">
                                 LOTE-2026-1001 · Ccatca
                             </option>
                         </select>
@@ -89,7 +78,7 @@
                         <table class="hs-admin-table">
                             <thead>
                             <tr>
-                                <th style="width: 36px;"><input type="checkbox" onclick="document.querySelectorAll('.chk-don').forEach(c => c.checked = this.checked)"></th>
+                                <th style="width: 36px;"><input type="checkbox" id="chkAllDon"></th>
                                 <th>Boleta</th>
                                 <th>Compromiso</th>
                                 <th>Prenda origen</th>
@@ -116,6 +105,7 @@
             </section>
         </div>
     </div>
+
     <!-- 3. Gestión de lotes -->
     <section class="hs-admin-card">
         <div class="hs-card-head">
@@ -148,7 +138,7 @@
                     <td>
                         <span class="badge"
                               th:classappend="${l.estado.name() == 'ENTREGADO'} ? 'bg-success' : (${l.estado.name() == 'EN_RUTA'} ? 'bg-primary' : 'bg-warning text-dark')"
-                              th:text="${l.estado.etiqueta}">Pendiente</span>
+                              th:text="${l.estado.name()}">PENDIENTE</span>
                     </td>
                     <td>
                         <div class="d-flex flex-wrap gap-2">
@@ -179,6 +169,28 @@
             </table>
         </div>
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chkAll = document.getElementById('chkAllDon');
+            if (chkAll) {
+                chkAll.addEventListener('change', () => {
+                    document.querySelectorAll('.chk-don').forEach(c => c.checked = chkAll.checked);
+                });
+            }
+            const formAsignar = document.getElementById('formAsignarLote');
+            if (formAsignar) {
+                formAsignar.addEventListener('submit', (e) => {
+                    const id = document.getElementById('selectLoteDestino').value;
+                    if (!id) {
+                        e.preventDefault();
+                        alert('Elige un lote destino.');
+                        return;
+                    }
+                    formAsignar.action = formAsignar.action.replace('/0/', '/' + id + '/');
+                });
+            }
+        });
+    </script>
 </main>
 </body>
-</html>

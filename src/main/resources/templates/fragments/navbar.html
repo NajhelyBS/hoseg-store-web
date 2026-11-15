@@ -39,6 +39,15 @@
                 <i class="bi bi-speedometer2 hs-icono" aria-hidden="true"></i>
                 <span class="d-none d-lg-inline">Panel</span>
             </a>
+                        <a class="hs-nav__cuenta d-none d-md-inline-flex" th:href="@{/logistica/pedidos}" sec:authorize="hasRole('LOGISTICA')">
+                <i class="bi bi-truck hs-icono" aria-hidden="true"></i>
+                <span class="d-none d-lg-inline">Logística</span>
+            </a>
+            <a class="hs-nav__cuenta d-none d-md-inline-flex" th:href="@{/gestion-impacto/lotes}" sec:authorize="hasRole('GESTOR_IMPACTO')">
+                <i class="bi bi-heart hs-icono" aria-hidden="true"></i>
+                <span class="d-none d-lg-inline">Impacto</span>
+            </a>
+
             <!-- Cliente: inicial de su nombre y menú con su cuenta y la salida -->
             <div class="dropdown d-none d-md-block" sec:authorize="hasRole('CLIENTE')">
                 <button class="hs-nav__cuenta hs-nav__usuario" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -83,12 +92,28 @@
                 </button>
                 <ul th:replace="~{fragments/navbar :: menuCuenta}"></ul>
             </th:block>
-            <!-- Personal del panel: el panel; visitante: el login -->
-            <a class="hs-pill__item" th:classappend="${activa == 'cuenta'} ? 'is-active'" sec:authorize="!hasRole('CLIENTE')"
-               th:href="${#authorization.expression('hasRole(''ADMINISTRADOR'')')} ? @{/admin/panel} : @{/login}" data-seccion="cuenta">
+                        <!-- Personal del panel: su panel; visitante: el login -->
+            <a class="hs-pill__item" th:classappend="${activa == 'cuenta'} ? 'is-active'" sec:authorize="hasRole('ADMINISTRADOR')"
+               th:href="@{/admin/panel}" data-seccion="cuenta">
+                <i class="bi bi-speedometer2 hs-icono" aria-hidden="true"></i>
+                <span>Panel</span>
+            </a>
+            <a class="hs-pill__item" th:classappend="${activa == 'cuenta'} ? 'is-active'" sec:authorize="hasRole('LOGISTICA')"
+               th:href="@{/logistica/pedidos}" data-seccion="cuenta">
+                <i class="bi bi-truck hs-icono" aria-hidden="true"></i>
+                <span>Panel</span>
+            </a>
+            <a class="hs-pill__item" th:classappend="${activa == 'cuenta'} ? 'is-active'" sec:authorize="hasRole('GESTOR_IMPACTO')"
+               th:href="@{/gestion-impacto/lotes}" data-seccion="cuenta">
+                <i class="bi bi-heart hs-icono" aria-hidden="true"></i>
+                <span>Panel</span>
+            </a>
+            <a class="hs-pill__item" th:classappend="${activa == 'cuenta'} ? 'is-active'" sec:authorize="isAnonymous()"
+               th:href="@{/login}" data-seccion="cuenta">
                 <i class="bi bi-person hs-icono" aria-hidden="true"></i>
                 <span>Cuenta</span>
             </a>
+
         </div>
     </nav>
 </th:block>
