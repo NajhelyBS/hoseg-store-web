@@ -10,7 +10,6 @@
 
   document.addEventListener('DOMContentLoaded', () => {
    
-   
         // Filtro visual y paginación de Pedidos web en Panel (10 por página)
     const filtros = [...document.querySelectorAll('[data-order-filter]')];
     const pedidos = [...document.querySelectorAll('[data-order-status]')];

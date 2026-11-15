@@ -33,17 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Dos inicios de sesión independientes:
- * <ul>
- *   <li>Paneles internos ({@code /admin/**}, {@code /logistica/**}, {@code /gestion-impacto/**}):
- *       personal de la tabla usuario (SHA-256 + salt), redirigido según su rol.</li>
- *   <li>Resto del portal: clientes (BCrypt). El catálogo, la Home, la consulta
- *       de impacto, el Café, las páginas institucionales y los formularios
- *       públicos no exigen sesión; comprar, pagar, la cuenta y reseñar, sí.</li>
- * </ul>
- * En ambos, 3 intentos fallidos bloquean 5 minutos (BloqueoAccesoService).
- */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -73,7 +63,8 @@ public class SecurityConfig {
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/admin/logout")
-                        .logoutSuccessUrl("/admin/login?salir"));
+                        .logoutSuccessUrl("/admin/login?salir")
+                        .permitAll());
         return http.build();
     }
 

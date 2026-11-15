@@ -46,6 +46,11 @@
                 <i class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i>
             </p>
 
+            <p class="hs-aviso-deslizar d-md-none px-3 pt-2 mb-1">
+    <span>Desliza la tabla para ver más</span>
+    <i class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i>
+</p>
+
             <div class="hs-table-scroll">
                 <table class="hs-admin-table">
                     <thead>
@@ -59,10 +64,12 @@
                             <th scope="col">Reposición</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr th:each="p : ${productos}" class="hs-inv-row"
-                            th:attr="data-critico=${p.stockComercial <= p.stockMinimo}">
-                            <td><span class="hs-code-pill" th:text="${p.codigo}">HSG-001</span></td>
+                                    <tbody>
+                <tr th:each="p : ${productos}" class="hs-inv-row"
+                    th:classappend="${p.stockComercial <= p.stockMinimo} ? 'is-critico'"
+                    th:attr="data-critico=${p.stockComercial <= p.stockMinimo}">
+                    <td><span class="hs-code-pill" th:text="${p.codigo}">HSG-001</span></td>
+
                             <td>
                                 <strong th:text="${p.nombre}">Casaca</strong>
                                 <span class="hs-table-sub" th:text="${p.categoria}">Categoría</span>
@@ -70,7 +77,7 @@
                             <td><span class="hs-talla-badge" th:text="${p.tallaMostrada}">M</span></td>
                             <td>
                                 <span class="hs-op-badge"
-                                    th:classappend="${p.stockComercial <= p.stockMinimo} ? 'hs-op-badge--ruta' : 'hs-op-badge--ok'">
+                                    th:classappend="${p.stockComercial <= p.stockMinimo} ? 'hs-op-badge--critico' : 'hs-op-badge--ok'">
                                     <i class="bi"
                                         th:classappend="${p.stockComercial <= p.stockMinimo} ? 'bi-exclamation-circle' : 'bi-check-circle'"></i>
                                     <span th:text="${p.stockComercial} + ' u.'">10 u.</span>
@@ -208,7 +215,32 @@
                 </div>
             </div>
         </div>
+
+
+            <aside th:if="${productosCriticos != null and !productosCriticos.isEmpty()}"
+           class="hs-stock-toast" id="toastStockCritico" role="alert" hidden>
+        <div class="hs-stock-toast__head">
+            <span><i class="bi bi-exclamation-triangle-fill me-1"></i>
+                <strong th:text="${#lists.size(productosCriticos)} + ' producto(s) en stock bajo'">2 en stock bajo</strong>
+            </span>
+            <button type="button" class="btn-close btn-sm" id="btnCerrarStockToast" aria-label="Cerrar aviso"></button>
+        </div>
+        <ul class="hs-stock-toast__list">
+            <li th:each="pc, stat : ${productosCriticos}" th:if="${stat.index < 4}">
+                <span th:text="${pc.nombre + ' (' + pc.tallaMostrada + ')'}">Chompa (M)</span>
+                <strong th:text="${pc.stockComercial} + ' u.'">2 u.</strong>
+            </li>
+        </ul>
+        <button type="button" id="btnVerSoloCriticos"
+                class="hs-admin-btn hs-admin-btn--primary w-100 justify-content-center mt-2">
+            <i class="bi bi-funnel me-1"></i> Filtrar stock crítico
+        </button>
+    </aside>
+
     </main>
+
+
+
 </body>
 
 </html>

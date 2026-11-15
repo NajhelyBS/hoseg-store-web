@@ -31,7 +31,8 @@ import java.time.format.DateTimeFormatter;
 @Transactional(readOnly = true)
 public class BoletaPdfService {
 
-    private static final DateTimeFormatter FECHA_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+private static final DateTimeFormatter FECHA_FMT =
+    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(java.time.ZoneId.of("America/Lima"));
 
     private final VentaRepository ventaRepository;
     private final EnvioRepository envioRepository;
@@ -179,7 +180,7 @@ public class BoletaPdfService {
                 cs.beginText();
                 cs.setFont(fontBold, 10);
                 cs.newLineAtOffset(195, yQr + 85);
-                cs.showText("TRAZABILIDAD DE IMPACTO SOCIAL (QR JWT)");
+                cs.showText("TRAZABILIDAD DE IMPACTO SOCIAL");
                 cs.endText();
 
                 cs.beginText();

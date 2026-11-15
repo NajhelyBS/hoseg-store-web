@@ -75,6 +75,49 @@
             </a>
         </article>
     </div>
+
+    <!-- Tablero Gráfico Ejecutivo (CEO · CFO · COO · CRO) -->
+    <section class="row g-3 mb-4" aria-label="Analítica gerencial">
+        <div class="col-12 col-lg-5">
+            <article class="hs-admin-card h-100 p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <p class="hs-eyebrow mb-1">CEO &amp; CRO · INGRESOS</p>
+                        <h2 class="h5 mb-0">Ventas por fecha</h2>
+                    </div>
+                    <div class="text-end">
+                        <span class="hs-metric-label d-block">Ticket promedio</span>
+                        <strong id="kpi-ticket-promedio" class="hs-metric-money">S/ 0.00</strong>
+                    </div>
+                </div>
+                <div style="height: 210px;">
+                    <canvas id="chartVentasFecha"></canvas>
+                </div>
+            </article>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+            <article class="hs-admin-card h-100 p-3">
+                <p class="hs-eyebrow mb-1">CFO · FLUJO</p>
+                <h2 class="h5 mb-2">Estado de pedidos</h2>
+                <div style="height: 210px;">
+                    <canvas id="chartEstadosPedidos"></canvas>
+                </div>
+            </article>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+            <article class="hs-admin-card h-100 p-3">
+                <p class="hs-eyebrow mb-1">COO · OPERACIONES</p>
+                <h2 class="h5 mb-2">Entregas y modalidad</h2>
+                <div style="height: 210px;">
+                    <canvas id="chartOperacionEnvios"></canvas>
+                </div>
+            </article>
+        </div>
+    </section>
+
+
     <!-- Tabla de pedidos del periodo -->
     <section class="hs-admin-card hs-order-card" aria-labelledby="titulo-pedidos">
         <div class="hs-card-head hs-card-head--wrap">

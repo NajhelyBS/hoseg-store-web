@@ -3368,43 +3368,6 @@ body:has(.hs-admin-page)>.d-flex.min-vh-100>nav[aria-label="Panel"] ul a[href$="
     animation: hsSubirSuave .45s ease-out both;
 }
 
-.hs-role-pills {
-    display: flex;
-    gap: .4rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.1rem;
-}
-
-.hs-role-pill {
-    flex: 1 1 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: .35rem;
-    padding: .45rem .65rem;
-    border-radius: 999px;
-    border: 1px solid rgba(44, 34, 30, .15);
-    background: rgba(255, 255, 255, .7);
-    color: #2c221e;
-    font-size: .78rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all .2s ease;
-}
-
-.hs-role-pill:hover {
-    border-color: #b4532a;
-    color: #b4532a;
-    transform: translateY(-1px);
-}
-
-.hs-role-pill.is-active {
-    background: #2c221e;
-    color: #fff;
-    border-color: #2c221e;
-}
-
-
 .hs-side-role-badge {
     display: inline-block;
     font-size: .68rem;

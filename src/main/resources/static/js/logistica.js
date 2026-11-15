@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Helper reutilizable de paginación en cliente
     function crearPaginador({ filasSelector, wrapId, infoId, numId, prevId, nextId, porPagina = 10, filtroFn = () => true }) {
         const todas = Array.from(document.querySelectorAll(filasSelector));
         const wrap = document.getElementById(wrapId);
@@ -97,5 +96,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+    }
+
+    // 4. Aviso flotante de stock crítico en Inventario (una vez por sesión)
+    const toastStock = document.getElementById('toastStockCritico');
+    if (toastStock) {
+        if (!sessionStorage.getItem('hs_stock_toast_visto')) {
+            toastStock.hidden = false;
+            sessionStorage.setItem('hs_stock_toast_visto', '1');
+        }
+        const btnCerrar = document.getElementById('btnCerrarStockToast');
+        if (btnCerrar) btnCerrar.addEventListener('click', () => toastStock.remove());
+
+        const btnFiltrar = document.getElementById('btnVerSoloCriticos');
+        if (btnFiltrar) {
+            btnFiltrar.addEventListener('click', () => {
+                const tabCritico = document.querySelector('[data-inv-filter="CRITICO"]');
+                if (tabCritico) tabCritico.click();
+                toastStock.remove();
+            });
+        }
     }
 });

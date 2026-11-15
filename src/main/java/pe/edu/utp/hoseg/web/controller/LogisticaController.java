@@ -28,13 +28,19 @@ public class LogisticaController {
         this.logisticaService = logisticaService;
     }
 
-    @GetMapping("/pedidos")
+       @GetMapping("/pedidos")
     public String pedidos(@RequestParam(defaultValue = "DELIVERY") String tab, Model model) {
         TipoEnvio tipoActivo = "RECOJO".equalsIgnoreCase(tab) ? TipoEnvio.RECOJO_TIENDA : TipoEnvio.DELIVERY;
+        List<Producto> criticos = logisticaService.inventarioActivo().stream()
+                .filter(p -> p.getStockComercial() <= p.getStockMinimo())
+                .sorted(java.util.Comparator.comparingInt(Producto::getStockComercial))
+                .toList();
         model.addAttribute("tab", tipoActivo == TipoEnvio.RECOJO_TIENDA ? "RECOJO" : "DELIVERY");
         model.addAttribute("pedidos", logisticaService.pedidosPagadosPorTipo(tipoActivo));
+        model.addAttribute("productosCriticos", criticos);
         return "logistica/pedidos";
     }
+
 
     @PostMapping("/pedidos/{id}/estado")
     public String cambiarEstado(@PathVariable Integer id,
@@ -52,14 +58,20 @@ public class LogisticaController {
         return "redirect:/logistica/pedidos?tab=" + tab;
     }
 
-    @GetMapping("/inventario")
+       @GetMapping("/inventario")
     public String inventario(Model model) {
-        List<Producto> productos = logisticaService.inventarioActivo();
-        long criticos = productos.stream().filter(p -> p.getStockComercial() <= p.getStockMinimo()).count();
+        List<Producto> productos = logisticaService.inventarioActivo().stream()
+                .sorted(java.util.Comparator.comparingInt(Producto::getStockComercial))
+                .toList();
+        List<Producto> criticos = productos.stream()
+                .filter(p -> p.getStockComercial() <= p.getStockMinimo())
+                .toList();
         model.addAttribute("productos", productos);
-        model.addAttribute("totalCriticos", criticos);
+        model.addAttribute("productosCriticos", criticos);
+        model.addAttribute("totalCriticos", criticos.size());
         return "logistica/inventario";
     }
+
 
     @PostMapping("/inventario/{codigo}/reponer")
     public String reponerStock(@PathVariable String codigo,

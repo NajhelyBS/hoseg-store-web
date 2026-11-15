@@ -46,18 +46,6 @@
 
             <h1 id="titulo-login" class="visually-hidden">Iniciar sesión en el portal interno</h1>
 
-            <!-- Selector rápido de perfil operativo -->
-            <div class="hs-role-pills" role="group" aria-label="Seleccionar área operativa">
-                <button type="button" class="hs-role-pill" data-user="admin" data-label="ADMINISTRACIÓN GENERAL">
-                    <i class="bi bi-speedometer2"></i> Admin
-                </button>
-                <button type="button" class="hs-role-pill" data-user="logistica" data-label="OPERACIONES · LOGÍSTICA">
-                    <i class="bi bi-truck"></i> Logística
-                </button>
-                <button type="button" class="hs-role-pill" data-user="impacto" data-label="GESTIÓN DE IMPACTO SOCIAL">
-                    <i class="bi bi-heart"></i> Impacto
-                </button>
-            </div>
 
             <!-- Avisos de Spring Security -->
             <div th:if="${param.error}" class="hs-notice hs-notice--danger" role="alert">
@@ -94,12 +82,17 @@
 
                 <div class="hs-field">
                     <label for="admin-password">CONTRASEÑA</label>
-                    <div class="hs-input-icon-wrap">
+                                       <div class="hs-input-icon-wrap position-relative">
                         <i class="bi bi-lock hs-input-icon" aria-hidden="true"></i>
-                        <input id="admin-password" class="hs-admin-input hs-admin-input--con-icono"
+                        <input id="admin-password" class="hs-admin-input hs-admin-input--con-icono pe-5"
                                type="password" name="password" autocomplete="current-password"
                                placeholder="••••••••" required>
+                        <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted"
+                                data-toggle-pass="admin-password" aria-label="Mostrar u ocultar contraseña">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </button>
                     </div>
+
                 </div>
 
                 <button class="hs-admin-btn hs-admin-btn--primary hs-login-submit" type="submit"
@@ -116,21 +109,7 @@
 
     </section>
 </main>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const userInput = document.getElementById('admin-username');
-        const passInput = document.getElementById('admin-password');
-        const subtitle = document.getElementById('login-role-subtitle');
-        document.querySelectorAll('.hs-role-pill').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.hs-role-pill').forEach(b => b.classList.remove('is-active'));
-                btn.classList.add('is-active');
-                if (userInput) userInput.value = btn.dataset.user;
-                if (subtitle) subtitle.textContent = btn.dataset.label;
-                if (passInput) passInput.focus();
-            });
-        });
-    });
-</script>
+<script th:src="@{/js/cuenta.js}" defer></script>
 </body>
+
 </html>
