@@ -37,6 +37,11 @@ public interface ProductoRepository extends JpaRepository<Producto, String> {
     @Query("update Producto p set p.stockComercial = p.stockComercial - :cantidad where p.codigo = :codigo and p.stockComercial >= :cantidad")
     int descontarStockComercial(@Param("codigo") String codigo, @Param("cantidad") int cantidad);
 
+       /** Suma stock comercial cuando Logística registra ingreso o recibe orden de taller. */
+    @Modifying
+    @Query("update Producto p set p.stockComercial = p.stockComercial + :cantidad where p.codigo = :codigo")
+    int sumarStockComercial(@Param("codigo") String codigo, @Param("cantidad") int cantidad);
+
     /** Suma stock comprometido cuando el producto tiene compromiso social (abrigo/árbol). */
     @Modifying
     @Query("update Producto p set p.stockComprometido = p.stockComprometido + :cantidad where p.codigo = :codigo")
@@ -47,4 +52,5 @@ public interface ProductoRepository extends JpaRepository<Producto, String> {
     @Query("update Producto p set p.stockComprometido = case when p.stockComprometido >= :cantidad then p.stockComprometido - :cantidad else 0 end where p.codigo = :codigo")
     int descontarStockComprometido(@Param("codigo") String codigo, @Param("cantidad") int cantidad);
 
+     
 }

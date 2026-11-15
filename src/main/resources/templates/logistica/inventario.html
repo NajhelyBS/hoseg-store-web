@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://thymeleaf.org"
+      th:replace="~{layout/admin :: pagina(titulo='Inventario · Logística HÖSÉG', activa='inventario', contenido=~{::main})}">
+<body>
+<main class="hs-admin-page">
+    <div class="hs-page-heading">
+        <div>
+            <p class="hs-eyebrow">LOGÍSTICA · ALMACÉN</p>
+            <h1>Control de inventario</h1>
+            <p class="hs-page-desc">Supervisa el stock comercial disponible, las unidades comprometidas y repone stock crítico.</p>
+        </div>
+        <span class="hs-soft-label" th:if="${totalCriticos > 0}">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            <span th:text="${totalCriticos} + ' variante(s) en stock crítico'">0 variantes críticas</span>
+        </span>
+    </div>
+
+    <section class="hs-admin-card">
+        <div class="hs-card-head hs-card-head--wrap">
+            <div>
+                <h2>Existencias por variante</h2>
+                <p>Cuando el stock comercial es menor o igual al mínimo, se marca en estado crítico.</p>
+            </div>
+            <span class="hs-soft-label" th:text="${#lists.size(productos)} + ' variantes activas'">0 variantes</span>
+        </div>
+
+        <div class="hs-tab-strip" role="group" aria-label="Filtrar inventario">
+            <button type="button" class="hs-tab is-active" data-inv-filter="TODOS">Todos</button>
+            <button type="button" class="hs-tab" data-inv-filter="CRITICO">
+                Stock crítico (<span th:text="${totalCriticos}">0</span>)
+            </button>
+        </div>
+
+        <p class="hs-aviso-deslizar d-md-none px-3 pt-2 mb-1">
+            <span>Desliza la tabla para ver acciones</span>
+            <i class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i>
+        </p>
+
+        <div class="hs-table-scroll">
+            <table class="hs-admin-table">
+                <thead>
+                <tr>
+                    <th scope="col">Código</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Talla</th>
+                    <th scope="col">Stock comercial</th>
+                    <th scope="col">Comprometido</th>
+                    <th scope="col">Mínimo</th>
+                    <th scope="col">Ingreso rápido</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${productos}" class="hs-inv-row"
+                    th:attr="data-critico=${p.stockComercial <= p.stockMinimo}">
+                    <td><span class="hs-code-pill" th:text="${p.codigo}">HSG-001</span></td>
+                    <td>
+                        <strong th:text="${p.nombre}">Casaca</strong>
+                        <span class="hs-table-sub" th:text="${p.categoria}">Categoría</span>
+                    </td>
+                    <td><span class="hs-talla-badge" th:text="${p.tallaMostrada}">M</span></td>
+                    <td>
+                        <span class="hs-op-badge"
+                              th:classappend="${p.stockComercial <= p.stockMinimo} ? 'hs-op-badge--ruta' : 'hs-op-badge--ok'">
+                            <i class="bi" th:classappend="${p.stockComercial <= p.stockMinimo} ? 'bi-exclamation-circle' : 'bi-check-circle'"></i>
+                            <span th:text="${p.stockComercial} + ' u.'">10 u.</span>
+                        </span>
+                    </td>
+                    <td th:text="${p.stockComprometido} + ' u.'">0 u.</td>
+                    <td th:text="${p.stockMinimo} + ' u.'">3 u.</td>
+                    <td>
+                        <form method="post" th:action="@{/logistica/inventario/{c}/reponer(c=${p.codigo})}"
+                              class="d-flex align-items-center gap-2">
+                            <input type="number" name="cantidad" min="1" max="500" value="5"
+                                   class="hs-admin-input" style="width: 75px;" aria-label="Cantidad a ingresar" required>
+                            <button type="submit" class="hs-admin-btn hs-admin-btn--secondary">
+                                <i class="bi bi-plus-lg" aria-hidden="true"></i> Ingresar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${productos.isEmpty()}">
+                    <td colspan="7" class="hs-empty-row">No hay productos activos en el inventario.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('[data-inv-filter]');
+            const filas = document.querySelectorAll('.hs-inv-row');
+            tabs.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('is-active'));
+                    btn.classList.add('is-active');
+                    const soloCritico = btn.dataset.invFilter === 'CRITICO';
+                    filas.forEach(f => {
+                        f.hidden = soloCritico && f.dataset.critico !== 'true';
+                    });
+                });
+            });
+        });
+    </script>
+</main>
+</body>
+</html>

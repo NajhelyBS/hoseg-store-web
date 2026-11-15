@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://thymeleaf.org"
+<html lang="es" xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://thymeleaf.org/extras/spring-security"
       th:fragment="pagina(titulo, activa, contenido)">
 <head>
     <meta charset="UTF-8">
@@ -16,13 +16,11 @@
 <body>
 <div class="d-flex min-vh-100">
     <nav class="p-3 border-end" style="min-width: 220px" aria-label="Panel">
-        <!-- El logo lleva al inicio según el rol -->
         <a class="hs-logo d-block mb-4" sec:authorize="hasRole('ADMINISTRADOR')" th:href="@{/admin/panel}">HÖSÉG</a>
         <a class="hs-logo d-block mb-4" sec:authorize="hasRole('LOGISTICA')" th:href="@{/logistica/pedidos}">HÖSÉG</a>
         <a class="hs-logo d-block mb-4" sec:authorize="hasRole('GESTOR_IMPACTO')" th:href="@{/gestion-impacto/lotes}">HÖSÉG</a>
 
         <ul class="list-unstyled d-flex flex-column gap-2">
-            <!-- Menú exclusivo de ADMINISTRADOR -->
             <th:block sec:authorize="hasRole('ADMINISTRADOR')">
                 <li><a th:href="@{/admin/panel}" th:classappend="${activa == 'panel'} ? 'fw-bold'">Panel</a></li>
                 <li><a th:href="@{/admin/catalogo}" th:classappend="${activa == 'catalogo'} ? 'fw-bold'">Catálogo web</a></li>
@@ -32,12 +30,13 @@
                 <li><a th:href="@{/admin/resenas}" th:classappend="${activa == 'resenas'} ? 'fw-bold'">Reseñas</a></li>
             </th:block>
 
-            <!-- Menú exclusivo de LOGÍSTICA -->
             <th:block sec:authorize="hasRole('LOGISTICA')">
                 <li><a th:href="@{/logistica/pedidos}" th:classappend="${activa == 'logistica'} ? 'fw-bold'">Pedidos y despachos</a></li>
+                <li><a th:href="@{/logistica/inventario}" th:classappend="${activa == 'inventario'} ? 'fw-bold'">Inventario y stock</a></li>
+                <li><a th:href="@{/logistica/proveedores}" th:classappend="${activa == 'proveedores'} ? 'fw-bold'">Proveedores y talleres</a></li>
             </th:block>
 
-            <!-- Menú exclusivo de GESTOR DE IMPACTO -->
+
             <th:block sec:authorize="hasRole('GESTOR_IMPACTO')">
                 <li><a th:href="@{/gestion-impacto/lotes}" th:classappend="${activa == 'impacto'} ? 'fw-bold'">Lotes y donaciones</a></li>
             </th:block>
@@ -51,15 +50,28 @@
     <div class="hs-admin-fab-backdrop" hidden></div>
 
     <div class="flex-grow-1">
-        <header class="d-flex justify-content-end align-items-center gap-3 p-3 border-bottom">
-            <div class="hs-admin-user">
-                <span class="hs-avatar" aria-hidden="true"
-                      th:text="${#strings.substring(#authentication.principal.nombre, 0, 1)}">A</span>
-                <span th:text="${#authentication.principal.nombre}">Administrador</span>
+               <header class="d-flex justify-content-between align-items-center gap-2 px-3 py-2 border-bottom">
+            <span class="hs-side-role-badge" sec:authorize="hasRole('ADMINISTRADOR')">Administración</span>
+            <span class="hs-side-role-badge" sec:authorize="hasRole('LOGISTICA')">Logística</span>
+            <span class="hs-side-role-badge" sec:authorize="hasRole('GESTOR_IMPACTO')">Impacto Social</span>
+
+            <div class="dropdown ms-auto">
+                <button class="hs-admin-user-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="hs-avatar" aria-hidden="true"
+                          th:text="${#strings.substring(#authentication.principal.nombre, 0, 1)}">A</span>
+                    <span class="hs-admin-user-name" th:text="${#authentication.principal.nombre}">Administrador</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end hs-menu-cuenta">
+                    <li class="px-3 py-1 small text-muted" th:text="${#authentication.principal.username}">usuario</li>
+                    <li><a class="dropdown-item" th:href="@{/}" target="_blank"><i class="bi bi-box-arrow-up-right me-2"></i>Ver tienda</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form th:action="@{/admin/logout}" method="post" class="m-0">
+                            <button class="dropdown-item text-danger" type="submit"><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</button>
+                        </form>
+                    </li>
+                </ul>
             </div>
-            <form th:action="@{/admin/logout}" method="post" class="m-0">
-                <button class="hs-btn hs-btn--secundario" type="submit">Cerrar sesión</button>
-            </form>
         </header>
 
         <div class="container-fluid pt-3">

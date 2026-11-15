@@ -6,9 +6,16 @@ import pe.edu.utp.hoseg.web.dto.LineaLogisticaVista;
 import pe.edu.utp.hoseg.web.dto.PedidoLogisticaVista;
 import pe.edu.utp.hoseg.web.model.Envio;
 import pe.edu.utp.hoseg.web.model.EstadoEnvio;
+import pe.edu.utp.hoseg.web.model.EstadoPedidoProveedor;
 import pe.edu.utp.hoseg.web.model.EstadoVenta;
+import pe.edu.utp.hoseg.web.model.PedidoProveedor;
+import pe.edu.utp.hoseg.web.model.Producto;
+import pe.edu.utp.hoseg.web.model.Proveedor;
 import pe.edu.utp.hoseg.web.model.TipoEnvio;
 import pe.edu.utp.hoseg.web.repository.EnvioRepository;
+import pe.edu.utp.hoseg.web.repository.PedidoProveedorRepository;
+import pe.edu.utp.hoseg.web.repository.ProductoRepository;
+import pe.edu.utp.hoseg.web.repository.ProveedorRepository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -18,12 +25,22 @@ import java.util.List;
 public class LogisticaService {
 
     private final EnvioRepository envioRepository;
+    private final ProductoRepository productoRepository;
+    private final ProveedorRepository proveedorRepository;
+    private final PedidoProveedorRepository pedidoProveedorRepository;
 
-    public LogisticaService(EnvioRepository envioRepository) {
+    public LogisticaService(EnvioRepository envioRepository,
+                            ProductoRepository productoRepository,
+                            ProveedorRepository proveedorRepository,
+                            PedidoProveedorRepository pedidoProveedorRepository) {
         this.envioRepository = envioRepository;
+        this.productoRepository = productoRepository;
+        this.proveedorRepository = proveedorRepository;
+        this.pedidoProveedorRepository = pedidoProveedorRepository;
     }
 
-    /** Lista pedidos pagados filtrados por modalidad (DELIVERY o RECOJO_TIENDA). */
+    // ---------- 1. Despachos de pedidos web ----------
+
     public List<PedidoLogisticaVista> pedidosPagadosPorTipo(TipoEnvio tipo) {
         return envioRepository.findByVentaEstadoOrderByCreadoEnDesc(EstadoVenta.PAGADO).stream()
                 .filter(e -> e.getTipo() == tipo)
@@ -31,7 +48,6 @@ public class LogisticaService {
                 .toList();
     }
 
-    /** Avanza el estado del envío respetando las transiciones permitidas. */
     @Transactional
     public void avanzarEstado(Integer idEnvio, EstadoEnvio nuevoEstado, String courier, String codigoSeguimiento) {
         Envio envio = envioRepository.findById(idEnvio)
@@ -65,6 +81,86 @@ public class LogisticaService {
         }
 
         envioRepository.save(envio);
+    }
+
+    // ---------- 2. Inventario y stock crítico ----------
+
+    public List<Producto> inventarioActivo() {
+        return productoRepository.findByActivoTrueOrderByNombreAscCodigoAsc();
+    }
+
+    @Transactional
+    public void reponerStock(String codigoProducto, int cantidad) {
+        if (cantidad <= 0) {
+            throw new NegocioException("La cantidad a ingresar debe ser mayor a cero.");
+        }
+        int filas = productoRepository.sumarStockComercial(codigoProducto, cantidad);
+        if (filas == 0) {
+            throw new RecursoNoEncontradoException("Producto no encontrado: " + codigoProducto);
+        }
+    }
+
+    // ---------- 3. Proveedores y órdenes a talleres ----------
+
+    public List<Proveedor> proveedoresActivos() {
+        return proveedorRepository.findByActivoTrueOrderByNombreTallerAsc();
+    }
+
+    public List<PedidoProveedor> pedidosProveedores() {
+        return pedidoProveedorRepository.todosConDetalle();
+    }
+
+    @Transactional
+    public void registrarProveedor(String nombreTaller, String ruc, String contacto, String telefono) {
+        if (nombreTaller == null || nombreTaller.isBlank()) {
+            throw new NegocioException("Ingresa el nombre del taller o proveedor.");
+        }
+        Proveedor p = new Proveedor();
+        p.setNombreTaller(nombreTaller.trim());
+        p.setRuc(limpio(ruc));
+        p.setContacto(limpio(contacto));
+        p.setTelefono(limpio(telefono));
+        p.setActivo(true);
+        proveedorRepository.save(p);
+    }
+
+    @Transactional
+    public void crearOrdenProveedor(Integer idProveedor, String codigoProducto, String descripcion, int cantidad, Integer idUsuario) {
+        if (cantidad <= 0) {
+            throw new NegocioException("La cantidad solicitada debe ser mayor a cero.");
+        }
+        Proveedor proveedor = proveedorRepository.findById(idProveedor)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Proveedor no encontrado: " + idProveedor));
+
+        Producto producto = null;
+        if (codigoProducto != null && !codigoProducto.isBlank()) {
+            producto = productoRepository.findById(codigoProducto.trim())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado: " + codigoProducto));
+        }
+
+        PedidoProveedor orden = new PedidoProveedor();
+        orden.setProveedor(proveedor);
+        orden.setProducto(producto);
+        orden.setDescripcion(limpio(descripcion));
+        orden.setCantidad(cantidad);
+        orden.setEstado(EstadoPedidoProveedor.PENDIENTE);
+        orden.setIdUsuario(idUsuario);
+        pedidoProveedorRepository.save(orden);
+    }
+
+    @Transactional
+    public void recibirOrdenProveedor(Integer idOrden) {
+        PedidoProveedor orden = pedidoProveedorRepository.findById(idOrden)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Orden no encontrada: " + idOrden));
+        if (orden.getEstado() != EstadoPedidoProveedor.PENDIENTE) {
+            throw new NegocioException("Solo se pueden recibir órdenes en estado Pendiente.");
+        }
+        orden.setEstado(EstadoPedidoProveedor.RECIBIDO);
+        pedidoProveedorRepository.save(orden);
+
+        if (orden.getProducto() != null) {
+            productoRepository.sumarStockComercial(orden.getProducto().getCodigo(), orden.getCantidad());
+        }
     }
 
     private static PedidoLogisticaVista aVista(Envio e) {
