@@ -1,15 +1,6 @@
 <!DOCTYPE html>
-<!--
-  ESQUELETO · Bloque 4 · Layout del panel /admin: menú lateral (Panel, Catálogo web, Höség Café,
-  Contenido, Mensajes, Reseñas) y barra superior con el nombre del usuario y "Cerrar sesión".
-  Misma paleta que la tienda (tokens.css), más sobria. Bloque 4 le da el diseño final.
-
-  Uso (en el <html> de cada página del panel):
-    th:replace="~{layout/admin :: pagina(titulo='Panel · HÖSÉG', activa='panel', contenido=~{::main})}"
-    activa → panel | catalogo | cafe | contenido | mensajes | resenas
-  El usuario en sesión es ${#authentication.principal} (AdministradorAutenticado: nombre, username).
--->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://thymeleaf.org"
       th:fragment="pagina(titulo, activa, contenido)">
 <head>
     <meta charset="UTF-8">
@@ -25,23 +16,52 @@
 <body>
 <div class="d-flex min-vh-100">
     <nav class="p-3 border-end" style="min-width: 220px" aria-label="Panel">
-        <a class="hs-logo d-block mb-4" th:href="@{/admin/panel}">HÖSÉG</a>
+        <!-- El logo lleva al inicio según el rol -->
+        <a class="hs-logo d-block mb-4" sec:authorize="hasRole('ADMINISTRADOR')" th:href="@{/admin/panel}">HÖSÉG</a>
+        <a class="hs-logo d-block mb-4" sec:authorize="hasRole('LOGISTICA')" th:href="@{/logistica/pedidos}">HÖSÉG</a>
+        <a class="hs-logo d-block mb-4" sec:authorize="hasRole('GESTOR_IMPACTO')" th:href="@{/gestion-impacto/lotes}">HÖSÉG</a>
+
         <ul class="list-unstyled d-flex flex-column gap-2">
-            <li><a th:href="@{/admin/panel}" th:classappend="${activa == 'panel'} ? 'fw-bold'">Panel</a></li>
-            <li><a th:href="@{/admin/catalogo}" th:classappend="${activa == 'catalogo'} ? 'fw-bold'">Catálogo web</a></li>
-            <li><a th:href="@{/admin/cafe}" th:classappend="${activa == 'cafe'} ? 'fw-bold'">Höség Café</a></li>
-            <li><a th:href="@{/admin/contenido}" th:classappend="${activa == 'contenido'} ? 'fw-bold'">Contenido</a></li>
-            <li><a th:href="@{/admin/mensajes}" th:classappend="${activa == 'mensajes'} ? 'fw-bold'">Mensajes</a></li>
-            <li><a th:href="@{/admin/resenas}" th:classappend="${activa == 'resenas'} ? 'fw-bold'">Reseñas</a></li>
+            <!-- Menú exclusivo de ADMINISTRADOR -->
+            <th:block sec:authorize="hasRole('ADMINISTRADOR')">
+                <li><a th:href="@{/admin/panel}" th:classappend="${activa == 'panel'} ? 'fw-bold'">Panel</a></li>
+                <li><a th:href="@{/admin/catalogo}" th:classappend="${activa == 'catalogo'} ? 'fw-bold'">Catálogo web</a></li>
+                <li><a th:href="@{/admin/cafe}" th:classappend="${activa == 'cafe'} ? 'fw-bold'">Höség Café</a></li>
+                <li><a th:href="@{/admin/contenido}" th:classappend="${activa == 'contenido'} ? 'fw-bold'">Contenido</a></li>
+                <li><a th:href="@{/admin/mensajes}" th:classappend="${activa == 'mensajes'} ? 'fw-bold'">Mensajes</a></li>
+                <li><a th:href="@{/admin/resenas}" th:classappend="${activa == 'resenas'} ? 'fw-bold'">Reseñas</a></li>
+            </th:block>
+
+            <!-- Menú exclusivo de LOGÍSTICA -->
+            <th:block sec:authorize="hasRole('LOGISTICA')">
+                <li><a th:href="@{/logistica/pedidos}" th:classappend="${activa == 'logistica'} ? 'fw-bold'">Pedidos y despachos</a></li>
+            </th:block>
+
+            <!-- Menú exclusivo de GESTOR DE IMPACTO -->
+            <th:block sec:authorize="hasRole('GESTOR_IMPACTO')">
+                <li><a th:href="@{/gestion-impacto/lotes}" th:classappend="${activa == 'impacto'} ? 'fw-bold'">Lotes y donaciones</a></li>
+            </th:block>
         </ul>
     </nav>
+
+    <!-- Botón flotante para desplegar el menú en arco en móvil -->
+    <button type="button" class="hs-admin-fab" aria-label="Abrir menú del panel" aria-expanded="false">
+        <i class="bi bi-grid" aria-hidden="true"></i>
+    </button>
+    <div class="hs-admin-fab-backdrop" hidden></div>
+
     <div class="flex-grow-1">
         <header class="d-flex justify-content-end align-items-center gap-3 p-3 border-bottom">
-            <span th:text="${#authentication.principal.nombre}">Administrador</span>
+            <div class="hs-admin-user">
+                <span class="hs-avatar" aria-hidden="true"
+                      th:text="${#strings.substring(#authentication.principal.nombre, 0, 1)}">A</span>
+                <span th:text="${#authentication.principal.nombre}">Administrador</span>
+            </div>
             <form th:action="@{/admin/logout}" method="post" class="m-0">
                 <button class="hs-btn hs-btn--secundario" type="submit">Cerrar sesión</button>
             </form>
         </header>
+
         <div class="container-fluid pt-3">
             <div class="alert alert-success" role="status" th:if="${exito}" th:text="${exito}">Guardado.</div>
             <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}">Error.</div>

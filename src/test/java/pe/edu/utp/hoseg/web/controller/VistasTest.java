@@ -20,6 +20,7 @@ import pe.edu.utp.hoseg.web.model.RolUsuario;
 import pe.edu.utp.hoseg.web.model.TipoCompromiso;
 import pe.edu.utp.hoseg.web.model.TipoEnvio;
 import pe.edu.utp.hoseg.web.service.*;
+import pe.edu.utp.hoseg.web.service.LogisticaService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -83,6 +84,7 @@ class VistasTest {
     @MockitoBean private BoletinService boletinService;
     @MockitoBean private ReclamacionService reclamacionService;
     @MockitoBean private PanelAdminService panelAdminService;
+    @MockitoBean private LogisticaService logisticaService;
 
     // ---------- Bloque 1 ----------
 
@@ -160,7 +162,7 @@ class VistasTest {
                 .andExpect(redirectedUrlPattern("**/login"));
     }
 
-    @Test
+   @Test
     void confirmarCompraConSesion() throws Exception {
         when(carritoService.items()).thenReturn(List.of(item()));
         when(carritoService.total()).thenReturn(new BigDecimal("259.90"));
@@ -169,19 +171,28 @@ class VistasTest {
         when(ventaService.costoEnvio(TipoEnvio.DELIVERY)).thenReturn(new BigDecimal("10.00"));
         when(cafeService.locales()).thenReturn(List.of(new LocalCafe("Höség Café Cusco", "Calle Palacio 110", "8:30 a 19:30", null, null)));
 
-        mvc.perform(get("/carrito/confirmar").with(user(ANA)))
+        mvc.perform(get("/carrito/entrega").with(user(ANA)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Recojo en tienda")));
     }
 
-    @Test
-    void confirmarRegistraLimpiaElCarritoYMuestraElCodigo() throws Exception {
-        CompraRegistrada compra = new CompraRegistrada("WEB-000113", new BigDecimal("259.90"), BigDecimal.ZERO,
-                new BigDecimal("259.90"), TipoEnvio.RECOJO_TIENDA, new ImpactoCompra(1, 0));
-        when(ventaService.confirmarCompra(eq(7), any(), any())).thenReturn(compra);
 
-        mvc.perform(post("/carrito/confirmar").with(user(ANA)).with(csrf())
-                        .param("tipo", "RECOJO_TIENDA").param("nombreReceptor", "Ana Torres"))
+   @Test
+    void confirmarRegistraLimpiaElCarritoYMuestraElCodigo() throws Exception {
+        DatosEnvioForm envio = new DatosEnvioForm();
+        envio.setTipo(TipoEnvio.RECOJO_TIENDA);
+        envio.setNombreReceptor("Ana Torres");
+
+        CompraRegistrada compra = new CompraRegistrada("WEB-000113", new BigDecimal("259.90"), BigDecimal.ZERO,
+                new BigDecimal("259.90"), TipoEnvio.RECOJO_TIENDA, new ImpactoCompra(1, 0),
+                "YAPE", "TRX-123456");
+        when(ventaService.pagarYRegistrar(eq(7), any(), any(), eq("YAPE"))).thenReturn(compra);
+
+        mvc.perform(post("/carrito/procesar-pago").with(user(ANA)).with(csrf())
+                        .sessionAttr("datosEnvioCheckout", envio)
+                        .param("medioPago", "BILLETERA")
+                        .param("billetera", "YAPE")
+                        .param("celular", "987654321"))
                 .andExpect(redirectedUrl("/compra-exito"))
                 .andExpect(flash().attribute("compra", compra));
         verify(carritoService).vaciar();
@@ -189,15 +200,16 @@ class VistasTest {
 
         mvc.perform(get("/compra-exito").with(user(ANA)).flashAttr("compra", compra))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("WEB-000113")));
+                .andExpect(content().string(containsString("WEB-000113")))
+                .andExpect(content().string(containsString("TRX-123456")));
     }
 
-    @Test
+     @Test
     void deliverySinDireccionVuelveAlFormularioConElError() throws Exception {
         when(carritoService.total()).thenReturn(BigDecimal.ZERO);
         when(carritoService.impacto()).thenReturn(ImpactoCompra.NINGUNO);
         when(ventaService.costoEnvio(any())).thenReturn(BigDecimal.TEN);
-        mvc.perform(post("/carrito/confirmar").with(user(ANA)).with(csrf())
+        mvc.perform(post("/carrito/entrega").with(user(ANA)).with(csrf())
                         .param("tipo", "DELIVERY").param("nombreReceptor", "Ana Torres"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Para delivery indica la dirección y el distrito.")));
