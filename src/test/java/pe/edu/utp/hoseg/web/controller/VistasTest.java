@@ -90,7 +90,7 @@ class VistasTest {
     @MockitoBean private GestorImpactoService gestorImpactoService;
     @MockitoBean private BoletaPdfService boletaPdfService;
     @MockitoBean private JwtTokenProvider jwtTokenProvider;
-
+    @MockitoBean private ConsultaDocumentoService consultaDocumentoService;
 
 
     // ---------- Bloque 1 ----------

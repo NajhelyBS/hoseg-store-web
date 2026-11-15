@@ -118,5 +118,52 @@
         </div>
     </section>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tipoSel = document.getElementById('tipoDoc');
+        const numInput = document.getElementById('numDoc');
+        const nombreInput = document.getElementById('nombre');
+        const apellidoInput = document.getElementById('apellido');
+        const dirInput = document.getElementById('direccion');
+        if (!tipoSel || !numInput) return;
+
+        let aviso = document.createElement('small');
+        aviso.className = 'text-muted d-block mt-1';
+        numInput.parentNode.appendChild(aviso);
+
+        async function buscarDocumento() {
+            const tipo = tipoSel.value;
+            const num = numInput.value.trim();
+            if ((tipo === 'DNI' && num.length === 8) || (tipo === 'RUC' && num.length === 11)) {
+                aviso.textContent = 'Consultando ' + tipo + '...';
+                try {
+                    const res = await fetch('/api/documento/' + tipo + '/' + encodeURIComponent(num));
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.nombres && nombreInput) nombreInput.value = data.nombres;
+                        if (apellidoInput) apellidoInput.value = data.apellidos || (tipo === 'RUC' ? 'EMPRESA' : '');
+                        if (data.direccion && dirInput && !dirInput.value) dirInput.value = data.direccion;
+                        aviso.textContent = 'Datos verificados (' + data.fuente + ').';
+                    } else {
+                        aviso.textContent = '';
+                    }
+                } catch (_) {
+                    aviso.textContent = '';
+                }
+            }
+        }
+
+        numInput.addEventListener('blur', buscarDocumento);
+        numInput.addEventListener('input', () => {
+            const tipo = tipoSel.value;
+            const len = numInput.value.trim().length;
+            if ((tipo === 'DNI' && len === 8) || (tipo === 'RUC' && len === 11)) {
+                buscarDocumento();
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

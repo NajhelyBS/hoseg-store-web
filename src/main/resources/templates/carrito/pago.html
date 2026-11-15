@@ -231,7 +231,25 @@
                 form.classList.add('was-validated');
             });
         });
+
+        const dniTitular = document.getElementById('dniTitular');
+        const titular = document.getElementById('titular');
+        if (dniTitular && titular) {
+            dniTitular.addEventListener('input', async () => {
+                const dni = dniTitular.value.trim();
+                if (dni.length === 8 && /^[0-9]{8}$/.test(dni)) {
+                    try {
+                        const res = await fetch('/api/documento/DNI/' + dni);
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data.nombreCompleto) titular.value = data.nombreCompleto;
+                        }
+                    } catch (_) {}
+                }
+            });
+        }
     });
 </script>
+
 </body>
 </html>
