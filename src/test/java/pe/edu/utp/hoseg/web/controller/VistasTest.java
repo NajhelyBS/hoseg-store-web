@@ -85,6 +85,7 @@ class VistasTest {
     @MockitoBean private ReclamacionService reclamacionService;
     @MockitoBean private PanelAdminService panelAdminService;
     @MockitoBean private LogisticaService logisticaService;
+    @MockitoBean private GestorImpactoService gestorImpactoService;
 
     // ---------- Bloque 1 ----------
 

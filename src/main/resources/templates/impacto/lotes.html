@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://thymeleaf.org"
+      th:replace="~{layout/admin :: pagina(titulo='Gestor de Impacto · HÖSÉG', activa='impacto', contenido=~{::main})}">
+<body>
+<main class="hs-admin-page">
+    <div class="hs-page-heading">
+        <div>
+            <p class="hs-eyebrow">IMPACTO SOCIAL · TRAZABILIDAD</p>
+            <h1>Lotes y donaciones</h1>
+            <p class="hs-page-desc">Agrupa compromisos de compra en lotes, coordina con ONGs aliadas y confirma la entrega en comunidades.</p>
+        </div>
+    </div>
+
+    <div class="alert alert-success d-flex align-items-center mb-3" role="alert" th:if="${exito}">
+        <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>
+        <span th:text="${exito}">Operación realizada.</span>
+    </div>
+    <div class="alert alert-danger d-flex align-items-center mb-3" role="alert" th:if="${error}">
+        <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+        <span th:text="${error}">Error.</span>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Crear nuevo lote -->
+        <div class="col-12 col-lg-5">
+            <section class="hs-admin-card h-100">
+                <div class="hs-card-head">
+                    <div>
+                        <h2>1. Crear lote de donación</h2>
+                        <p>Define la comunidad beneficiaria y la ONG ejecutora.</p>
+                    </div>
+                </div>
+                <form method="post" th:action="@{/gestion-impacto/lotes}" class="d-flex flex-column gap-3">
+                    <div>
+                        <label class="hs-label" for="idComunidad">Comunidad destino</label>
+                        <select class="hs-admin-input w-100" id="idComunidad" name="idComunidad" required>
+                            <option value="">Selecciona una comunidad...</option>
+                            <option th:each="c : ${comunidades}" th:value="${c.id}"
+                                    th:text="${c.nombre + (c.region != null ? ' (' + c.region + ')' : '')}">Ccatca (Cusco)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="hs-label" for="idOng">ONG aliada</label>
+                        <select class="hs-admin-input w-100" id="idOng" name="idOng" required>
+                            <option value="">Selecciona una ONG...</option>
+                            <option th:each="o : ${ongs}" th:value="${o.id}" th:text="${o.nombre}">Pachamama Raymi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="hs-label" for="observaciones">Observaciones (opcional)</label>
+                        <input class="hs-admin-input w-100" id="observaciones" name="observaciones"
+                               placeholder="Campaña friaje / Reforestación...">
+                    </div>
+                    <button type="submit" class="hs-admin-btn hs-admin-btn--primary">
+                        <i class="bi bi-plus-circle me-1"></i> Crear lote
+                    </button>
+                </form>
+            </section>
+        </div>
+
+        <!-- Donaciones pendientes de asignar -->
+        <div class="col-12 col-lg-7">
+            <section class="hs-admin-card h-100">
+                <div class="hs-card-head">
+                    <div>
+                        <h2>2. Donaciones pendientes (<span th:text="${#lists.size(pendientes)}">0</span>)</h2>
+                        <p>Marca las donaciones pagadas y asígnalas a un lote activo.</p>
+                    </div>
+                </div>
+
+                <form th:if="${!pendientes.isEmpty()}" method="post" id="formAsignarLote"
+                      th:action="@{/gestion-impacto/lotes/0/asignar}"
+                      onsubmit="const id = document.getElementById('selectLoteDestino').value; if(!id){alert('Elige un lote destino.'); return false;} this.action = this.action.replace('/0/', '/' + id + '/');">
+                    <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                        <select id="selectLoteDestino" class="hs-admin-input flex-grow-1" required>
+                            <option value="">Elige lote destino...</option>
+                            <option th:each="l : ${lotes}" th:if="${l.estado.name() != 'ENTREGADO'}"
+                                    th:value="${l.id}"
+                                    th:text="${l.codigoLote + ' · ' + l.comunidad.nombre + ' (' + l.estado.etiqueta + ')'}">
+                                LOTE-2026-1001 · Ccatca
+                            </option>
+                        </select>
+                        <button type="submit" class="hs-admin-btn hs-admin-btn--primary">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Asignar al lote
+                        </button>
+                    </div>
+
+                    <div class="hs-table-scroll">
+                        <table class="hs-admin-table">
+                            <thead>
+                            <tr>
+                                <th style="width: 36px;"><input type="checkbox" onclick="document.querySelectorAll('.chk-don').forEach(c => c.checked = this.checked)"></th>
+                                <th>Boleta</th>
+                                <th>Compromiso</th>
+                                <th>Prenda origen</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="d : ${pendientes}">
+                                <td><input class="chk-don" type="checkbox" name="idsDonacion" th:value="${d.id}"></td>
+                                <td class="hs-cell-strong" th:text="${d.detalleVenta.venta.codigoComprobante}">WEB-000126</td>
+                                <td>
+                                    <span class="badge bg-success-subtle text-success-emphasis"
+                                          th:text="${d.cantidad + ' ' + d.tipo.name()}">1 ABRIGO</span>
+                                </td>
+                                <td class="small" th:text="${d.producto.nombre}">Casaca Älpafill</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+
+                <p th:if="${pendientes.isEmpty()}" class="hs-empty-row py-4 text-center">
+                    No hay donaciones pendientes por asignar en este momento.
+                </p>
+            </section>
+        </div>
+    </div>
+    <!-- 3. Gestión de lotes -->
+    <section class="hs-admin-card">
+        <div class="hs-card-head">
+            <div>
+                <h2>3. Lotes registrados</h2>
+                <p>Despacha los lotes a ruta y confirma su entrega en la comunidad para actualizar la trazabilidad pública.</p>
+            </div>
+        </div>
+
+        <div class="hs-table-scroll">
+            <table class="hs-admin-table">
+                <thead>
+                <tr>
+                    <th>Código Lote</th>
+                    <th>Comunidad y ONG</th>
+                    <th>Creación</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="l : ${lotes}">
+                    <td class="hs-cell-strong" th:text="${l.codigoLote}">LOTE-2026-1001</td>
+                    <td>
+                        <div class="fw-semibold" th:text="${l.comunidad.nombre}">Ccatca</div>
+                        <div class="small text-muted" th:text="'ONG: ' + ${l.ong.nombre}">ONG: Pachamama Raymi</div>
+                        <div class="small text-muted fst-italic" th:if="${l.observaciones != null}" th:text="${l.observaciones}"></div>
+                    </td>
+                    <td th:text="${#temporals.format(l.fechaCreacion, 'dd/MM/yyyy HH:mm')}">15/11/2026</td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${l.estado.name() == 'ENTREGADO'} ? 'bg-success' : (${l.estado.name() == 'EN_RUTA'} ? 'bg-primary' : 'bg-warning text-dark')"
+                              th:text="${l.estado.etiqueta}">Pendiente</span>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-wrap gap-2">
+                            <form th:if="${l.estado.name() == 'PENDIENTE'}" method="post"
+                                  th:action="@{/gestion-impacto/lotes/{id}/despachar(id=${l.id})}">
+                                <button type="submit" class="hs-admin-btn hs-admin-btn--secondary btn-sm">
+                                    <i class="bi bi-truck me-1"></i> Despachar a ruta
+                                </button>
+                            </form>
+
+                            <form th:if="${l.estado.name() != 'ENTREGADO'}" method="post"
+                                  th:action="@{/gestion-impacto/lotes/{id}/entregar(id=${l.id})}">
+                                <button type="submit" class="hs-admin-btn hs-admin-btn--primary btn-sm">
+                                    <i class="bi bi-check2-circle me-1"></i> Confirmar entrega
+                                </button>
+                            </form>
+
+                            <span class="small text-success fw-semibold" th:if="${l.estado.name() == 'ENTREGADO'}">
+                                <i class="bi bi-patch-check-fill"></i> Entregado
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${lotes.isEmpty()}">
+                    <td colspan="5" class="hs-empty-row">Aún no se han registrado lotes de donación.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

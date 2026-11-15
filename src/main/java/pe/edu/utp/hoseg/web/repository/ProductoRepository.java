@@ -42,4 +42,9 @@ public interface ProductoRepository extends JpaRepository<Producto, String> {
     @Query("update Producto p set p.stockComprometido = p.stockComprometido + :cantidad where p.codigo = :codigo")
     int sumarStockComprometido(@Param("codigo") String codigo, @Param("cantidad") int cantidad);
 
+    /** Descuenta stock comprometido al entregar un lote de donación a la comunidad. */
+    @Modifying
+    @Query("update Producto p set p.stockComprometido = case when p.stockComprometido >= :cantidad then p.stockComprometido - :cantidad else 0 end where p.codigo = :codigo")
+    int descontarStockComprometido(@Param("codigo") String codigo, @Param("cantidad") int cantidad);
+
 }
