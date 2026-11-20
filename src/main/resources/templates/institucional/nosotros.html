@@ -1,136 +1,199 @@
 <!-- =========================================================================
-  ESQUELETO · Bloque 3 · 3.3 Nosotros (GET /nosotros, InstitucionalController).
+  Bloque 3 · 3.3 Nosotros (GET /nosotros, InstitucionalController).
   Modelo:
     bloques     Map<clave, BloqueContenido>: bloques['nosotros.historia'] (titulo, cuerpo, imagenUrl);
                 puede faltar → usar el texto por defecto con ?: (Elvis)
     impacto     ResumenImpacto (abrigosEntregados, arbolesPlantados, comunidadesAlcanzadas, pedidosConImpacto)
     comunidades List<String>
     ongs        List<String>
+
+  REDISEÑO VISUAL: el contenido, los textos y el modelo de datos son los mismos.
+  CAMBIO (navbar): la página pasa a transparente=true, igual que la Home: la barra arranca transparente
+  sobre la foto y se vuelve crema al bajar. Por eso el <main> ya no lleva hs-main--bajo-nav (la foto sube
+  hasta el borde de la pantalla) y el hueco de la barra lo da el propio banner (ver nosotros.css).
+  Cada cambio está marcado. Estilos en static/css/nosotros.css,
+  animación de aparición en static/js/nosotros.js.
 ========================================================================= -->
 <!DOCTYPE html>
+<!-- estilos=~{::link} y scripts=~{::script} para cargar home.css, nosotros.css, home.js y nosotros.js -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: pagina(titulo='Nosotros · HÖSÉG', activa='nosotros',
-                                          transparente=false, contenido=~{::main}, estilos=~{}, scripts=~{})}">
+    th:replace="~{layout/base :: pagina(titulo='Nosotros · HÖSÉG', activa='nosotros',
+                                          transparente=true, contenido=~{::main}, estilos=~{::link}, scripts=~{::script})}">
+
+<head>
+    <!-- home.css trae el estilo de .hs-contador (cifras) y .hs-credito-foto, que esta página ahora reutiliza -->
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/nosotros.css}">
+</head>
+
 <body>
-<main class="hs-main--bajo-nav">
+    <!-- clase hs-nosotros (alcance de los estilos y de la animación de aparición) -->
+    <!-- tipoAbrigo / tipoArbol son los mismos enums que usan las tarjetas de producto, para reutilizar su badge -->
+    <!-- (navbar): se quitó hs-main--bajo-nav; sin ese relleno la foto queda debajo de la barra transparente -->
+    <main class="hs-nosotros"
+        th:with="tipoAbrigo=${T(pe.edu.utp.hoseg.web.model.TipoCompromiso).ABRIGO}, tipoArbol=${T(pe.edu.utp.hoseg.web.model.TipoCompromiso).ARBOL}">
 
-    <!-- SECCIÓN 1: HISTORIA (BANNER PRINCIPAL) -->
-    <section class="hs-seccion hs-seccion--alterna py-5">
-        <div class="container">
-            <div class="row align-items-center g-4">
-                <div class="col-12 col-md-6">
-                    <span class="hs-kicker text-uppercase tracking-wider">Nosotros</span>
-                    <h1 class="hs-h2 my-2 fw-bold" th:text="${bloques['nosotros.historia']?.titulo ?: 'Abrigar también puede cambiar una historia'}">Abrigar también puede cambiar una historia</h1>
-                    <p class="hs-texto-secundario mt-3" th:text="${bloques['nosotros.historia']?.cuerpo ?: 'HÖSÉG nació en Perú con una pregunta sencilla: ¿y si cada prenda de abrigo pudiera entregar calor más allá de quien la compra?'}">Historia</p>
-                    <a href="/consulta-impacto" class="hs-btn hs-btn--primario rounded-pill mt-3 d-inline-block">Consulta el impacto de tu compra</a>
-                </div>
-                <div class="col-12 col-md-6 text-center" th:if="${bloques['nosotros.historia']?.imagenUrl}">
-                    <img th:src="${bloques['nosotros.historia'].imagenUrl}" class="img-fluid rounded" style="border-radius: var(--hs-radius); max-height: 350px; object-fit: cover;" alt="Historia Höség">
+        <!-- SECCIÓN 1: HISTORIA (BANNER PRINCIPAL) -->
+        <!-- el banner pasa a foto a todo el ancho con velo y panel de vidrio, igual que el hero de la Home.
+         Así desaparece el espacio vacío y la foto (la del panel o la de respaldo) se vuelve protagonista. -->
+        <section class="hs-nosotros__hero">
+            <img class="hs-nosotros__fondo"
+                th:src="@{${bloques['nosotros.historia']?.imagenUrl ?: '/images/comunidad-cusco.jpg'}}"
+                onerror="this.hidden = true" alt="Alpacas en los Andes de Cusco">
+            <div class="hs-nosotros__velo" aria-hidden="true"></div>
+            <!-- Crédito de la foto por defecto (CC BY); desaparece si el panel pone otra imagen -->
+            <p class="hs-credito-foto hs-credito-foto--hero" th:if="${bloques['nosotros.historia']?.imagenUrl == null}">
+                Foto: <a href="https://commons.wikimedia.org/wiki/File:Alpacas_in_the_mountains.jpg" target="_blank"
+                    rel="noopener">Alpacas in the mountains</a>,
+                Havardtl, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank"
+                    rel="noopener license">CC BY 4.0</a>
+            </p>
+
+            <div class="container hs-nosotros__contenido">
+                <div class="hs-nosotros__panel hs-fade-in">
+                    <!-- Chips de vidrio de la Home: anuncian los dos modelos que se explican más abajo -->
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="hs-chip-vidrio hs-chip-vidrio--terracota">Buy One, Give One</span>
+                        <span class="hs-chip-vidrio hs-chip-vidrio--salvia">Buy One, Plant One</span>
+                    </div>
+                    <p class="hs-kicker hs-fade-in hs-retraso-1">Nosotros</p>
+                    <h1 class="hs-nosotros__titulo hs-fade-in hs-retraso-1"
+                        th:text="${bloques['nosotros.historia']?.titulo ?: 'Abrigar también puede cambiar una historia'}">
+                        Abrigar también puede cambiar una historia</h1>
+                    <p class="hs-nosotros__bajada hs-fade-in hs-retraso-2"
+                        th:text="${bloques['nosotros.historia']?.cuerpo ?: 'HÖSÉG nació en Perú con una pregunta sencilla: ¿y si cada prenda de abrigo pudiera entregar calor más allá de quien la compra?'}">
+                        Historia</p>
+                    <a th:href="@{${rutaConsulta}}" class="hs-btn hs-btn--primario hs-fade-in hs-retraso-3">
+                        Consulta el impacto de tu compra <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- SECCIÓN 2: MODELOS DE TRIPLE IMPACTO -->
-    <section class="hs-seccion py-5 bg-white">
-        <div class="container">
-            <div class="text-center mb-5">
-                <span class="hs-kicker text-uppercase tracking-wider">Triple Impacto</span>
-                <h2 class="hs-h3 fw-bold mt-1" style="color: var(--hs-bark);">Una compra, una acción visible</h2>
-                <p class="text-muted small">Un modelo simple de entender y exigente de cumplir junto a nuestra ONG aliada.</p>
-            </div>
-            <div class="row g-4">
-                <!-- Modelo 1:1 Abrigo -->
-                <div class="col-12 col-md-6">
-                    <div class="card p-4 border-0 h-100 shadow-sm" style="border-radius: var(--hs-radius); background-color: var(--hs-card);">
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <i class="bi bi-gift h4 mb-0" style="color: var(--hs-terracotta);"></i>
-                            <h3 class="h5 fw-bold mb-0 text-dark">Buy One, Give One</h3>
+        <!-- SECCIÓN 2: MODELOS DE TRIPLE IMPACTO -->
+        <!-- sin bg-white ni style="": fondo de la paleta (hs-seccion) y encabezado con aparición al scroll -->
+        <!-- hs-aurora pone manchas de color tras las tarjetas para que el vidrio se note; menos margen (mb-4) -->
+        <section class="hs-seccion hs-aurora">
+            <div class="container hs-ancho-md">
+                <div class="text-center mb-4" data-revelar>
+                    <span class="hs-kicker">Triple Impacto</span>
+                    <h2 class="hs-h2 mt-1 mb-2">Una compra, una acción visible</h2>
+                    <p class="hs-texto-secundario mx-auto hs-ancho-texto mb-0">Un modelo simple de entender y exigente
+                        de cumplir junto a nuestra ONG aliada.</p>
+                </div>
+                <div class="row g-4">
+                    <!-- Modelo 1:1 Abrigo -->
+                    <!-- tarjeta .hs-modelo (variante abrigo): caja de icono, badge, barra de color y
+                     icono de fondo que reaccionan al hover. Mismo icono bi-gift y mismo texto -->
+                    <div class="col-12 col-md-6" data-revelar>
+                        <div class="hs-modelo hs-modelo--abrigo">
+                            <i class="bi bi-gift hs-modelo__marca" aria-hidden="true"></i>
+                            <div class="hs-modelo__cabecera">
+                                <div class="hs-modelo__icono"><i class="bi bi-gift" aria-hidden="true"></i></div>
+                                <th:block th:replace="~{fragments/product-card :: badge(${tipoAbrigo})}" />
+                            </div>
+                            <h3 class="hs-modelo__titulo">Buy One, Give One</h3>
+                            <p class="hs-modelo__texto">Por cada prenda de abrigo elegible que compras, entregamos un
+                                abrigo de alta calidad a una persona en una comunidad vulnerable de Cusco.</p>
                         </div>
-                        <p class="small text-muted mb-0">Por cada prenda de abrigo elegible que compras, entregamos un abrigo de alta calidad a una persona en una comunidad vulnerable de Cusco.</p>
+                    </div>
+                    <!-- Modelo 1:1 Árbol -->
+                    <div class="col-12 col-md-6" data-revelar>
+                        <div class="hs-modelo hs-modelo--arbol">
+                            <i class="bi bi-tree hs-modelo__marca" aria-hidden="true"></i>
+                            <div class="hs-modelo__cabecera">
+                                <div class="hs-modelo__icono"><i class="bi bi-tree" aria-hidden="true"></i></div>
+                                <th:block th:replace="~{fragments/product-card :: badge(${tipoArbol})}" />
+                            </div>
+                            <h3 class="hs-modelo__titulo">Buy One, Plant One</h3>
+                            <p class="hs-modelo__texto">Por cada accesorio o producto de café seleccionado, financiamos
+                                y gestionamos la plantación y el cuidado de un árbol nativo junto a familias locales.
+                            </p>
+                        </div>
                     </div>
                 </div>
-                <!-- Modelo 1:1 Árbol -->
-                <div class="col-12 col-md-6">
-                    <div class="card p-4 border-0 h-100 shadow-sm" style="border-radius: var(--hs-radius); background-color: var(--hs-card);">
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <i class="bi bi-tree h4 mb-0" style="color: var(--hs-sage);"></i>
-                            <h3 class="h5 fw-bold mb-0 text-dark">Buy One, Plant One</h3>
-                        </div>
-                        <p class="small text-muted mb-0">Por cada accesorio o producto de café seleccionado, financiamos y gestionamos la plantación y el cuidado de un árbol nativo junto a familias locales.</p>
-                    </div>
-                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
         <!-- SECCIÓN 3: CIFRAS DE IMPACTO -->
-    <section class="hs-seccion py-5" style="background-color: var(--hs-cream-dark);">
-        <div class="container text-center">
-            <div class="mb-4">
-                <h2 class="hs-h3 fw-bold" style="color: var(--hs-bark);">Datos que nos comprometen</h2>
-                <p class="text-muted small">Los mostramos con orgullo porque cada cifra representa una acción real de nuestra base de datos.</p>
-            </div>
-            
-            <div class="row row-cols-2 row-cols-md-4 g-4 justify-content-center mt-2" th:if="${impacto != null}">
-                <div class="col">
-                    <i class="bi bi-gift text-muted h3 d-block mb-2"></i>
-                    <span class="h2 fw-bold d-block text-dark" th:text="${#numbers.formatInteger(impacto.abrigosEntregados, 1, 'COMMA')}">1,248</span>
-                    <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem;">Abrigos entregados</small>
+        <!-- franja oscura (color corteza) que rompe el ritmo y da peso a los datos. Las cifras ahora usan
+         el fragmento contador de la Home (fragments/impacto), así comparten diseño y el conteo animado de home.js.
+         Se mantienen los mismos 4 iconos y etiquetas que tenía esta página. -->
+        <section class="hs-seccion hs-cifras hs-aurora">
+            <div class="container hs-ancho-md text-center">
+                <div class="mb-4" data-revelar>
+                    <h2 class="hs-h2 hs-cifras__titulo mb-2">Datos que nos comprometen</h2>
+                    <p class="hs-cifras__bajada">Los mostramos con orgullo porque cada cifra representa una acción real
+                        de nuestra base de datos.</p>
                 </div>
-                <div class="col">
-                    <i class="bi bi-tree text-muted h3 d-block mb-2"></i>
-                    <span class="h2 fw-bold d-block text-dark" th:text="${#numbers.formatInteger(impacto.arbolesPlantados, 1, 'COMMA')}">874</span>
-                    <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem;">Árboles plantados</small>
-                </div>
-                <div class="col">
-                    <i class="bi bi-geo-alt text-muted h3 d-block mb-2"></i>
-                    <span class="h2 fw-bold d-block text-dark" th:text="${impacto.comunidadesAlcanzadas}">5</span>
-                    <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem;">Comunidades</small>
-                </div>
-                <div class="col">
-                    <i class="bi bi-cart-check text-muted h3 d-block mb-2"></i>
-                    <span class="h2 fw-bold d-block text-dark" th:text="${#numbers.formatInteger(impacto.pedidosConImpacto, 1, 'COMMA')}">2,104</span>
-                    <small class="text-muted text-uppercase fw-semibold" style="font-size: 0.75rem;">Pedidos con impacto</small>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- SECCIÓN 4: COMUNIDADES Y ONGS ALIADAS -->
-    <section class="hs-seccion py-5 bg-white">
-        <div class="container">
-            <div class="row g-4 align-items-center">
-                <div class="col-12 col-md-6">
-                    <span class="hs-kicker text-uppercase tracking-wider">Con quiénes caminamos</span>
-                    <h2 class="hs-h3 fw-bold my-2" style="color: var(--hs-bark);">Comunidades sostenidas</h2>
-                    <p class="hs-texto-secundario">Coordinamos cada jornada y entrega directamente en el territorio, respetando la organización local de Cusco.</p>
-                    
-                    <!-- Chips dinámicos para las comunidades -->
-                    <div class="mt-3 flex-wrap gap-2 d-flex">
-                        <span class="hs-chip" th:each="c : ${comunidades}" th:text="${c}">Omacha</span>
+                <div class="row row-cols-2 row-cols-md-4 g-3 justify-content-center" th:if="${impacto != null}">
+                    <div class="col" data-revelar>
+                        <th:block
+                            th:replace="~{fragments/impacto :: contador('bi-gift', ${impacto.abrigosEntregados}, 'Abrigos entregados')}" />
                     </div>
-                </div>
-                
-                <div class="col-12 col-md-6">
-                    <div class="card p-4 border-0 shadow-sm" style="border-radius: var(--hs-radius); background-color: var(--hs-card); border: 1px solid var(--hs-sand) !important;">
-                        <h3 class="h6 text-uppercase tracking-wider text-muted fw-bold mb-3">ONG Aliada Principal</h3>
-                        <!-- Iteración de ONGs aliadas -->
-                        <div th:each="o : ${ongs}" class="d-flex align-items-center gap-2 mb-2 last-mb-0">
-                            <i class="bi bi-shield-check text-success h5 mb-0"></i>
-                            <span class="fw-bold text-dark" th:text="${o}">Pachamama Raymi</span>
-                        </div>
-                        <hr class="my-3 text-black-50 opacity-10">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-patch-check-fill text-primary h5 mb-0"></i>
-                            <span class="small text-muted">Empresa B Corp en proceso de certificación estándar.</span>
-                        </div>
+                    <div class="col" data-revelar>
+                        <th:block
+                            th:replace="~{fragments/impacto :: contador('bi-tree', ${impacto.arbolesPlantados}, 'Árboles plantados')}" />
+                    </div>
+                    <div class="col" data-revelar>
+                        <th:block
+                            th:replace="~{fragments/impacto :: contador('bi-geo-alt', ${impacto.comunidadesAlcanzadas}, 'Comunidades')}" />
+                    </div>
+                    <div class="col" data-revelar>
+                        <th:block
+                            th:replace="~{fragments/impacto :: contador('bi-cart-check', ${impacto.pedidosConImpacto}, 'Pedidos con impacto')}" />
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-</main>
+        <!-- SECCIÓN 4: COMUNIDADES Y ONGS ALIADAS -->
+        <!-- CAMBIO (v2): manchas de color (versión inversa) y menos separación entre columnas -->
+        <section class="hs-seccion hs-aurora hs-aurora--inversa">
+            <div class="container hs-ancho-md">
+                <div class="row g-4 g-md-5 align-items-center">
+                    <div class="col-12 col-md-6" data-revelar>
+                        <span class="hs-kicker">Con quiénes caminamos</span>
+                        <h2 class="hs-h2 my-2">Comunidades sostenidas</h2>
+                        <p class="hs-texto-secundario">Coordinamos cada jornada y entrega directamente en el territorio,
+                            respetando la organización local de Cusco.</p>
+
+                        <!-- Chips dinámicos para las comunidades -->
+                        <!-- cada chip se eleva y se tiñe de terracota al pasar el cursor -->
+                        <div class="mt-3 flex-wrap gap-2 d-flex">
+                            <span class="hs-chip hs-chip--vivo" th:each="c : ${comunidades}"
+                                th:text="${c}">Omacha</span>
+                        </div>
+                    </div>
+
+                    <!-- tarjeta de confianza .hs-aliada, ahora de vidrio. Se quitan los colores de Bootstrap (text-success,
+                     text-primary) que no son de la marca: ahora salvia para la ONG y ámbar para el sello B Corp -->
+                    <div class="col-12 col-md-6" data-revelar>
+                        <div class="hs-aliada">
+                            <h3 class="hs-aliada__etiqueta">ONG Aliada Principal</h3>
+                            <!-- Iteración de ONGs aliadas -->
+                            <div th:each="o : ${ongs}" class="hs-aliada__fila">
+                                <span class="hs-aliada__icono"><i class="bi bi-shield-check"
+                                        aria-hidden="true"></i></span>
+                                <span class="hs-aliada__nombre" th:text="${o}">Pachamama Raymi</span>
+                            </div>
+                            <hr class="hs-aliada__separador">
+                            <div class="hs-aliada__fila">
+                                <span class="hs-aliada__icono hs-aliada__icono--sello"><i class="bi bi-patch-check-fill"
+                                        aria-hidden="true"></i></span>
+                                <p class="hs-aliada__sello">Empresa B Corp en proceso de certificación estándar.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <!-- home.js ya trae el conteo animado de las cifras (data-contador) -->
+    <script th:src="@{/js/home.js}" defer></script>
+    <script th:src="@{/js/nosotros.js}" defer></script>
 </body>
+
 </html>

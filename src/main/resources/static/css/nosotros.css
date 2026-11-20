@@ -1,0 +1,523 @@
+/* =====================================================================
+   HÖSÉG Web · Nosotros
+   Estilos propios de /nosotros (templates/institucional/nosotros.html).
+   Todo sale de tokens.css: aquí no hay colores literales (las mezclas con
+   transparencia usan color-mix sobre variables de la paleta). Lo que ya
+   existe se reutiliza tal cual (hs-btn, hs-badge, hs-chip-vidrio,
+   hs-contador, hsFadeSlide, el velo y el vidrio del hero de la Home).
+   ===================================================================== */
+
+/* ---------- Animaciones propias (hsFadeSlide ya vive en tokens.css) ---- */
+@keyframes hsAcercar {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes hsTrazo {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Entrada escalonada: reutiliza .hs-fade-in (tokens.css) con retraso.
+   `both` evita el parpadeo: el elemento espera oculto su turno. */
+.hs-nosotros .hs-fade-in {
+  animation-fill-mode: both;
+}
+.hs-nosotros .hs-retraso-1 {
+  animation-delay: 0.1s;
+}
+.hs-nosotros .hs-retraso-2 {
+  animation-delay: 0.25s;
+}
+.hs-nosotros .hs-retraso-3 {
+  animation-delay: 0.4s;
+}
+
+/* Aparición al hacer scroll. nosotros.js añade .is-animado al <main> solo si
+   el navegador no pidió menos movimiento; sin JS todo queda visible. */
+.hs-nosotros.is-animado [data-revelar] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s var(--hs-ease),
+    transform 0.7s var(--hs-ease);
+}
+
+.hs-nosotros.is-animado [data-revelar].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Escalonado entre hermanos (tarjetas y cifras) */
+.hs-nosotros [data-revelar]:nth-child(2) {
+  transition-delay: 0.12s;
+}
+.hs-nosotros [data-revelar]:nth-child(3) {
+  transition-delay: 0.24s;
+}
+.hs-nosotros [data-revelar]:nth-child(n + 4) {
+  transition-delay: 0.36s;
+}
+
+/* ---------- Ritmo vertical: menos aire que el valor global ----------- */
+.hs-nosotros .hs-seccion {
+  padding: 3.5rem 0;
+}
+
+@media (min-width: 768px) {
+  .hs-nosotros .hs-seccion {
+    padding: 4.5rem 0;
+  }
+}
+
+/* ---------- Manchas de color tras el vidrio --------------------------
+   El vidrio solo se nota si hay color detrás: dos manchas difuminadas con
+   terracota y salvia, que además dan vida al fondo liso. */
+.hs-aurora {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hs-aurora::before,
+.hs-aurora::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 30rem;
+  height: 30rem;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.hs-aurora::before {
+  top: -10rem;
+  left: -9rem;
+  background: var(--hs-terracotta);
+  opacity: 0.22;
+}
+
+.hs-aurora::after {
+  right: -9rem;
+  bottom: -11rem;
+  background: var(--hs-sage);
+  opacity: 0.28;
+}
+
+.hs-aurora--inversa::before {
+  top: auto;
+  bottom: -11rem;
+  left: auto;
+  right: -9rem;
+}
+.hs-aurora--inversa::after {
+  top: -10rem;
+  bottom: auto;
+  right: auto;
+  left: -9rem;
+}
+
+/* La franja oscura reutiliza las manchas con más fuerza */
+.hs-cifras.hs-aurora::before {
+  opacity: 0.45;
+}
+.hs-cifras.hs-aurora::after {
+  opacity: 0.4;
+}
+
+/* ---------- 1 · Historia (banner con foto a todo el ancho) -----------
+   Misma receta que el hero de la Home: foto + velo + panel de vidrio. */
+.hs-nosotros__hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 34rem;
+  /* CAMBIO (navbar): el banner sube hasta el borde de la pantalla, bajo la barra transparente.
+     Este relleno (56 px móvil / 64 px escritorio = alto de la barra) evita que el panel quede tapado. */
+  padding-top: 56px;
+  overflow: hidden;
+  background: var(
+    --hs-bark
+  ); /* si la foto no carga, el texto claro sigue legible */
+}
+
+@media (min-width: 768px) {
+  /* CAMBIO (navbar): altura de la barra en escritorio */
+  .hs-nosotros__hero {
+    padding-top: 64px;
+  }
+}
+
+@media (min-width: 992px) {
+  .hs-nosotros__hero {
+    align-items: center;
+    /* CAMBIO (navbar): ya no se resta la barra, porque el banner empieza en el borde superior */
+    min-height: min(40rem, 100svh);
+  }
+}
+
+.hs-nosotros__fondo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: hsAcercar 2s var(--hs-ease) both;
+}
+
+.hs-nosotros__velo {
+  position: absolute;
+  inset: 0;
+  background: var(--hs-velo-hero);
+}
+
+.hs-nosotros__contenido {
+  position: relative;
+  z-index: 1;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.hs-nosotros__panel {
+  max-width: 35rem;
+  padding: 28px;
+  border: 1px solid var(--hs-pill-border);
+  border-radius: 24px;
+  background: var(--hs-pill-bg);
+  -webkit-backdrop-filter: var(--hs-pill-blur);
+  backdrop-filter: var(--hs-pill-blur);
+  box-shadow: var(--hs-shadow-pill);
+  color: var(--hs-cream);
+}
+
+@media (min-width: 768px) {
+  .hs-nosotros__panel {
+    padding: 40px;
+  }
+}
+
+.hs-nosotros__panel .hs-kicker {
+  margin: 1.25rem 0 0;
+  color: var(--hs-cream-75);
+}
+
+.hs-nosotros__titulo {
+  margin: 0.5rem 0 1.25rem;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--hs-cream);
+}
+
+/* Trazo terracota que se dibuja bajo el titular */
+.hs-nosotros__titulo::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 3px;
+  margin-top: 1.25rem;
+  border-radius: var(--hs-radius-pill);
+  background: var(--hs-terracotta);
+  transform-origin: left;
+  animation: hsTrazo 0.8s var(--hs-ease) 0.7s both;
+}
+
+.hs-nosotros__bajada {
+  margin: 0 0 1.75rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--hs-cream-82);
+}
+
+.hs-nosotros .hs-btn {
+  transition:
+    background var(--hs-t-fast),
+    color var(--hs-t-fast),
+    border-color var(--hs-t-fast),
+    transform var(--hs-t-fast),
+    box-shadow var(--hs-t-fast);
+}
+
+.hs-nosotros .hs-btn--primario:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--hs-shadow-card-hover);
+}
+
+.hs-nosotros .hs-btn .bi {
+  transition: transform var(--hs-t-fast);
+}
+.hs-nosotros .hs-btn:hover .bi {
+  transform: translateX(4px);
+}
+
+/* ---------- Vidrio claro (modelos, ONG y resultado de la consulta de impacto) ---------- */
+.hs-modelo,
+.hs-aliada,
+.hs-resultado {
+  border: 1px solid var(--hs-sand);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--hs-card) 62%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+  box-shadow: var(--hs-shadow-card), var(--hs-brillo-badge);
+}
+
+/* ---------- 2 · Triple impacto -------------------------------------- */
+.hs-modelo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  padding: 28px;
+  overflow: hidden;
+  transition:
+    transform 0.25s var(--hs-ease),
+    box-shadow 0.25s var(--hs-ease);
+}
+
+.hs-modelo:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--hs-shadow-card-hover), var(--hs-brillo-badge);
+}
+
+/* Barra de color que se extiende al pasar el cursor */
+.hs-modelo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--hs-acento);
+  transform: scaleX(0.18);
+  transform-origin: left;
+  transition: transform 0.45s var(--hs-ease);
+}
+
+.hs-modelo:hover::before {
+  transform: scaleX(1);
+}
+
+.hs-modelo--abrigo {
+  --hs-acento: var(--hs-terracotta);
+  --hs-acento-suave: var(--hs-terracotta-light);
+}
+.hs-modelo--arbol {
+  --hs-acento: var(--hs-sage);
+  --hs-acento-suave: var(--hs-sage-light);
+}
+
+/* Icono grande de fondo, decorativo */
+.hs-modelo__marca {
+  position: absolute;
+  right: -16px;
+  bottom: -28px;
+  color: var(--hs-acento-suave);
+  font-size: 9rem;
+  line-height: 1;
+  pointer-events: none;
+  transition: transform 0.5s var(--hs-ease);
+}
+
+.hs-modelo:hover .hs-modelo__marca {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+.hs-modelo__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--hs-acento-suave);
+  color: var(--hs-acento);
+  font-size: 28px;
+  transition: transform 0.3s var(--hs-ease);
+}
+
+.hs-modelo:hover .hs-modelo__icono {
+  transform: scale(1.1) rotate(-6deg);
+}
+
+.hs-modelo__cabecera {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hs-modelo__titulo {
+  position: relative;
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--hs-bark);
+}
+
+.hs-modelo__texto {
+  position: relative;
+  max-width: 26rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--hs-muted);
+}
+
+/* ---------- 3 · Cifras de impacto (franja oscura) -------------------
+   Reutiliza fragments/impacto :: contador, vestido de vidrio sobre fondo
+   corteza con las mismas variables del hero de la Home. */
+.hs-cifras {
+  background: var(--hs-bark);
+  color: var(--hs-cream);
+}
+
+.hs-cifras__titulo {
+  color: var(--hs-cream);
+}
+
+.hs-cifras__bajada {
+  max-width: 32rem;
+  margin: 0 auto;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--hs-cream-75);
+}
+
+.hs-cifras .hs-contador {
+  border-color: var(--hs-vidrio-borde);
+  background: var(--hs-vidrio-bg);
+  box-shadow: var(--hs-brillo-vidrio);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  transition:
+    transform 0.25s var(--hs-ease),
+    background var(--hs-t-fast);
+}
+
+.hs-cifras .hs-contador:hover {
+  transform: translateY(-4px);
+  background: var(--hs-vidrio-bg-hover);
+}
+
+.hs-cifras .hs-contador__icono {
+  background: var(--hs-chip-terracota-bg);
+  color: var(--hs-cream);
+}
+
+.hs-cifras .hs-contador__cifra {
+  color: var(--hs-cream);
+}
+.hs-cifras .hs-contador__etiqueta {
+  color: var(--hs-cream-82);
+}
+
+/* ---------- 4 · Comunidades y ONG aliada ---------------------------- */
+.hs-chip--vivo {
+  transition:
+    transform var(--hs-t-fast),
+    background var(--hs-t-fast),
+    border-color var(--hs-t-fast);
+}
+
+.hs-chip--vivo:hover {
+  transform: translateY(-2px);
+  border-color: var(--hs-terracotta);
+  background: var(--hs-terracotta-light);
+}
+
+.hs-aliada {
+  padding: 28px;
+}
+
+.hs-aliada__etiqueta {
+  margin: 0 0 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--hs-muted);
+}
+
+.hs-aliada__fila {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hs-aliada__fila + .hs-aliada__fila {
+  margin-top: 12px;
+}
+
+.hs-aliada__icono {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--hs-sage-light);
+  color: var(--hs-sage);
+  font-size: 22px;
+}
+
+.hs-aliada__icono--sello {
+  background: var(--hs-amber-light);
+  color: var(--hs-amber);
+}
+
+.hs-aliada__nombre {
+  font-family: var(--hs-font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--hs-bark);
+}
+
+.hs-aliada__sello {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--hs-muted);
+}
+
+.hs-aliada__separador {
+  height: 1px;
+  margin: 20px 0;
+  border: 0;
+  background: var(--hs-sand);
+  opacity: 0.7;
+}
+
+/* Respetar a quien pide menos movimiento (accesibilidad) */
+@media (prefers-reduced-motion: reduce) {
+  .hs-nosotros__titulo::after,
+  .hs-nosotros__fondo {
+    animation: none;
+  }
+  .hs-nosotros [data-revelar] {
+    transition: none;
+  }
+  .hs-modelo,
+  .hs-modelo::before,
+  .hs-modelo__marca,
+  .hs-modelo__icono,
+  .hs-cifras .hs-contador,
+  .hs-chip--vivo,
+  .hs-nosotros .hs-btn,
+  .hs-nosotros .hs-btn .bi {
+    transition: none;
+  }
+}
