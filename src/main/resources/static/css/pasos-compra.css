@@ -1,0 +1,73 @@
+/* =====================================================================
+   HÖSÉG Web · Indicador de pasos de la compra (fragments/pasos-compra.html)
+   Usado en Entrega y Pago. La estructura (lista, flex, separaciones) es de
+   Bootstrap; aquí solo están los colores de la paleta y el círculo numerado.
+   Sin colores literales: todo sale de tokens.css.
+   ===================================================================== */
+
+.hs-pasos {
+  padding: 0;
+  color: var(--hs-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.hs-pasos__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hs-pasos__enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+}
+.hs-pasos__enlace:hover {
+  color: var(--hs-terracotta);
+}
+
+/* Círculo con el número (o la marca de verificación) */
+.hs-pasos__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--hs-sand);
+  border-radius: 50%;
+  background: var(--hs-card);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Paso ya completado: verde salvia */
+.hs-pasos__item.is-hecho .hs-pasos__num {
+  border-color: color-mix(in srgb, var(--hs-sage) 35%, transparent);
+  background: var(--hs-sage-light);
+  color: var(--hs-sage);
+}
+
+/* Paso actual: terracota, con el texto más fuerte */
+.hs-pasos__item.is-actual {
+  color: var(--hs-bark);
+  font-weight: 700;
+}
+.hs-pasos__item.is-actual .hs-pasos__num {
+  border-color: var(--hs-terracotta);
+  background: var(--hs-terracotta);
+  color: var(--hs-sobre-acento);
+}
+
+/* Raya entre pasos */
+.hs-pasos__raya {
+  width: 28px;
+  height: 2px;
+  border-radius: var(--hs-radius-pill);
+  background: var(--hs-sand);
+}
+.hs-pasos__raya.is-hecho {
+  background: var(--hs-sage);
+}
