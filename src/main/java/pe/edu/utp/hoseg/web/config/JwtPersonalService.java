@@ -26,9 +26,9 @@ public class JwtPersonalService {
     private final long horasGestorImpacto;
 
     public JwtPersonalService(JwtEncoder codificador,
-                              @Value("${hoseg.jwt.personal.horas-administrador:8}") long horasAdministrador,
-                              @Value("${hoseg.jwt.personal.horas-logistica:8}") long horasLogistica,
-                              @Value("${hoseg.jwt.personal.horas-gestor-impacto:8}") long horasGestorImpacto) {
+            @Value("${hoseg.jwt.personal.horas-administrador:8}") long horasAdministrador,
+            @Value("${hoseg.jwt.personal.horas-logistica:8}") long horasLogistica,
+            @Value("${hoseg.jwt.personal.horas-gestor-impacto:8}") long horasGestorImpacto) {
         this.codificador = codificador;
         this.horasAdministrador = horasAdministrador;
         this.horasLogistica = horasLogistica;
