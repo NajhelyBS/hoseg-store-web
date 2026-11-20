@@ -28,6 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 3. Autocompletado de DNI (RENIEC) o RUC (SUNAT) en registro
+
+    // 3. Autocompletado de DNI (RENIEC) o RUC (SUNAT) en registro
+
+    // 3. Autocompletado de DNI (RENIEC) o RUC (SUNAT)
     const tipoSel = document.getElementById('tipoDoc');
     const numInput = document.getElementById('numDoc');
     const nombreInput = document.getElementById('nombre');
@@ -35,43 +39,104 @@ document.addEventListener('DOMContentLoaded', () => {
     const dirInput = document.getElementById('direccion');
 
     if (tipoSel && numInput) {
-        const aviso = document.createElement('small');
-        aviso.className = 'text-muted d-block mt-1';
-        numInput.parentNode.appendChild(aviso);
+
+        const estadoDoc = document.createElement('small');
+        estadoDoc.className = 'form-text d-block mt-1';
+        estadoDoc.style.fontSize = '12px';
+        numInput.insertAdjacentElement('afterend', estadoDoc);
+
+        let ultimaConsulta = '';
+
+        function mostrarEstado(mensaje, color) {
+            estadoDoc.textContent = mensaje;
+            estadoDoc.style.color = color;
+        }
 
         async function buscarDocumento() {
+
             const tipo = tipoSel.value;
             const num = numInput.value.trim();
-            if ((tipo === 'DNI' && num.length === 8) || (tipo === 'RUC' && num.length === 11)) {
-                aviso.textContent = 'Consultando ' + tipo + '...';
-                try {
-                    const res = await fetch('/api/documento/' + tipo + '/' + encodeURIComponent(num));
-                    if (res.ok) {
-                        const data = await res.json();
-                        if (data.nombres && nombreInput) nombreInput.value = data.nombres;
-                        if (apellidoInput) apellidoInput.value = data.apellidos || (tipo === 'RUC' ? 'EMPRESA' : '');
-                        if (data.direccion && dirInput && !dirInput.value) dirInput.value = data.direccion;
-                        aviso.textContent = 'Datos verificados (' + data.fuente + ').';
-                    } else {
-                        aviso.textContent = '';
-                    }
-                } catch (_) {
-                    aviso.textContent = '';
+
+            if (!((tipo === 'DNI' && num.length === 8) ||
+                (tipo === 'RUC' && num.length === 11))) {
+                return;
+            }
+
+            const clave = tipo + num;
+
+            if (ultimaConsulta === clave) return;
+
+            ultimaConsulta = clave;
+
+            mostrarEstado('Consultando documento...', '#D69A35');
+
+            try {
+
+                const res = await fetch(
+                    '/api/documento/' + tipo + '/' + encodeURIComponent(num)
+                );
+
+                if (!res.ok) {
+                    mostrarEstado('No se encontraron datos.', '#C58A32');
+                    ultimaConsulta = '';
+                    return;
                 }
+
+                const data = await res.json();
+
+                if (!data.nombres) {
+                    mostrarEstado('No se encontraron datos.', '#C58A32');
+                    ultimaConsulta = '';
+                    return;
+                }
+
+                if (nombreInput) {
+                    nombreInput.value = data.nombres;
+                }
+
+                if (apellidoInput) {
+                    apellidoInput.value = data.apellidos || '';
+                }
+
+                if (data.direccion && dirInput && !dirInput.value) {
+                    dirInput.value = data.direccion;
+                }
+
+                mostrarEstado('Documento validado correctamente.', '#27966A');
+
+            } catch (error) {
+
+                mostrarEstado('No se pudo realizar la consulta.', '#C58A32');
+                ultimaConsulta = '';
+
+                console.error('Error al consultar documento:', error);
             }
         }
 
-        numInput.addEventListener('blur', buscarDocumento);
         numInput.addEventListener('input', () => {
+            ultimaConsulta = '';
+            estadoDoc.textContent = '';
+
             const tipo = tipoSel.value;
             const len = numInput.value.trim().length;
-            if ((tipo === 'DNI' && len === 8) || (tipo === 'RUC' && len === 11)) {
+
+            if ((tipo === 'DNI' && len === 8) ||
+                (tipo === 'RUC' && len === 11)) {
                 buscarDocumento();
             }
         });
+
+        numInput.addEventListener('blur', buscarDocumento);
+
+        tipoSel.addEventListener('change', () => {
+            ultimaConsulta = '';
+            estadoDoc.textContent = '';
+        });
     }
 
-        // 4. Botón para copiar código de comprobante o seguimiento en detalle de pedido
+
+
+    // 4. Botón para copiar código de comprobante o seguimiento en detalle de pedido
     document.querySelectorAll('[data-copy-target]').forEach(btn => {
         btn.addEventListener('click', () => {
             const target = document.getElementById(btn.dataset.copyTarget);
@@ -87,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-        // 5. Indicador de coincidencia de contraseña en restablecer clave
+    // 5. Indicador de coincidencia de contraseña en restablecer clave
     const pNueva = document.getElementById('nueva');
     const pConf = document.getElementById('confirmacion');
     const pMsg = document.getElementById('pass-match-msg');
@@ -100,5 +165,5 @@ document.addEventListener('DOMContentLoaded', () => {
         pConf.addEventListener('input', revisarCoincidencia);
     }
 
-    
+
 });
