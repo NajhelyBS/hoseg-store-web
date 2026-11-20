@@ -45,7 +45,8 @@
                 </a>
             </div>
 
-           <p class="hs-aviso-deslizar d-md-none px-3 pt-2 mb-1"><span>Desliza la tabla para ver acciones</span><i class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i></p>
+            <p class="hs-aviso-deslizar d-md-none px-3 pt-2 mb-1"><span>Desliza la tabla para ver acciones</span><i
+                    class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i></p>
 
             <div class="hs-table-scroll">
                 <table class="hs-admin-table">
@@ -133,7 +134,10 @@
             </div>
         </section>
 
-           
+        <!-- >>> Aviso de stock bajo al entrar (Pedidos es la primera pantalla de Logística).
+             Es el fragmento compartido con Inventario; el controlador ya envía 'productosCriticos'. -->
+        <th:block th:replace="~{logistica/fragmentos :: avisoStock}" />
+        <!-- <<< Mejora -->
 
     </main>
 </body>

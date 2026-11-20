@@ -47,9 +47,9 @@
             </p>
 
             <p class="hs-aviso-deslizar d-md-none px-3 pt-2 mb-1">
-    <span>Desliza la tabla para ver más</span>
-    <i class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i>
-</p>
+                <span>Desliza la tabla para ver más</span>
+                <i class="bi bi-arrow-right hs-aviso-deslizar__flecha" aria-hidden="true"></i>
+            </p>
 
             <div class="hs-table-scroll">
                 <table class="hs-admin-table">
@@ -64,11 +64,11 @@
                             <th scope="col">Reposición</th>
                         </tr>
                     </thead>
-                                    <tbody>
-                <tr th:each="p : ${productos}" class="hs-inv-row"
-                    th:classappend="${p.stockComercial <= p.stockMinimo} ? 'is-critico'"
-                    th:attr="data-critico=${p.stockComercial <= p.stockMinimo}">
-                    <td><span class="hs-code-pill" th:text="${p.codigo}">HSG-001</span></td>
+                    <tbody>
+                        <tr th:each="p : ${productos}" class="hs-inv-row"
+                            th:classappend="${p.stockComercial <= p.stockMinimo} ? 'is-critico'"
+                            th:attr="data-critico=${p.stockComercial <= p.stockMinimo}">
+                            <td><span class="hs-code-pill" th:text="${p.codigo}">HSG-001</span></td>
 
                             <td>
                                 <strong th:text="${p.nombre}">Casaca</strong>
@@ -136,21 +136,21 @@
                         <h2 class="modal-title" id="titulo-modal-prod">Registrar nuevo producto</h2>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
-                                        <form method="post" th:action="@{/logistica/inventario/nuevo}">
+                    <form method="post" th:action="@{/logistica/inventario/nuevo}">
                         <div class="modal-body">
                             <div class="row g-3">
                                 <div class="col-12 col-md-6">
                                     <div class="hs-field">
                                         <label for="prod-codigo">CÓDIGO *</label>
                                         <input id="prod-codigo" name="codigo" class="hs-admin-input w-100"
-                                               placeholder="Ej. HSG-PON-001" required maxlength="30">
+                                            placeholder="Ej. HSG-PON-001" required maxlength="30">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="hs-field">
                                         <label for="prod-talla">TALLA</label>
                                         <input id="prod-talla" name="talla" class="hs-admin-input w-100"
-                                               placeholder="S, M, L o Única" maxlength="10">
+                                            placeholder="S, M, L o Única" maxlength="10">
                                     </div>
                                 </div>
 
@@ -158,7 +158,7 @@
                                     <div class="hs-field">
                                         <label for="prod-nombre">NOMBRE DEL PRODUCTO *</label>
                                         <input id="prod-nombre" name="nombre" class="hs-admin-input w-100"
-                                               placeholder="Ej. Poncho Andino Alpaca" required maxlength="150">
+                                            placeholder="Ej. Poncho Andino Alpaca" required maxlength="150">
                                     </div>
                                 </div>
 
@@ -166,14 +166,14 @@
                                     <div class="hs-field">
                                         <label for="prod-cat">CATEGORÍA *</label>
                                         <input id="prod-cat" name="categoria" class="hs-admin-input w-100"
-                                               placeholder="Casacas, Chullos..." required maxlength="60">
+                                            placeholder="Casacas, Chullos..." required maxlength="60">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="hs-field">
                                         <label for="prod-precio">PRECIO (S/) *</label>
                                         <input id="prod-precio" name="precio" type="number" step="0.01" min="1"
-                                               class="hs-admin-input w-100" placeholder="189.90" required>
+                                            class="hs-admin-input w-100" placeholder="189.90" required>
                                     </div>
                                 </div>
 
@@ -181,14 +181,14 @@
                                     <div class="hs-field">
                                         <label for="prod-stock">STOCK INICIAL *</label>
                                         <input id="prod-stock" name="stockInicial" type="number" min="0" value="10"
-                                               class="hs-admin-input w-100" required>
+                                            class="hs-admin-input w-100" required>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <div class="hs-field">
                                         <label for="prod-min">MÍNIMO *</label>
                                         <input id="prod-min" name="stockMinimo" type="number" min="0" value="3"
-                                               class="hs-admin-input w-100" required>
+                                            class="hs-admin-input w-100" required>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -205,7 +205,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="hs-admin-btn hs-admin-btn--ghost"
-                                    data-bs-dismiss="modal">Cancelar</button>
+                                data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" class="hs-admin-btn hs-admin-btn--primary">
                                 <i class="bi bi-check2" aria-hidden="true"></i> Guardar producto
                             </button>
@@ -216,30 +216,12 @@
             </div>
         </div>
 
-
-            <aside th:if="${productosCriticos != null and !productosCriticos.isEmpty()}"
-           class="hs-stock-toast" id="toastStockCritico" role="alert" hidden>
-        <div class="hs-stock-toast__head">
-            <span><i class="bi bi-exclamation-triangle-fill me-1"></i>
-                <strong th:text="${#lists.size(productosCriticos)} + ' producto(s) en stock bajo'">2 en stock bajo</strong>
-            </span>
-            <button type="button" class="btn-close btn-sm" id="btnCerrarStockToast" aria-label="Cerrar aviso"></button>
-        </div>
-        <ul class="hs-stock-toast__list">
-            <li th:each="pc, stat : ${productosCriticos}" th:if="${stat.index < 4}">
-                <span th:text="${pc.nombre + ' (' + pc.tallaMostrada + ')'}">Chompa (M)</span>
-                <strong th:text="${pc.stockComercial} + ' u.'">2 u.</strong>
-            </li>
-        </ul>
-        <button type="button" id="btnVerSoloCriticos"
-                class="hs-admin-btn hs-admin-btn--primary w-100 justify-content-center mt-2">
-            <i class="bi bi-funnel me-1"></i> Filtrar stock crítico
-        </button>
-    </aside>
+        <!-- >>> El aviso de stock bajo ahora es el fragmento compartido con Pedidos
+             (logistica/fragmentos.html). -->
+        <th:block th:replace="~{logistica/fragmentos :: avisoStock}" />
+        <!-- <<<  -->
 
     </main>
-
-
 
 </body>
 
