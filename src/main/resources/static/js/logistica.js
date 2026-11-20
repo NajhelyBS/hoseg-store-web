@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function crearPaginador({ filasSelector, wrapId, infoId, numId, prevId, nextId, porPagina = 10, filtroFn = () => true }) {
         const todas = Array.from(document.querySelectorAll(filasSelector));
         const wrap = document.getElementById(wrapId);
-        if (!todas.length || !wrap) return { reiniciar: () => {} };
+        if (!todas.length || !wrap) return { reiniciar: () => { } };
 
         const info = document.getElementById(infoId);
         const num = document.getElementById(numId);
@@ -98,7 +98,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Aviso flotante de stock crítico en Inventario (una vez por sesión)
+    // >>> Aviso de stock crítico (Pedidos al iniciar sesión e Inventario)
+    // 4. Aviso flotante de stock crítico: se muestra una vez por sesión de trabajo.
+    //    Al cerrar sesión se borra la marca, para que vuelva a salir en el siguiente inicio.
+    document.querySelectorAll('form[action$="/admin/logout"]').forEach(f => {
+        f.addEventListener('submit', () => sessionStorage.removeItem('hs_stock_toast_visto'));
+    });
+
     const toastStock = document.getElementById('toastStockCritico');
     if (toastStock) {
         if (!sessionStorage.getItem('hs_stock_toast_visto')) {
@@ -112,9 +118,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnFiltrar) {
             btnFiltrar.addEventListener('click', () => {
                 const tabCritico = document.querySelector('[data-inv-filter="CRITICO"]');
-                if (tabCritico) tabCritico.click();
-                toastStock.remove();
+                if (tabCritico) {
+                    // Ya estamos en Inventario: se aplica el filtro aquí mismo
+                    tabCritico.click();
+                    toastStock.remove();
+                } else if (toastStock.dataset.destino) {
+                    // Estamos en Pedidos: se va a Inventario ya filtrado
+                    window.location.href = toastStock.dataset.destino;
+                }
             });
         }
     }
+
+    // Si se llega a Inventario con ?filtro=critico, se activa la pestaña de stock crítico
+    if (new URLSearchParams(window.location.search).get('filtro') === 'critico') {
+        const tab = document.querySelector('[data-inv-filter="CRITICO"]');
+        if (tab) tab.click();
+    }
+    // <<< Aviso de stock crítico
 });
