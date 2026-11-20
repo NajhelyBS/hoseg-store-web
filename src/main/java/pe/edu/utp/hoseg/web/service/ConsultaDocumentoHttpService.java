@@ -17,28 +17,31 @@ public class ConsultaDocumentoHttpService implements ConsultaDocumentoService {
 
     private final RestClient restClient;
     private final String token;
-    private final ConsultaDocumentoSimulador simulador;
 
     public ConsultaDocumentoHttpService(
-            @Value("${hoseg.documento-api.url:https://decolecta.com}") String baseUrl,
-            @Value("${hoseg.documento-api.token:${DOCUMENTO_API_TOKEN:}}") String token,
-            ConsultaDocumentoSimulador simulador) {
+            @Value("${hoseg.documento-api.url:https://api.decolecta.com/v1}") String baseUrl,
+            @Value("${hoseg.documento-api.token:${DOCUMENTO_API_TOKEN:}}") String token) {
+
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(Duration.ofSeconds(3));
-        factory.setReadTimeout(Duration.ofSeconds(3));
+
+        factory.setConnectTimeout(Duration.ofSeconds(5));
+        factory.setReadTimeout(Duration.ofSeconds(10));
+
         this.restClient = RestClient.builder()
                 .baseUrl(baseUrl)
                 .requestFactory(factory)
                 .build();
+
         this.token = token == null ? "" : token.trim();
-        this.simulador = simulador;
     }
 
     @Override
     public Optional<DocumentoConsultado> consultar(String tipo, String numero) {
-        if (tipo == null || numero == null) {
+
+        if (tipo == null || numero == null || token.isBlank()) {
             return Optional.empty();
         }
+
         String tipoNorm = tipo.trim().toUpperCase();
         String numNorm = numero.trim();
 
@@ -47,57 +50,84 @@ public class ConsultaDocumentoHttpService implements ConsultaDocumentoService {
             return Optional.empty();
         }
 
-        if (token.isBlank()) {
-            return simulador.consultar(tipoNorm, numNorm);
-        }
-
         try {
-            String path = "DNI".equals(tipoNorm)
-                    ? "/reniec/dni?numero=" + numNorm
-                    : "/sunat/ruc?numero=" + numNorm;
 
-            @SuppressWarnings("unchecked")
-            Map<String, Object> body = restClient.get()
-                    .uri(path)
+            String endpoint = "DNI".equals(tipoNorm)
+                    ? "/reniec/dni?numero={numero}"
+                    : "/sunat/ruc?numero={numero}";
+
+            Map<?, ?> body = restClient.get()
+                    .uri(endpoint, numNorm)
                     .header("Accept", "application/json")
                     .header("Authorization", "Bearer " + token)
                     .retrieve()
                     .body(Map.class);
 
             if (body == null || body.isEmpty()) {
-                return simulador.consultar(tipoNorm, numNorm);
+                return Optional.empty();
             }
 
             if ("DNI".equals(tipoNorm)) {
-                String nombres = str(body, "first_name", "nombres");
-                String apPat = str(body, "first_last_name", "apellidoPaterno");
-                String apMat = str(body, "second_last_name", "apellidoMaterno");
-                String apellidos = (apPat + " " + apMat).trim();
-                String completo = str(body, "full_name", "nombreCompleto");
-                if (completo.isBlank()) completo = (nombres + " " + apellidos).trim();
-                if (!completo.isBlank()) {
-                    return Optional.of(new DocumentoConsultado("DNI", numNorm, nombres, apellidos, completo, "", "RENIEC"));
+
+                String nombres = str(body, "first_name");
+                String apellidoPaterno = str(body, "first_last_name");
+                String apellidoMaterno = str(body, "second_last_name");
+
+                String apellidos = (apellidoPaterno + " " + apellidoMaterno).trim();
+
+                String nombreCompleto = str(body, "full_name");
+
+                if (nombreCompleto.isBlank()) {
+                    nombreCompleto = (nombres + " " + apellidos).trim();
                 }
+
+                if (nombres.isBlank() || apellidos.isBlank()) {
+                    return Optional.empty();
+                }
+
+                return Optional.of(
+                        new DocumentoConsultado(
+                                "DNI",
+                                numNorm,
+                                nombres,
+                                apellidos,
+                                nombreCompleto,
+                                "",
+                                "DECOLECTA - RENIEC"));
+
             } else {
-                String razon = str(body, "razon_social", "razonSocial", "nombre");
-                String dir = str(body, "direccion");
-                if (!razon.isBlank()) {
-                    return Optional.of(new DocumentoConsultado("RUC", numNorm, razon, "", razon, dir, "SUNAT"));
+
+                String razonSocial = str(body, "razon_social");
+                String direccion = str(body, "direccion");
+
+                if (razonSocial.isBlank()) {
+                    return Optional.empty();
                 }
+
+                return Optional.of(
+                        new DocumentoConsultado(
+                                "RUC",
+                                numNorm,
+                                razonSocial,
+                                "",
+                                razonSocial,
+                                direccion,
+                                "DECOLECTA - SUNAT"));
             }
-        } catch (Exception ignored) {
-            // Si falla la red o el proveedor externo, responde el simulador sin interrumpir al usuario.
+
+        } catch (Exception e) {
+
+            System.err.println(
+                    "Error al consultar Decolecta: "
+                            + e.getClass().getSimpleName());
+
+            return Optional.empty();
         }
-        return simulador.consultar(tipoNorm, numNorm);
     }
 
-    private static String str(Map<String, Object> map, String... keys) {
-        for (String k : keys) {
-            Object v = map.get(k);
-            if (v != null && !v.toString().isBlank()) {
-                return v.toString().trim();
-            }
-        }
-        return "";
+    private static String str(Map<?, ?> map, String key) {
+
+        Object value = map.get(key);
+        return value == null ? "" : value.toString().trim();
     }
 }
