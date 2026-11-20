@@ -4,348 +4,348 @@
    aparición al scroll). Aquí solo está lo propio de esta
    página. Sin colores literales: todo sale de tokens.css.
 
-   CAMBIO (v2): sin fotografía. Formulario en tarjeta y tres pistas de lo que se verá.
-   CAMBIO (v3): aspecto formal y sobrio. Encabezado de un solo color sólido de la
-   paleta, sin manchas ni iconos de fondo; chips y pistas en un tono neutro.
+   Sin fotografía: formulario en tarjeta y tres pistas de lo que se verá.
+   Aspecto sobrio: encabezado de un solo color de la paleta, sin manchas
+   ni iconos de fondo; chips y pistas en un tono neutro.
    ===================================================================== */
 
 /* ---------- Encabezado (sin foto) ------------------------------------ */
-/* CAMBIO (v3): color sólido (crema oscuro de la paleta) y una línea fina inferior que lo separa del resultado */
+/* Color sólido (crema oscuro de la paleta) y una línea fina inferior que lo separa del resultado */
 .hs-consulta__hero {
-  position: relative;
-  padding: 3.5rem 0 3rem;
-  background: var(--hs-cream-dark);
-  border-bottom: 1px solid var(--hs-sand);
-  text-align: center;
+    position: relative;
+    padding: 3.5rem 0 3rem;
+    background: var(--hs-cream-dark);
+    border-bottom: 1px solid var(--hs-sand);
+    text-align: center;
 }
 
 @media (min-width: 768px) {
-  .hs-consulta__hero {
-    padding: 5rem 0 4rem;
-  }
+    .hs-consulta__hero {
+        padding: 5rem 0 4rem;
+    }
 
-  /* Antes de consultar el encabezado ocupa más, para que la página no quede vacía */
-  .hs-consulta__hero--completo {
-    padding: 6.5rem 0 6rem;
-  }
+    /* Antes de consultar el encabezado ocupa más, para que la página no quede vacía */
+    .hs-consulta__hero--completo {
+        padding: 6.5rem 0 6rem;
+    }
 }
 
 .hs-consulta__contenido {
-  position: relative;
-  z-index: 1;
-  max-width: 40rem;
+    position: relative;
+    z-index: 1;
+    max-width: 40rem;
 }
 
-/* CAMBIO (v3): chips en un solo tono neutro (antes terracota y verde, que daban aire navideño) */
+/* Chips en un solo tono neutro */
 .hs-consulta__chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px;
-  border: 1px solid var(--hs-sand);
-  border-radius: var(--hs-radius-pill);
-  background: var(--hs-card);
-  color: var(--hs-bark-light);
-  font-size: 0.75rem;
-  font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border: 1px solid var(--hs-sand);
+    border-radius: var(--hs-radius-pill);
+    background: var(--hs-card);
+    color: var(--hs-bark-light);
+    font-size: 0.75rem;
+    font-weight: 600;
 }
 
 .hs-consulta__chip .bi {
-  color: var(--hs-terracotta);
+    color: var(--hs-terracotta);
 }
 
 .hs-consulta__titulo {
-  margin: 0.5rem 0 1rem;
-  font-size: clamp(2.25rem, 5vw, 3.25rem);
-  font-weight: 600;
-  line-height: 1.1;
-  color: var(--hs-bark);
+    margin: 0.5rem 0 1rem;
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--hs-bark);
 }
 
 /* Trazo terracota que se dibuja bajo el titular (mismo detalle que Nosotros) */
 .hs-consulta__titulo::after {
-  content: "";
-  display: block;
-  width: 72px;
-  height: 3px;
-  margin: 1.25rem auto 0;
-  border-radius: var(--hs-radius-pill);
-  background: var(--hs-terracotta);
-  transform-origin: center;
-  animation: hsTrazo 0.8s var(--hs-ease) 0.7s both;
+    content: "";
+    display: block;
+    width: 72px;
+    height: 3px;
+    margin: 1.25rem auto 0;
+    border-radius: var(--hs-radius-pill);
+    background: var(--hs-terracotta);
+    transform-origin: center;
+    animation: hsTrazo 0.8s var(--hs-ease) 0.7s both;
 }
 
 .hs-consulta__bajada {
-  max-width: 30rem;
-  margin: 0 auto 1.75rem;
-  font-size: 1rem;
-  line-height: 1.7;
-  color: var(--hs-muted);
+    max-width: 30rem;
+    margin: 0 auto 1.75rem;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--hs-muted);
 }
 
 /* ---------- Formulario en tarjeta ------------------------------------ */
 .hs-consulta__form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px;
-  border: 1px solid var(--hs-sand);
-  border-radius: 20px;
-  background: var(--hs-card);
-  box-shadow: var(--hs-shadow-card);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--hs-sand);
+    border-radius: 20px;
+    background: var(--hs-card);
+    box-shadow: var(--hs-shadow-card);
 }
 
 /* Campo con icono dentro: flexible; el botón mantiene su tamaño */
 .hs-consulta__campo {
-  position: relative;
-  flex: 1 1 12rem;
-  min-width: 0;
+    position: relative;
+    flex: 1 1 12rem;
+    min-width: 0;
 }
 
 .hs-consulta__campo .bi {
-  position: absolute;
-  top: 50%;
-  left: 16px;
-  transform: translateY(-50%);
-  color: var(--hs-muted);
-  font-size: 1.125rem;
-  pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    color: var(--hs-muted);
+    font-size: 1.125rem;
+    pointer-events: none;
 }
 
 .hs-consulta__campo .hs-input {
-  padding: 14px 16px 14px 46px;
-  font-size: 1rem;
-  text-align: left;
+    padding: 14px 16px 14px 46px;
+    font-size: 1rem;
+    text-align: left;
 }
 
 .hs-consulta__form .hs-btn {
-  flex: 0 0 auto;
-  padding-left: 24px;
-  padding-right: 24px;
+    flex: 0 0 auto;
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
-/* Aviso de código no encontrado (antes alert-warning de Bootstrap) */
+/* Aviso de código no encontrado */
 .hs-consulta__aviso {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 1rem 0 0;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: var(--hs-amber-light);
-  color: var(--hs-bark);
-  font-size: 0.875rem;
-  line-height: 1.5;
-  text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 1rem 0 0;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--hs-amber-light);
+    color: var(--hs-bark);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-align: left;
 }
 
 .hs-consulta__aviso .bi {
-  flex: 0 0 auto;
-  color: var(--hs-amber);
-  font-size: 1.125rem;
+    flex: 0 0 auto;
+    color: var(--hs-amber);
+    font-size: 1.125rem;
 }
 
-/* ---------- Pistas de lo que se verá (CAMBIO v3: un solo tono) ------- */
+/* ---------- Pistas de lo que se verá (un solo tono) ----------------- */
 .hs-consulta__ver {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px 18px;
-  margin: 1.75rem 0 0;
-  padding: 0;
-  list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 18px;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
 }
 
 .hs-consulta__ver-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--hs-bark-light);
-  font-size: 0.875rem;
-  font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--hs-bark-light);
+    font-size: 0.875rem;
+    font-weight: 500;
 }
 
 .hs-consulta__ver-icono {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 1px solid var(--hs-sand);
-  background: var(--hs-card);
-  color: var(--hs-terracotta);
-  font-size: 1rem;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--hs-sand);
+    background: var(--hs-card);
+    color: var(--hs-terracotta);
+    font-size: 1rem;
 }
 
 /* ---------- Resultado ------------------------------------------------ */
 .hs-resultado {
-  padding: 28px;
+    padding: 28px;
 }
 
 @media (min-width: 768px) {
-  .hs-resultado {
-    padding: 36px;
-  }
+    .hs-resultado {
+        padding: 36px;
+    }
 }
 
 .hs-resultado__cabecera {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 4px;
 }
 
 .hs-resultado__codigo {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--hs-bark);
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--hs-bark);
 }
 
 .hs-resultado__fecha {
-  margin: 0 0 8px;
-  font-size: 0.875rem;
-  color: var(--hs-muted);
+    margin: 0 0 8px;
+    font-size: 0.875rem;
+    color: var(--hs-muted);
 }
 
 /* Estado de la compra: chip con los colores de la marca */
 .hs-estado {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 14px;
-  border-radius: var(--hs-radius-pill);
-  font-size: 0.75rem;
-  font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 14px;
+    border-radius: var(--hs-radius-pill);
+    font-size: 0.75rem;
+    font-weight: 600;
 }
 
 .hs-estado--pagado {
-  background: var(--hs-sage-light);
-  color: var(--hs-sage);
+    background: var(--hs-sage-light);
+    color: var(--hs-sage);
 }
 .hs-estado--pendiente {
-  background: var(--hs-amber-light);
-  color: var(--hs-amber);
+    background: var(--hs-amber-light);
+    color: var(--hs-amber);
 }
 .hs-estado--anulado {
-  background: var(--hs-terracotta-light);
-  color: var(--hs-terracotta);
+    background: var(--hs-terracotta-light);
+    color: var(--hs-terracotta);
 }
 
 .hs-resultado__vacio {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 12px 0 0;
-  color: var(--hs-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0 0;
+    color: var(--hs-muted);
 }
 
 /* Cada donación de la compra */
 .hs-donacion {
-  display: flex;
-  gap: 16px;
-  padding: 24px 0 4px;
+    display: flex;
+    gap: 16px;
+    padding: 24px 0 4px;
 }
 
 .hs-donacion + .hs-donacion {
-  margin-top: 20px;
-  border-top: 1px solid var(--hs-sand);
+    margin-top: 20px;
+    border-top: 1px solid var(--hs-sand);
 }
 
 .hs-donacion--abrigo {
-  --hs-acento: var(--hs-terracotta);
-  --hs-acento-suave: var(--hs-terracotta-light);
+    --hs-acento: var(--hs-terracotta);
+    --hs-acento-suave: var(--hs-terracotta-light);
 }
 .hs-donacion--arbol {
-  --hs-acento: var(--hs-sage);
-  --hs-acento-suave: var(--hs-sage-light);
+    --hs-acento: var(--hs-sage);
+    --hs-acento-suave: var(--hs-sage-light);
 }
 
 .hs-donacion__icono {
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: var(--hs-acento-suave);
-  color: var(--hs-acento);
-  font-size: 24px;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: var(--hs-acento-suave);
+    color: var(--hs-acento);
+    font-size: 24px;
 }
 
 @media (min-width: 576px) {
-  .hs-donacion__icono {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-    font-size: 28px;
-  }
+    .hs-donacion__icono {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        font-size: 28px;
+    }
 }
 
 .hs-donacion__cuerpo {
-  flex: 1;
-  min-width: 0;
+    flex: 1;
+    min-width: 0;
 }
 
 .hs-donacion__titulo {
-  margin: 0 0 16px;
-  font-size: 1rem;
-  color: var(--hs-bark);
+    margin: 0 0 16px;
+    font-size: 1rem;
+    color: var(--hs-bark);
 }
 
 .hs-donacion__unidades {
-  color: var(--hs-acento);
-  font-weight: 700;
+    color: var(--hs-acento);
+    font-weight: 700;
 }
 
 .hs-donacion__destino {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin: 16px 0 0;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--hs-muted);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 16px 0 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--hs-muted);
 }
 
 .hs-donacion__destino .bi {
-  color: var(--hs-sage);
+    color: var(--hs-sage);
 }
 
 /* Línea de tiempo (componente compartido, hoseg.css): se une con una barra
    que pasa a terracota hasta el paso en el que va la donación. */
 .hs-resultado .hs-linea-tiempo__paso {
-  position: relative;
+    position: relative;
 }
 
 .hs-resultado .hs-linea-tiempo__punto {
-  position: relative;
-  z-index: 1;
-  transition:
-    background var(--hs-t-fast),
-    border-color var(--hs-t-fast);
+    position: relative;
+    z-index: 1;
+    transition:
+        background var(--hs-t-fast),
+        border-color var(--hs-t-fast);
 }
 
 .hs-resultado .hs-linea-tiempo__paso + .hs-linea-tiempo__paso::before {
-  content: "";
-  position: absolute;
-  top: 0.95rem;
-  left: calc(-50% - 0.25rem);
-  width: calc(100% + 0.5rem);
-  height: 2px;
-  background: var(--hs-sand);
+    content: "";
+    position: absolute;
+    top: 0.95rem;
+    left: calc(-50% - 0.25rem);
+    width: calc(100% + 0.5rem);
+    height: 2px;
+    background: var(--hs-sand);
 }
 
 .hs-resultado .hs-linea-tiempo__paso.is-cumplido::before {
-  background: var(--hs-terracotta);
+    background: var(--hs-terracotta);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hs-resultado .hs-linea-tiempo__punto {
-    transition: none;
-  }
+    .hs-resultado .hs-linea-tiempo__punto {
+        transition: none;
+    }
 }
