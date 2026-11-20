@@ -11,19 +11,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const cBark = styles.getPropertyValue('--hs-bark').trim() || '#2f241f';
     const cMuted = styles.getPropertyValue('--hs-muted').trim() || '#8a7a70';
 
-    const filas = Array.from(document.querySelectorAll('tr[data-order-status]'));
+    // CAMBIO: antes se leían las celdas de la tabla de pedidos (tr[data-order-status]). Esa tabla ya no está en el
+    // panel, así que ahora se leen los atributos data-* de los elementos ocultos [data-pedido] (los pone panel.html).
+    const filas = Array.from(document.querySelectorAll('[data-pedido]'));
     let pagados = 0, pendientes = 0, anulados = 0;
     let delivery = 0, recojo = 0, entregados = 0, enProceso = 0;
     let sumaPagados = 0;
     const ventasPorDia = {};
 
-    filas.forEach(tr => {
-        const estado = tr.dataset.orderStatus;
-        const celdas = tr.querySelectorAll('td');
-        const fechaTxt = (celdas.item(2)?.textContent || '').trim().slice(0, 10);
-        const totalTxt = (celdas.item(3)?.textContent || '0').replace(/[^0-9.]/g, '');
-        const monto = parseFloat(totalTxt) || 0;
-        const envioTxt = (celdas.item(6)?.textContent || '').trim();
+    filas.forEach(el => {
+        const estado = el.dataset.estado;
+        const fechaTxt = (el.dataset.fecha || '').trim();
+        const monto = parseFloat(el.dataset.total) || 0;
+        const envioTxt = (el.dataset.envio || '').trim();
 
         if (estado === 'PAGADO') {
             pagados++;
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-        // Gráfico 2: CEO & CRO · Ingresos Pagados por Fecha (Barras)
+    // Gráfico 2: CEO & CRO · Ingresos Pagados por Fecha (Barras)
     // Toma máximo los últimos 7 días con ventas para que nunca se amontone
     const fechasOrdenadas = Object.keys(ventasPorDia).reverse().slice(-7);
     const montosOrdenados = fechasOrdenadas.map(f => Number(ventasPorDia[f].toFixed(2)));
