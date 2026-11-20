@@ -31,7 +31,7 @@ public class AdminController {
     private final ResenaService resenaService;
 
     public AdminController(PanelAdminService panelAdminService, CatalogoService catalogoService,
-                           ResenaService resenaService) {
+            ResenaService resenaService) {
         this.panelAdminService = panelAdminService;
         this.catalogoService = catalogoService;
         this.resenaService = resenaService;
@@ -48,11 +48,14 @@ public class AdminController {
         return "redirect:/admin/panel";
     }
 
-    /** ?desde=2026-10-01&hasta=2026-10-23; por defecto, del 1 del mes a hoy (hora de Lima). */
+    /**
+     * ?desde=2026-10-01&hasta=2026-10-23; por defecto, del 1 del mes a hoy (hora de
+     * Lima).
+     */
     @GetMapping("/admin/panel")
     public String panel(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
-                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
-                        Model model) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+            Model model) {
         LocalDate hoy = LocalDate.now(PanelAdminService.LIMA);
         LocalDate fin = hasta == null ? hoy : hasta;
         LocalDate inicio = desde == null ? fin.withDayOfMonth(1) : desde;
@@ -66,6 +69,32 @@ public class AdminController {
         model.addAttribute("indicadores", panelAdminService.indicadores(inicio, fin));
         model.addAttribute("pedidos", panelAdminService.pedidos(inicio, fin));
         return "admin/panel";
+    }
+
+    /**
+     * CAMBIO (nuevo): pantalla propia de Pedidos web (solo lectura), como Mensajes
+     * o Reseñas.
+     * Usa el mismo servicio y el mismo rango de fechas que el panel:
+     * ?desde=2026-10-01&hasta=2026-10-23.
+     * El método panel() no se tocó.
+     */
+    @GetMapping("/admin/pedidos")
+    public String pedidosWeb(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+            Model model) {
+        LocalDate hoy = LocalDate.now(PanelAdminService.LIMA);
+        LocalDate fin = hasta == null ? hoy : hasta;
+        LocalDate inicio = desde == null ? fin.withDayOfMonth(1) : desde;
+        if (inicio.isAfter(fin)) {
+            LocalDate cambio = inicio;
+            inicio = fin;
+            fin = cambio;
+        }
+        model.addAttribute("desde", inicio);
+        model.addAttribute("hasta", fin);
+        model.addAttribute("pedidos", panelAdminService.pedidos(inicio, fin));
+        return "admin/pedidos";
     }
 
     @GetMapping("/admin/catalogo")
