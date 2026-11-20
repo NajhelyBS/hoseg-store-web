@@ -145,7 +145,7 @@ class VistasTest {
                 mvc.perform(get("/tienda/HSG-CAS-001"))
                                 .andExpect(status().isOk())
                                 // M disponible y elegida; L agotada y deshabilitada
-                                .andExpect(content().string(matchesRegex(
+                                                                .andExpect(content().string(matchesRegex(
                                                 "(?s).*value=\"HSG-CAS-001\"\\s+data-precio=\"259.90\"\\s+data-maximo=\"3\"\\s+data-pocas=\"true\"\\s+checked.*")))
                                 .andExpect(content().string(containsString(
                                                 "data-maximo=\"0\" data-pocas=\"false\" disabled=\"disabled\"")))
