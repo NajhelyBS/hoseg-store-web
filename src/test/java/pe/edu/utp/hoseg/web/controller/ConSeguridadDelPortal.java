@@ -19,6 +19,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import(SecurityConfig.class)
-@MockitoBean(types = {BloqueoAccesoService.class, ClienteDetailsService.class, UsuarioDetailsService.class})
+@MockitoBean(types = { BloqueoAccesoService.class, ClienteDetailsService.class, UsuarioDetailsService.class })
 public @interface ConSeguridadDelPortal {
 }
