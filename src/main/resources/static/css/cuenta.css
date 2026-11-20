@@ -1494,3 +1494,22 @@
         width: calc(100% - 22px);
     }
 }
+/* Estado del autocompletado de DNI/RUC en el registro (cuenta.js) */
+.hs-doc-estado {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--hs-muted);
+}
+
+.hs-doc-estado--consultando {
+    color: var(--hs-amber);
+}
+
+.hs-doc-estado--error {
+    color: var(--hs-terracotta);
+}
+
+.hs-doc-estado--ok {
+    color: var(--hs-sage);
+}
