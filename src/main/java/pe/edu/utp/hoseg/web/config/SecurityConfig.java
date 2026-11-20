@@ -150,8 +150,7 @@ public class SecurityConfig {
         } else if (roles.contains("ROLE_" + RolUsuario.LOGISTICA.name())) {
             response.sendRedirect(ctx + "/logistica/pedidos");
         } else if (roles.contains("ROLE_" + RolUsuario.GESTOR_IMPACTO.name())) {
-            // CAMBIO: entra por la PRIMERA opción de su menú (Donaciones). Antes iba a Lotes, que es la segunda.
-            // Igual que Administrador (primer ítem: panel) y Logística (primer ítem: pedidos).
+            // Como los demás roles, entra por la primera opción de su menú
             response.sendRedirect(ctx + "/gestion-impacto/donaciones");
         } else {
             new SecurityContextLogoutHandler().logout(request, response, autenticacion);

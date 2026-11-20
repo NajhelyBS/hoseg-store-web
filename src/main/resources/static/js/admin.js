@@ -132,7 +132,7 @@
       if (fabBackdrop) fabBackdrop.addEventListener('click', () => toggleFab(false));
     }
 
-    // CAMBIO: popovers de ayuda de los gráficos del panel (data-bs-toggle="popover" en panel.html).
+    // Popovers de ayuda de los gráficos del panel (data-bs-toggle="popover" en panel.html).
     // Bootstrap ya lo carga layout/admin.html antes que este script.
     if (window.bootstrap?.Popover) {
       document.querySelectorAll('[data-bs-toggle="popover"]')

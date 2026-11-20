@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cBark = styles.getPropertyValue('--hs-bark').trim() || '#2f241f';
     const cMuted = styles.getPropertyValue('--hs-muted').trim() || '#8a7a70';
 
-    // CAMBIO: antes se leían las celdas de la tabla de pedidos (tr[data-order-status]). Esa tabla ya no está en el
-    // panel, así que ahora se leen los atributos data-* de los elementos ocultos [data-pedido] (los pone panel.html).
+    // La tabla de pedidos está en /admin/pedidos: aquí se leen los atributos data-* de los
+    // elementos ocultos [data-pedido] que deja panel.html.
     const filas = Array.from(document.querySelectorAll('[data-pedido]'));
     let pagados = 0, pendientes = 0, anulados = 0;
     let delivery = 0, recojo = 0, entregados = 0, enProceso = 0;

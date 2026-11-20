@@ -71,14 +71,10 @@ public class ApiSecurityConfig {
                         .anyRequest().denyAll())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(convertidor))
-                        // ===== INICIO MODIFICACIÓN (errores con la página del portal): agregado =====
                         .authenticationEntryPoint(sinAutenticar())
                         .accessDeniedHandler(sinPermiso()));
-        // ===== FIN MODIFICACIÓN =====
         return http.build();
     }
-
-    // ===== INICIO MODIFICACIÓN (errores con la página del portal): agregado =====
 
     /** 401: sin token, token vencido o inválido. */
     private static AuthenticationEntryPoint sinAutenticar() {
@@ -116,8 +112,6 @@ public class ApiSecurityConfig {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.getWriter().write("{\"error\":\"" + mensaje + "\"}");
     }
-
-    // ===== FIN MODIFICACIÓN =====
 
     /**
      * De claims a roles: {"roles": ["ADMINISTRADOR"]} pasa a la autoridad

@@ -4,7 +4,7 @@
 
 <body>
     <!--
-  CAMBIO: el panel ya no muestra la tabla de pedidos; esa consulta está en la sección "Pedidos" del menú (/admin/pedidos).
+  La tabla de pedidos está en la sección "Pedidos" del menú (/admin/pedidos).
   Los gráficos siguen funcionando con los datos ocultos de #datos-pedidos (ver el final de esta plantilla).
 -->
     <main class="hs-admin-page hs-panel-page">
@@ -36,8 +36,8 @@
                 <span class="hs-metric-icon"><i class="bi bi-bag-check" aria-hidden="true"></i></span>
                 <span class="hs-metric-label">Pedidos de hoy</span>
                 <strong th:text="${indicadores.pedidosHoy}">0</strong>
-                <!-- CAMBIO: antes era la nota "Registrados hoy". Ahora enlaza a la pantalla Pedidos (con el mismo rango
-                 de fechas), igual que las tarjetas de Mensajes y Reclamos (patrón hs-metric-link). -->
+                <!-- Enlaza a la pantalla Pedidos con el mismo rango de fechas, igual que las tarjetas
+                 de Mensajes y Reclamos (patrón hs-metric-link). -->
                 <a th:href="@{/admin/pedidos(desde=${desde},hasta=${hasta})}" class="hs-metric-link">
                     Ver pedidos <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
                 </a>
@@ -95,7 +95,7 @@
                         <div>
                             <p class="hs-eyebrow mb-1">CEO &amp; CRO · INGRESOS</p>
                             <h2 class="h5 mb-0 d-flex align-items-center gap-2">Ventas por fecha
-                                <!-- CAMBIO: popover de ayuda (Bootstrap). Se activa en admin.js; trigger "focus" cierra al hacer clic fuera;
+                                <!-- Popover de ayuda (Bootstrap). Se activa en admin.js; trigger "focus" cierra al hacer clic fuera;
                              container="body" evita que la tarjeta lo recorte. -->
                                 <a tabindex="0" role="button" class="text-muted fs-6" data-bs-toggle="popover"
                                     data-bs-trigger="focus" data-bs-placement="bottom" data-bs-container="body"
@@ -120,7 +120,7 @@
                 <article class="hs-admin-card h-100 p-3">
                     <p class="hs-eyebrow mb-1">CFO · FLUJO</p>
                     <h2 class="h5 mb-2 d-flex align-items-center gap-2">Estado de pedidos
-                        <!-- CAMBIO: popover de ayuda (Bootstrap). Se activa en admin.js; trigger "focus" cierra al hacer clic fuera;
+                        <!-- Popover de ayuda (Bootstrap). Se activa en admin.js; trigger "focus" cierra al hacer clic fuera;
                              container="body" evita que la tarjeta lo recorte. -->
                         <a tabindex="0" role="button" class="text-muted fs-6" data-bs-toggle="popover"
                             data-bs-trigger="focus" data-bs-placement="bottom" data-bs-container="body"
@@ -139,7 +139,7 @@
                 <article class="hs-admin-card h-100 p-3">
                     <p class="hs-eyebrow mb-1">COO · OPERACIONES</p>
                     <h2 class="h5 mb-2 d-flex align-items-center gap-2">Entregas y modalidad
-                        <!-- CAMBIO: popover de ayuda (Bootstrap). Se activa en admin.js; trigger "focus" cierra al hacer clic fuera;
+                        <!-- Popover de ayuda (Bootstrap). Se activa en admin.js; trigger "focus" cierra al hacer clic fuera;
                              container="body" evita que la tarjeta lo recorte. -->
                         <a tabindex="0" role="button" class="text-muted fs-6" data-bs-toggle="popover"
                             data-bs-trigger="focus" data-bs-placement="bottom" data-bs-container="body"

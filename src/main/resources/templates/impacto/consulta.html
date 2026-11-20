@@ -11,22 +11,15 @@
     noEncontrado boolean (variante "Código no encontrado")
   La línea de tiempo usa EstadoDonacion: En espera de pago → Pendiente de asignar → Lote asignado → Entregada.
 
-  REDISEÑO VISUAL: mismo modelo, mismos textos, mismo formulario (GET ?boleta=) y misma línea de tiempo.
-  Usa los estilos compartidos de Nosotros (nosotros.css: tarjeta
-  del resultado y aparición al scroll) y el propio de esta página (consulta-impacto.css).
+  Usa los estilos compartidos de Nosotros (nosotros.css: tarjeta del resultado y aparición
+  al scroll) y el propio de esta página (consulta-impacto.css).
 
-  El diseño atractivo sale del propio formulario: 
-  encabezado centrado, formulario en tarjeta y tres pistas de lo que el cliente
-  verá al consultar.
-
- el encabezado es ahora de un solo color sólido de la paleta, 
- con los chips y las pistas en un
-tono neutro. La sección del resultado también va sin manchas.
-
-se quitó la etiqueta "Trazabilidad 1:1" sobre el título.
+  Encabezado centrado de un solo color de la paleta, formulario en tarjeta y tres pistas de
+  lo que el cliente verá al consultar. Chips y pistas en un tono neutro; el resultado va
+  sin manchas.
 ========================================================================= -->
 <!-- estilos=~{::link} carga solo nosotros.css (tarjeta del resultado, aparición) y consulta-impacto.css;
-     ya no se carga home.css porque era solo para los pasos y el crédito de la foto -->
+     home.css no hace falta: solo tiene los pasos y el crédito de la foto de la Home -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
     th:replace="~{layout/base :: pagina(titulo='Consulta tu impacto · HÖSÉG', activa='impacto',
                                           transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{::script})}">
@@ -46,7 +39,7 @@ se quitó la etiqueta "Trazabilidad 1:1" sobre el título.
         <section class="hs-consulta__hero" th:classappend="${consulta == null} ? 'hs-consulta__hero--completo'">
 
             <div class="container hs-consulta__contenido">
-                <!-- los dos chips usan el mismo tono neutro (antes uno terracota y otro verde) -->
+                <!-- los dos chips usan el mismo tono neutro -->
                 <div class="d-flex flex-wrap justify-content-center gap-2 hs-fade-in">
                     <span class="hs-consulta__chip"><i class="bi bi-gift" aria-hidden="true"></i> Buy One, Give
                         One</span>

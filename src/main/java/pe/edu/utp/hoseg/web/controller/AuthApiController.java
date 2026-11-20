@@ -2,9 +2,7 @@ package pe.edu.utp.hoseg.web.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-// ===== INICIO MODIFICACIÓN (que VistasTest no necesite cambios): agregado =====
 import org.springframework.beans.factory.ObjectProvider;
-// ===== FIN MODIFICACIÓN =====
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,18 +43,13 @@ public class AuthApiController {
 
     private final AuthenticationManager gestor;
     private final BloqueoAccesoService bloqueoAccesoService;
-    // ===== INICIO MODIFICACIÓN: era "private final JwtPersonalService
-    // jwtPersonalService;" =====
     // ObjectProvider: el bean se pide solo al iniciar sesión, así los @WebMvcTest
     // existentes (VistasTest) cargan sin tener que simularlo.
     private final ObjectProvider<JwtPersonalService> jwtPersonalService;
-    // ===== FIN MODIFICACIÓN =====
 
     public AuthApiController(UsuarioDetailsService usuarioDetailsService,
             BloqueoAccesoService bloqueoAccesoService,
-            // ===== INICIO MODIFICACIÓN: era "JwtPersonalService jwtPersonalService" =====
             ObjectProvider<JwtPersonalService> jwtPersonalService) {
-        // ===== FIN MODIFICACIÓN =====
         DaoAuthenticationProvider proveedor = new DaoAuthenticationProvider(new Sha256ConSaltPasswordEncoder());
         proveedor.setUserDetailsService(usuarioDetailsService);
         this.gestor = new ProviderManager(proveedor);
@@ -96,9 +89,7 @@ public class AuthApiController {
         }
 
         bloqueoAccesoService.ingresoDeUsuario(personal.username());
-        // ===== INICIO MODIFICACIÓN: era "jwtPersonalService.emitir(personal)" =====
         TokenEmitido emitido = jwtPersonalService.getObject().emitir(personal);
-        // ===== FIN MODIFICACIÓN =====
         return ResponseEntity.ok(new LoginRespuesta(emitido.token(), "Bearer", emitido.segundos(),
                 emitido.expiraEn(), personal.username(), personal.nombre(), personal.rol().name()));
     }

@@ -7,11 +7,10 @@
     comunidades List<String>
     ongs        List<String>
 
-  REDISEÑO VISUAL: el contenido, los textos y el modelo de datos son los mismos.
-  CAMBIO (navbar): la página pasa a transparente=true, igual que la Home: la barra arranca transparente
-  sobre la foto y se vuelve crema al bajar. Por eso el <main> ya no lleva hs-main--bajo-nav (la foto sube
-  hasta el borde de la pantalla) y el hueco de la barra lo da el propio banner (ver nosotros.css).
-  Cada cambio está marcado. Estilos en static/css/nosotros.css,
+  Navbar con transparente=true, igual que la Home: la barra arranca transparente sobre la foto
+  y se vuelve crema al bajar. Por eso el <main> no lleva hs-main--bajo-nav (la foto sube hasta el
+  borde de la pantalla) y el hueco de la barra lo da el propio banner (ver nosotros.css).
+  Estilos en static/css/nosotros.css,
   animación de aparición en static/js/nosotros.js.
 ========================================================================= -->
 <!DOCTYPE html>
@@ -149,7 +148,7 @@
         </section>
 
         <!-- SECCIÓN 4: COMUNIDADES Y ONGS ALIADAS -->
-        <!-- CAMBIO (v2): manchas de color (versión inversa) y menos separación entre columnas -->
+        <!-- Manchas de color (versión inversa) y menos separación entre columnas -->
         <section class="hs-seccion hs-aurora hs-aurora--inversa">
             <div class="container hs-ancho-md">
                 <div class="row g-4 g-md-5 align-items-center">

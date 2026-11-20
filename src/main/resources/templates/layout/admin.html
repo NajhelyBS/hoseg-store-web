@@ -28,7 +28,7 @@
                 <!-- ADMINISTRADOR (usa los iconos automáticos de admin.css) -->
                 <th:block sec:authorize="hasRole('ADMINISTRADOR')">
                     <li><a th:href="@{/admin/panel}" th:classappend="${activa == 'panel'} ? 'fw-bold'">Panel</a></li>
-                    <!-- CAMBIO: botón Pedidos del menú: abre su propia pantalla (solo lectura para el administrador).
+                    <!-- Pedidos abre su propia pantalla (solo lectura para el administrador).
                      No apunta a /logistica/pedidos porque esa ruta es solo del rol LOGISTICA (SecurityConfig).
                      El icono se define en admin.css con a[href$="/admin/pedidos"]. -->
                     <li><a th:href="@{/admin/pedidos}" th:classappend="${activa == 'pedidos'} ? 'fw-bold'">Pedidos</a>

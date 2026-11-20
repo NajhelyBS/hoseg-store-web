@@ -272,7 +272,7 @@
                                 </button>
                             </form>
 
-                            <!-- los dos avisos pasan a una caja con icono (antes eran texto suelto) -->
+                            <!-- los dos avisos van en una caja con icono -->
                             <p class="hs-resenas__aviso" th:if="${resenaForm == null}" sec:authorize="isAnonymous()">
                                 <i class="bi bi-person-lock" aria-hidden="true"></i>
                                 <span>¿Compraste este producto? <a class="hs-enlace" th:href="@{/login}">Inicia
