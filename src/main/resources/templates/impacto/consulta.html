@@ -22,7 +22,7 @@
      home.css no hace falta: solo tiene los pasos y el crédito de la foto de la Home -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
     th:replace="~{layout/base :: pagina(titulo='Consulta tu impacto · HÖSÉG', activa='impacto',
-                                          transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{::script})}">
+                                          transparente=false, contenido=~{::main}, estilos=~{::link}, scripts=~{})}">
 
 <head>
     <!-- nosotros.css: tarjeta del resultado (hs-resultado) y aparición al scroll -->
@@ -31,7 +31,7 @@
 </head>
 
 <body>
-    <!-- hs-nosotros activa la animación de entrada y la aparición al scroll; hs-consulta, los estilos propios -->
+    <!-- hs-nosotros: estilos compartidos con Nosotros (tarjeta del resultado); hs-consulta, los propios. Entrada escalonada con hs-entrada (--hs-i) y aparición al scroll con data-revelar (revelar.js) -->
     <main class="hs-main--bajo-nav hs-nosotros hs-consulta">
 
         <!-- encabezado de color sólido (sin manchas ni iconos de fondo). Si ya hay un resultado, el
@@ -40,28 +40,28 @@
 
             <div class="container hs-consulta__contenido">
                 <!-- los dos chips usan el mismo tono neutro -->
-                <div class="d-flex flex-wrap justify-content-center gap-2 hs-fade-in">
-                    <span class="hs-consulta__chip"><i class="bi bi-gift" aria-hidden="true"></i> Buy One, Give
+                <div class="d-flex flex-wrap justify-content-center gap-2 hs-entrada" style="--hs-i: 0">
+                    <span class="hs-consulta__chip"><i class="bi bi-casaca" aria-hidden="true"></i> Buy One, Give
                         One</span>
                     <span class="hs-consulta__chip"><i class="bi bi-tree" aria-hidden="true"></i> Buy One, Plant
                         One</span>
                 </div>
                 <!-- se quitó el texto "Trazabilidad 1:1" que iba sobre el título -->
-                <h1 class="hs-consulta__titulo mt-4 hs-fade-in hs-retraso-1">Consulta tu impacto</h1>
-                <p class="hs-consulta__bajada hs-fade-in hs-retraso-2">Escribe el código de tu boleta (está en la boleta
+                <h1 class="hs-consulta__titulo mt-4 hs-entrada" style="--hs-i: 1">Consulta tu impacto</h1>
+                <p class="hs-consulta__bajada hs-entrada" style="--hs-i: 2">Escribe el código de tu boleta (está en la boleta
                     impresa o escanea
                     su QR).</p>
 
                 <!-- FORMULARIO: Conserva el Context Path de manera nativa usando la variable oficial -->
                 <!-- formulario en tarjeta, con icono dentro del campo; mismo name="boleta" y mismo GET -->
-                <form class="hs-consulta__form hs-fade-in hs-retraso-3" method="get" th:action="@{${rutaConsulta}}">
+                <form class="hs-consulta__form hs-entrada" style="--hs-i: 3" method="get" th:action="@{${rutaConsulta}}">
                     <label for="boletaInput" class="visually-hidden">Código de boleta</label>
                     <div class="hs-consulta__campo">
                         <i class="bi bi-receipt" aria-hidden="true"></i>
                         <input class="hs-input" id="boletaInput" name="boleta" th:value="${boleta}"
                             placeholder="WEB-000110" autocomplete="off" required>
                     </div>
-                    <button class="hs-btn hs-btn--primario" type="submit">Consultar <i class="bi bi-arrow-right"
+                    <button class="hs-btn hs-btn--primario hs-brillo" type="submit">Consultar <i class="bi bi-arrow-right"
                             aria-hidden="true"></i></button>
                 </form>
 
@@ -74,18 +74,18 @@
 
                 <!-- pistas de lo que se verá al consultar (los mismos datos del resultado: tipo de
                      donación, recorrido y destino). Solo antes de consultar, para no repetir lo que ya se muestra abajo. -->
-                <ul class="hs-consulta__ver hs-fade-in hs-retraso-3" th:if="${consulta == null}"
+                <ul class="hs-consulta__ver" th:if="${consulta == null}"
                     aria-label="Qué verás al consultar">
-                    <li class="hs-consulta__ver-item">
-                        <span class="hs-consulta__ver-icono"><i class="bi bi-gift" aria-hidden="true"></i></span>
+                    <li class="hs-consulta__ver-item hs-entrada" style="--hs-i: 4">
+                        <span class="hs-consulta__ver-icono"><i class="bi bi-casaca" aria-hidden="true"></i></span>
                         <span>Tu abrigo o tu árbol</span>
                     </li>
-                    <li class="hs-consulta__ver-item">
+                    <li class="hs-consulta__ver-item hs-entrada" style="--hs-i: 5">
                         <span class="hs-consulta__ver-icono"><i class="bi bi-check2-circle"
                                 aria-hidden="true"></i></span>
                         <span>Cada etapa, hasta la entrega</span>
                     </li>
-                    <li class="hs-consulta__ver-item">
+                    <li class="hs-consulta__ver-item hs-entrada" style="--hs-i: 6">
                         <span class="hs-consulta__ver-icono"><i class="bi bi-geo-alt" aria-hidden="true"></i></span>
                         <span>La comunidad y la ONG aliada</span>
                     </li>
@@ -115,8 +115,8 @@
                     </div>
 
                     <!-- Iteración de Donaciones -->
-                    <!-- El icono (bi-gift / bi-tree) y el color salen del enum del tipo (icono y clave), sin los dos th:if -->
-                    <div class="hs-donacion" th:each="d : ${consulta.donaciones}"
+                    <!-- El icono (bi-casaca / bi-tree) y el color salen del enum del tipo (icono y clave), sin los dos th:if -->
+                    <div class="hs-donacion" th:each="d, n : ${consulta.donaciones}" data-revelar th:style="|--hs-i: ${n.index + 1}|"
                         th:classappend="|hs-donacion--${d.tipo.clave}|">
                         <div class="hs-donacion__icono">
                             <i class="bi" th:classappend="${d.tipo.icono}" aria-hidden="true"></i>
@@ -149,8 +149,6 @@
 
         <!-- Se eliminó la sección que repetía los pasos de la Home -->
     </main>
-    <!-- Aparición suave del resultado al hacer scroll (el mismo script de Nosotros) -->
-    <script th:src="@{/js/nosotros.js}" defer></script>
 </body>
 
 </html>

@@ -26,7 +26,7 @@ public class InstitucionalController {
     public String cafe(Model model) {
         model.addAttribute("arboles", cafeService.arbolesSembrados());
         model.addAttribute("carta", cafeService.carta());
-        model.addAttribute("locales", cafeService.locales());
+        model.addAttribute("locales", cafeService.localesCafe());
         model.addAttribute("cafesEnGrano", cafeService.cafesEnGrano());
         model.addAttribute("merchandising", cafeService.merchandising());
         return "institucional/cafe";
@@ -38,6 +38,8 @@ public class InstitucionalController {
         model.addAttribute("impacto", impactoService.resumen());
         model.addAttribute("comunidades", impactoService.nombresComunidades());
         model.addAttribute("ongs", impactoService.nombresOng());
+        model.addAttribute("locales", cafeService.locales());
+        model.addAttribute("evidencias", contenidoService.fotosEvidencia());
         return "institucional/nosotros";
     }
 

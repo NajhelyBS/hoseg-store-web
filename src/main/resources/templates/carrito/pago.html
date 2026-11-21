@@ -13,7 +13,7 @@
     <main class="hs-main--bajo-nav hs-pagina">
         <th:block th:replace="~{fragments/avisos :: avisos}" />
 
-        <header class="hs-pagina-cabecera">
+        <header class="hs-pagina-cabecera hs-entrada" style="--hs-i: 0">
             <div class="container">
                 <!-- indicador de pasos (fragments/pasos-compra) -->
                 <th:block th:replace="~{fragments/pasos-compra :: pasos(2)}" />
@@ -27,7 +27,7 @@
                 <span th:text="${errorPago}">Pago rechazado.</span>
             </div>
 
-            <div class="row g-4 g-lg-5">
+            <div class="row g-4 g-lg-5 hs-entrada" style="--hs-i: 1">
                 <!-- Columna izquierda: Acordeón de medios de pago -->
                 <div class="col-12 col-lg-7">
                     <h2 class="hs-paso mb-3"><span class="hs-paso__numero">2</span> Elige tu medio de pago</h2>
@@ -47,7 +47,7 @@
                             <div id="collapseTarjeta" class="accordion-collapse collapse"
                                 th:classappend="${medioActivo != 'BILLETERA'} ? 'show'" aria-labelledby="headingTarjeta"
                                 data-bs-parent="#acordeonPago">
-                                <div class="accordion-body bg-white p-4">
+                                <div class="accordion-body p-4">
                                     <form th:object="${tarjetaForm}" method="post" th:action="@{/carrito/procesar-pago}"
                                         class="needs-validation" novalidate>
                                         <input type="hidden" name="medioPago" value="TARJETA">
@@ -81,12 +81,11 @@
                                             <div class="col-6">
                                                 <label class="hs-label d-flex align-items-center gap-1" for="cvv">
                                                     <span>Código CVV *</span>
-                                                    <button type="button" class="btn btn-link p-0 text-muted"
+                                                    <button type="button" class="hs-btn-icono hs-btn-icono--sm" aria-label="Ayuda sobre CVV"
                                                         data-bs-toggle="popover" data-bs-trigger="hover focus click"
                                                         data-bs-placement="top" data-bs-title="¿Qué es el CVV?"
                                                         data-bs-content="Son los 3 dígitos de seguridad ubicados al reverso de tu tarjeta.">
-                                                        <i class="bi bi-question-circle"
-                                                            aria-label="Ayuda sobre CVV"></i>
+                                                        <i class="bi bi-question-circle" aria-hidden="true"></i>
                                                     </button>
                                                 </label>
                                                 <input class="form-control hs-input" id="cvv" type="password"
@@ -120,7 +119,7 @@
                                             </div>
                                         </div>
 
-                                        <button class="hs-btn hs-btn--primario w-100 mt-4" type="submit">
+                                        <button class="hs-btn hs-btn--primario hs-brillo w-100 mt-4" type="submit">
                                             <i class="bi bi-shield-lock me-1" aria-hidden="true"></i>
                                             Pagar S/ <span
                                                 th:text="${#numbers.formatDecimal(totalConEnvio, 1, 'COMMA', 2, 'POINT')}">259.90</span>
@@ -143,13 +142,13 @@
                             <div id="collapseBilletera" class="accordion-collapse collapse"
                                 th:classappend="${medioActivo == 'BILLETERA'} ? 'show'"
                                 aria-labelledby="headingBilletera" data-bs-parent="#acordeonPago">
-                                <div class="accordion-body bg-white p-4">
+                                <div class="accordion-body p-4">
                                     <form th:object="${billeteraForm}" method="post"
                                         th:action="@{/carrito/procesar-pago}" class="needs-validation" novalidate>
                                         <input type="hidden" name="medioPago" value="BILLETERA">
 
-                                        <div class="text-center p-3 mb-3 rounded-3 border bg-light">
-                                            <i class="bi bi-qr-code display-3 text-dark" aria-hidden="true"></i>
+                                        <div class="hs-pago-qr mb-3">
+                                            <i class="bi bi-qr-code" aria-hidden="true"></i>
                                             <p class="mb-1 mt-2 fw-semibold">Escanea o yapea a HÖSÉG Store</p>
                                             <p class="mb-0 hs-texto-secundario">
                                                 Monto exacto: <strong>S/ <span
@@ -160,7 +159,7 @@
                                         <div class="row g-3">
                                             <div class="col-12 col-sm-5">
                                                 <label class="hs-label" for="billetera">Billetera</label>
-                                                <select class="form-select hs-input" id="billetera"
+                                                <select class="hs-select" id="billetera"
                                                     th:field="*{billetera}">
                                                     <option value="YAPE">Yape</option>
                                                     <option value="PLIN">Plin</option>
@@ -180,7 +179,7 @@
                                             </div>
                                         </div>
 
-                                        <button class="hs-btn hs-btn--primario w-100 mt-4" type="submit">
+                                        <button class="hs-btn hs-btn--primario hs-brillo w-100 mt-4" type="submit">
                                             <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
                                             Confirmar pago con billetera
                                         </button>
@@ -193,10 +192,10 @@
 
                 <!-- Columna derecha: Resumen fijo -->
                 <aside class="col-12 col-lg-5">
-                    <div class="hs-resumen sticky-top" style="top: 6rem;">
+                    <div class="hs-resumen">
                         <h2 class="h5 mb-3">Resumen del pedido</h2>
 
-                        <div class="p-3 rounded-3 border bg-white mb-3 small">
+                        <div class="hs-resumen__entrega mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="fw-semibold" th:text="${envioForm.tipo.etiqueta}">Recojo en tienda</span>
                                 <a class="hs-enlace" th:href="@{/carrito/entrega}">Cambiar</a>
@@ -235,7 +234,7 @@
                         <div class="hs-impacto-caja mb-2" th:if="${impacto.tieneImpacto()}"
                             th:classappend="${impacto.abrigos == 0} ? 'hs-impacto-caja--arbol'">
                             <span class="hs-impacto-caja__icono">
-                                <i class="bi" th:classappend="${impacto.abrigos > 0} ? 'bi-gift-fill' : 'bi-tree-fill'"
+                                <i class="bi" th:classappend="${impacto.abrigos > 0} ? 'bi-casaca-fill' : 'bi-tree-fill'"
                                     aria-hidden="true"></i>
                             </span>
                             <span>Con esta compra generas <strong th:text="${impacto.texto}">1 abrigo</strong>.</span>

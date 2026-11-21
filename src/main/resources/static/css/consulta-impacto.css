@@ -14,7 +14,11 @@
 .hs-consulta__hero {
     position: relative;
     padding: 3.5rem 0 3rem;
-    background: var(--hs-cream-dark);
+    /* Dos resplandores muy suaves (terracota arriba, salvia abajo) sobre el crema oscuro */
+    background:
+        radial-gradient(ellipse 55% 60% at 50% 0%, var(--hs-terracota-12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 85% 100%, var(--hs-salvia-10) 0%, transparent 70%),
+        var(--hs-cream-dark);
     border-bottom: 1px solid var(--hs-sand);
     text-align: center;
 }
@@ -93,6 +97,23 @@
     border-radius: 20px;
     background: var(--hs-card);
     box-shadow: var(--hs-shadow-card);
+    transition: border-color var(--hs-t-fast), box-shadow var(--hs-t-fast);
+}
+
+/* Al escribir, el borde de la tarjeta se enciende (no el del campo, que se funde con ella) */
+.hs-consulta__form:focus-within {
+    border-color: var(--hs-terracotta);
+    box-shadow: var(--hs-shadow-card), var(--hs-anillo-foco);
+}
+
+.hs-consulta__form .hs-input,
+.hs-consulta__form .hs-input:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.hs-consulta__form:focus-within .hs-consulta__campo .bi {
+    color: var(--hs-terracotta);
 }
 
 /* Campo con icono dentro: flexible; el botón mantiene su tamaño */
@@ -122,6 +143,13 @@
     flex: 0 0 auto;
     padding-left: 24px;
     padding-right: 24px;
+}
+
+/* Móvil: el botón baja y ocupa todo el ancho de la tarjeta */
+@media (max-width: 575.98px) {
+    .hs-consulta__form .hs-btn {
+        flex: 1 1 100%;
+    }
 }
 
 /* Aviso de código no encontrado */
@@ -177,6 +205,16 @@
     background: var(--hs-card);
     color: var(--hs-terracotta);
     font-size: 1rem;
+    transition: background var(--hs-t-fast), color var(--hs-t-fast), border-color var(--hs-t-fast),
+                transform var(--hs-t-medio) var(--hs-ease-seda);
+}
+
+/* Indicadores: el icono se enciende y gira un poco al pasar el cursor */
+.hs-consulta__ver-item:hover .hs-consulta__ver-icono {
+    border-color: var(--hs-terracotta);
+    background: var(--hs-terracotta);
+    color: var(--hs-sobre-acento);
+    transform: rotate(-8deg) scale(1.08);
 }
 
 /* ---------- Resultado ------------------------------------------------ */
@@ -344,8 +382,34 @@
     background: var(--hs-terracotta);
 }
 
+/* Al aparecer cada donación (revelar.js), su línea de tiempo se dibuja de
+   izquierda a derecha: cada tramo cumplido crece después del anterior. */
+.hs-revelar .hs-donacion .hs-linea-tiempo__paso.is-cumplido::before {
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.5s var(--hs-ease-seda);
+}
+
+.hs-revelar .hs-donacion.is-visible .hs-linea-tiempo__paso.is-cumplido::before {
+    transform: scaleX(1);
+}
+
+.hs-revelar .hs-donacion.is-visible .hs-linea-tiempo__paso:nth-child(2)::before { transition-delay: 0.35s; }
+.hs-revelar .hs-donacion.is-visible .hs-linea-tiempo__paso:nth-child(3)::before { transition-delay: 0.6s; }
+.hs-revelar .hs-donacion.is-visible .hs-linea-tiempo__paso:nth-child(4)::before { transition-delay: 0.85s; }
+
 @media (prefers-reduced-motion: reduce) {
-    .hs-resultado .hs-linea-tiempo__punto {
+    .hs-resultado .hs-linea-tiempo__punto,
+    .hs-consulta__form,
+    .hs-consulta__ver-icono {
         transition: none;
+    }
+
+    .hs-consulta__ver-item:hover .hs-consulta__ver-icono {
+        transform: none;
+    }
+
+    .hs-consulta__titulo::after {
+        animation: none;
     }
 }

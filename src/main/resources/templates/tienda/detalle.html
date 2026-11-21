@@ -118,7 +118,7 @@
                                 Esta compra abriga a 1 niño en Cusco.</span>
                         </div>
 
-                        <button class="hs-btn hs-btn--primario w-100" type="submit">
+                        <button class="hs-btn hs-btn--primario hs-brillo w-100" type="submit">
                             <i class="bi bi-bag-plus" aria-hidden="true"></i> Agregar al carrito
                         </button>
                     </form>
@@ -209,7 +209,7 @@
                                             12 reseñas</p>
                                     </div>
                                 </div>
-                                <ul class="hs-resenas__barras" aria-label="Reseñas por calificación">
+                                <ul class="hs-resenas__barras" data-revelar aria-label="Reseñas por calificación">
                                     <!-- __${n}__ pone el número de estrellas dentro de la expresión antes de evaluarla -->
                                     <li th:each="n : ${#numbers.sequence(5, 1)}" th:with="c=${resenas.?[calificacion == __${n}__].size()},
                                              pct=${cantidad > 0 ? c * 100 / cantidad : 0}">
@@ -298,7 +298,7 @@
 
                         <!-- cada reseña es una tarjeta con avatar (inicial del autor), insignia de compra verificada
                          y la talla como chip. Mismos datos que antes (calificacion, titulo, comentario, autor, talla, fecha, editada). -->
-                        <article class="hs-resena" th:each="r : ${resenas}">
+                        <article class="hs-resena hs-elevable" th:each="r : ${resenas}">
                             <header class="hs-resena__cabecera">
                                 <span class="hs-resena__avatar" aria-hidden="true"
                                     th:text="${#strings.isEmpty(r.autor)} ? '·' : ${#strings.toUpperCase(#strings.substring(r.autor, 0, 1))}">M</span>

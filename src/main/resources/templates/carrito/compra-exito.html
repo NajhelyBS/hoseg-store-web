@@ -13,13 +13,13 @@
             <div class="container hs-ancho-md">
                 <div class="text-center mb-5">
                     <span class="hs-exito__icono"><i class="bi bi-check2" aria-hidden="true"></i></span>
-                    <p class="hs-kicker">Pago aprobado</p>
-                    <h1 class="hs-pagina-cabecera__titulo mb-3">¡Gracias! Tu compra está confirmada.</h1>
-                    <p class="hs-texto-secundario mb-4">
+                    <p class="hs-kicker hs-entrada" style="--hs-i: 1">Pago aprobado</p>
+                    <h1 class="hs-pagina-cabecera__titulo mb-3 hs-entrada" style="--hs-i: 2">¡Gracias! Tu compra está confirmada.</h1>
+                    <p class="hs-texto-secundario mb-4 hs-entrada" style="--hs-i: 3">
                         Tu pago fue procesado con éxito y tu pedido ya pasó a preparación. Guarda este código para
                         seguir tu pedido y tu impacto.
                     </p>
-                    <div class="hs-exito__codigo">
+                    <div class="hs-exito__codigo hs-entrada" style="--hs-i: 4">
                         <span th:text="${compra.codigoComprobante}">WEB-000110</span>
                         <button class="hs-btn hs-btn--secundario" type="button"
                             th:attr="data-copiar=${compra.codigoComprobante}">
@@ -28,7 +28,7 @@
                     </div>
                 </div>
 
-                <div class="row g-4">
+                <div class="row g-4 hs-entrada" style="--hs-i: 5">
                     <div class="col-12 col-md-6">
                         <div class="hs-resumen h-100">
                             <h2 class="h5 mb-3">Resumen de compra</h2>
@@ -53,7 +53,7 @@
                                 th:classappend="${compra.impacto.abrigos == 0} ? 'hs-impacto-caja--arbol'">
                                 <span class="hs-impacto-caja__icono">
                                     <i class="bi"
-                                        th:classappend="${compra.impacto.abrigos > 0} ? 'bi-gift-fill' : 'bi-tree-fill'"
+                                        th:classappend="${compra.impacto.abrigos > 0} ? 'bi-casaca-fill' : 'bi-tree-fill'"
                                         aria-hidden="true"></i>
                                 </span>
                                 <span>Con esta compra generas <strong th:text="${compra.impacto.texto}">1
@@ -92,8 +92,8 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-5">
-                    <a class="hs-btn hs-btn--primario"
+                <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-5 hs-entrada" style="--hs-i: 6">
+                    <a class="hs-btn hs-btn--primario hs-brillo"
                         th:href="@{/cuenta/pedidos/{c}(c=${compra.codigoComprobante})}">Ver mi pedido</a>
                     <a class="hs-btn hs-btn--secundario"
                         th:href="@{${rutaConsulta}(boleta=${compra.codigoComprobante})}">Sigue tu impacto</a>
@@ -111,9 +111,9 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
                     <div class="modal-body p-4">
-                        <div class="p-3 rounded-3 border bg-light text-center mb-3">
-                            <div class="small text-uppercase text-muted">Comprobante autorizado</div>
-                            <div class="fs-4 fw-bold" th:text="${compra.codigoComprobante}">WEB-000110</div>
+                        <div class="hs-comprobante">
+                            <div class="hs-comprobante__etiqueta">Comprobante autorizado</div>
+                            <div class="hs-comprobante__codigo" th:text="${compra.codigoComprobante}">WEB-000110</div>
                             <div class="small text-muted" th:if="${compra.codigoTransaccion != null}"
                                 th:text="'Operación: ' + ${compra.codigoTransaccion}">Operación: TRX-849201</div>
                         </div>

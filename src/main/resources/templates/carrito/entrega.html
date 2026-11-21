@@ -13,7 +13,7 @@
     <main class="hs-main--bajo-nav hs-pagina">
         <th:block th:replace="~{fragments/avisos :: avisos}" />
 
-        <header class="hs-pagina-cabecera">
+        <header class="hs-pagina-cabecera hs-entrada" style="--hs-i: 0">
             <div class="container">
                 <!-- se reemplazan por el indicador de pasos (fragments/pasos-compra)-->
                 <th:block th:replace="~{fragments/pasos-compra :: pasos(1)}" />
@@ -24,7 +24,7 @@
         <div class="container">
             <form id="form-confirmar" th:object="${envioForm}" method="post" th:action="@{/carrito/entrega}"
                 class="needs-validation" data-confirmar novalidate>
-                <div class="row g-4 g-lg-5">
+                <div class="row g-4 g-lg-5 hs-entrada" style="--hs-i: 1">
                     <div class="col-12 col-lg-7">
                         <section class="mb-4" aria-labelledby="paso-entrega">
                             <h2 class="hs-paso" id="paso-entrega"><span class="hs-paso__numero">1</span> Elige cómo
@@ -47,7 +47,7 @@
                                                 lo llevamos a la dirección que indiques.</span>
                                             <span class="hs-entrega__texto d-block"
                                                 th:if="${t.name() == 'RECOJO_TIENDA'}">
-                                                <select class="form-select form-select-sm mt-1" th:field="*{referencia}"
+                                                <select class="hs-select hs-select--compacto w-100 mt-1" th:field="*{referencia}"
                                                     onclick="event.stopPropagation()">
                                                     <option th:each="l : ${localesRecojo}"
                                                         th:value="'Recojo en ' + ${l.nombre} + ' (' + ${l.direccion} + ')'"
@@ -115,7 +115,7 @@
 
                     <!-- Resumen lateral -->
                     <aside class="col-12 col-lg-5">
-                        <div class="hs-resumen sticky-top" style="top: 6rem;">
+                        <div class="hs-resumen">
                             <h2 class="h5 mb-3">Tu pedido</h2>
                             <div class="hs-mini-linea" th:each="i : ${items}">
                                 <span th:text="${i.cantidad} + ' × ' + ${i.nombre} + ' (' + ${i.talla} + ')'">1 × Casaca
@@ -146,14 +146,14 @@
                                 th:classappend="${impacto.abrigos == 0} ? 'hs-impacto-caja--arbol'">
                                 <span class="hs-impacto-caja__icono">
                                     <i class="bi"
-                                        th:classappend="${impacto.abrigos > 0} ? 'bi-gift-fill' : 'bi-tree-fill'"
+                                        th:classappend="${impacto.abrigos > 0} ? 'bi-casaca-fill' : 'bi-tree-fill'"
                                         aria-hidden="true"></i>
                                 </span>
                                 <span>Con esta compra generas <strong th:text="${impacto.texto}">1
                                         abrigo</strong>.</span>
                             </div>
 
-                            <button class="hs-btn hs-btn--primario w-100" type="submit"
+                            <button class="hs-btn hs-btn--primario hs-brillo w-100" type="submit"
                                 th:disabled="${!sePuedeConfirmar}">
                                 Ir a pagar <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                             </button>

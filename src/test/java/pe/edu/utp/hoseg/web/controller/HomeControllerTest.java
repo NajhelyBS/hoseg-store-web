@@ -103,7 +103,7 @@ class HomeControllerTest {
                 .andExpect(content().string(containsString("/js/navbar.js")))
                 // Iconos: Bootstrap Icons, sin SVG en línea
                 .andExpect(content().string(containsString("bootstrap-icons.min.css")))
-                .andExpect(content().string(containsString("bi bi-gift-fill")))
+                .andExpect(content().string(containsString("bi bi-casaca-fill")))
                 .andExpect(content().string(containsString("bi bi-tree-fill")))
                 .andExpect(content().string(containsString("hs-badge--arbol")))
                 .andExpect(content().string(not(containsString("<svg"))))

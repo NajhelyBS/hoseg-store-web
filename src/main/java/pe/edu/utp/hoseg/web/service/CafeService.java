@@ -64,10 +64,21 @@ public class CafeService {
         return porCategoria.entrySet().stream().map(e -> new CategoriaCarta(e.getKey(), e.getValue())).toList();
     }
 
+    /** Todos los locales activos: tiendas y cafetería (recojo en tienda y página Nosotros). */
     public List<LocalCafe> locales() {
         return localRepository.findByActivoTrueOrderByNombreAsc().stream()
                 .map(l -> new LocalCafe(l.getNombre(), l.getDireccion(), l.getHorario(), l.getTelefono(), l.getUrlMapa()))
                 .toList();
+    }
+
+    /**
+     * Locales de la cafetería para /cafe: los que llevan "Café" en el nombre (hoy, solo
+     * Cusco). Si ninguno lo lleva, todos, para que la página nunca quede sin dirección.
+     */
+    public List<LocalCafe> localesCafe() {
+        List<LocalCafe> todos = locales();
+        List<LocalCafe> cafeterias = todos.stream().filter(LocalCafe::esCafe).toList();
+        return cafeterias.isEmpty() ? todos : cafeterias;
     }
 
     /** Cafés de especialidad con botón "Comprar en la tienda" (tarjetas del catálogo). */

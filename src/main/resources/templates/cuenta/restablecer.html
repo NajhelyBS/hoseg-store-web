@@ -65,7 +65,7 @@
                             <input class="hs-input hs-cuenta__input--icono hs-cuenta__input--pass"
                                    id="nueva" type="password" th:field="*{nueva}"
                                    placeholder="Mínimo 8 caracteres" autocomplete="new-password" required>
-                            <button type="button" class="hs-cuenta__ojo" data-toggle-pass="nueva"
+                            <button type="button" class="hs-cuenta__ojo hs-btn-icono" data-toggle-pass="nueva"
                                     aria-label="Mostrar u ocultar contraseña nueva">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </button>
@@ -80,7 +80,7 @@
                             <input class="hs-input hs-cuenta__input--icono hs-cuenta__input--pass"
                                    id="confirmacion" type="password" th:field="*{confirmacion}"
                                    placeholder="Vuelve a escribir tu clave" autocomplete="new-password" required>
-                            <button type="button" class="hs-cuenta__ojo" data-toggle-pass="confirmacion"
+                            <button type="button" class="hs-cuenta__ojo hs-btn-icono" data-toggle-pass="confirmacion"
                                     aria-label="Mostrar u ocultar confirmación">
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             </button>
@@ -103,7 +103,7 @@
             </div>
 
             <div class="hs-cuenta__pie">
-                <a th:href="@{/login}" class="hs-cuenta__cta-registro">
+                <a th:href="@{/login}" class="hs-cuenta__cta-registro hs-enlace">
                     <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Volver a iniciar sesión
                 </a>
             </div>

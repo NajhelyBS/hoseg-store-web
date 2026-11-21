@@ -27,7 +27,7 @@
         <section class="hs-rec-banner">
             <img th:src="@{/images/comunidad-cusco.jpg}" alt="" class="hs-rec-banner__img">
             <div class="hs-rec-banner__velo"></div>
-            <div class="container hs-ancho-sm hs-fade-in">
+            <div class="container hs-ancho-sm hs-entrada" style="--hs-i: 0">
                 <span class="hs-rec-icono"><i class="bi bi-journal-text"></i></span>
                 <p class="hs-kicker">Hoja de reclamación virtual</p>
                 <h1 class="hs-h2 mb-2">Libro de Reclamaciones</h1>
@@ -41,7 +41,7 @@
             <div class="container hs-ancho-sm">
 
                 <!-- ÉXITO (?registrado) -->
-                <div class="hs-rec-exito hs-fade-in" th:if="${param.registrado}">
+                <div class="hs-rec-exito hs-entrada" style="--hs-i: 1" th:if="${param.registrado}">
                     <span class="hs-rec-exito__icono"><i class="bi bi-check2-circle"></i></span>
                     <h2 class="h4 fw-bold mb-1">Hoja registrada</h2>
                     <div class="hs-rec-hoja" th:text="${numeroHoja}">LR-000001</div>
@@ -52,7 +52,7 @@
                     th:action="@{/libro-reclamaciones}">
 
                     <!-- 1 · TUS DATOS -->
-                    <div class="hs-rec-seccion hs-fade-in" style="animation-delay: .05s;">
+                    <div class="hs-rec-seccion hs-entrada" style="--hs-i: 1">
                         <h2 class="hs-rec-seccion__titulo"><span class="hs-rec-numero">1</span>Tus datos</h2>
                         <div class="hs-rec-grid">
                             <div class="hs-rec-campo hs-rec-completo">
@@ -62,7 +62,7 @@
                             </div>
                             <div class="hs-rec-campo">
                                 <label for="tipoDoc">Tipo de documento *</label>
-                                <select class="form-select" th:field="*{tipoDoc}">
+                                <select class="hs-select" th:field="*{tipoDoc}">
                                     <option value="">Tipo de documento</option>
                                     <option th:each="t : ${tiposDocumento}" th:value="${t}" th:text="${t.etiqueta}">DNI
                                     </option>
@@ -94,7 +94,7 @@
                     </div>
 
                     <!-- 2 · TU RECLAMO -->
-                    <div class="hs-rec-seccion hs-fade-in" style="animation-delay: .1s;">
+                    <div class="hs-rec-seccion hs-entrada" style="--hs-i: 2">
                         <h2 class="hs-rec-seccion__titulo"><span class="hs-rec-numero">2</span>Tu reclamo</h2>
                         <div class="hs-rec-grid">
 
@@ -165,7 +165,7 @@
                     </div>
 
                     <!-- 3 · CUÉNTANOS -->
-                    <div class="hs-rec-seccion hs-fade-in" style="animation-delay: .15s;">
+                    <div class="hs-rec-seccion hs-entrada" style="--hs-i: 3">
                         <h2 class="hs-rec-seccion__titulo"><span class="hs-rec-numero">3</span>Cuéntanos qué pasó</h2>
                         <div class="hs-rec-grid">
                             <div class="hs-rec-campo hs-rec-completo">
@@ -183,7 +183,7 @@
                         </div>
                     </div>
 
-                    <button class="hs-btn hs-btn--primario hs-rec-enviar" type="submit"><i
+                    <button class="hs-btn hs-btn--primario hs-brillo hs-rec-enviar" type="submit"><i
                             class="bi bi-send"></i>Registrar</button>
                     <p class="hs-texto-secundario hs-rec-nota">Al registrar, te enviamos la constancia por correo.</p>
                 </form>

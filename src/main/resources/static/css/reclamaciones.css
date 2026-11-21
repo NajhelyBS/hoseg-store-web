@@ -165,40 +165,12 @@
     font-weight: 400;
 }
 
-/* El <select> de Bootstrap toma la misma apariencia que .hs-input */
-.hs-rec-campo .form-select {
-    padding: 12px 16px;
-    border: 1px solid var(--hs-sand);
-    border-radius: 12px;
-    background-color: var(--hs-card);
-    color: var(--hs-bark);
-    font-family: var(--hs-font-body);
-    font-size: 0.875rem;
-    transition:
-        border-color var(--hs-t-fast),
-        box-shadow var(--hs-t-fast);
-}
-
-.hs-rec-campo .form-select:focus {
-    border-color: var(--hs-terracotta);
-    box-shadow: var(--hs-anillo-foco);
-}
-
+/* El <select> es .hs-select (hoseg.css), el mismo de toda la web. Los
+   mensajes de error y el borde del campo con error también son comunes
+   (hoseg.css, "Formularios"). */
 .hs-rec-campo textarea.hs-input {
     resize: vertical;
     min-height: 7rem;
-}
-
-/* Mensaje de error de cada campo: pequeño, en el rojo de Bootstrap */
-.hs-rec-campo .text-danger:not(:empty) {
-    margin-top: 6px;
-    font-size: 0.8125rem;
-}
-
-/* Campo con error: borde rojo (los th:errors ya ponen la clase field-error de Spring) */
-.hs-input:has(+ .text-danger:not(:empty)),
-.form-select:has(+ .text-danger:not(:empty)) {
-    border-color: var(--bs-danger);
 }
 
 /* ---------- Opciones tipo tarjeta (Reclamo/Queja, Producto/Servicio) --- */
@@ -353,8 +325,7 @@
 
 @media (prefers-reduced-motion: reduce) {
     .hs-rec-opcion__cuerpo,
-    .hs-rec-opcion__icono,
-    .hs-rec-campo .form-select {
+    .hs-rec-opcion__icono {
         transition: none;
     }
 }

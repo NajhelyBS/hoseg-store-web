@@ -336,8 +336,9 @@ class VistasTest {
                 List.of(new CategoriaCarta.Item("Latte", null, new BigDecimal("9.00"), false)))));
         when(cafeService.arbolesSembrados()).thenReturn(5018L);
         mvc.perform(get("/cafe")).andExpect(status().isOk())
-                .andExpect(content().string(containsString("5,018 árboles sembrados")))
-                .andExpect(content().string(containsString("agotado hoy")));
+                .andExpect(content().string(containsString("data-valor=\"5018\">5,018</strong>")))
+                .andExpect(content().string(containsString("árboles sembrados")))
+                .andExpect(content().string(containsString("Agotado hoy")));
 
         when(impactoService.resumen()).thenReturn(new ResumenImpacto(10, 20, 3, 5));
         when(contenidoService.bloques(any())).thenReturn(Map.of("nosotros.historia",

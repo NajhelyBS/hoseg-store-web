@@ -14,7 +14,7 @@
 
         <section class="hs-cuenta">
             <div class="container">
-                <a class="hs-detalle__volver" th:href="@{/cuenta}">
+                <a class="hs-detalle__volver hs-enlace-flecha" th:href="@{/cuenta}">
                     <i class="bi bi-arrow-left" aria-hidden="true"></i>
                     <span>Volver a mis pedidos</span>
                 </a>
@@ -61,7 +61,7 @@
                                         th:text="'Precio unitario: S/ ' + ${#numbers.formatDecimal(l.precioUnitario, 1, 'COMMA', 2, 'POINT')}">
                                         Precio unitario: S/ 259.90
                                     </p>
-                                    <a class="hs-detalle__resenar" th:if="${pedido.puedeResenar}"
+                                    <a class="hs-detalle__resenar hs-enlace" th:if="${pedido.puedeResenar}"
                                         th:href="@{/tienda/{c}(c=${l.codigoProducto})} + '#resenas'">
                                         <i class="bi bi-star me-1" aria-hidden="true"></i> Escribir una reseña
                                     </a>
@@ -122,7 +122,7 @@
                                     <div class="d-inline-flex align-items-center gap-2">
                                         <strong id="tracking-code"
                                             th:text="${pedido.envio.codigoSeguimiento}">TRACK123</strong>
-                                        <button type="button" class="hs-detalle__copiar-btn"
+                                        <button type="button" class="hs-detalle__copiar-btn hs-btn-icono"
                                             data-copy-target="tracking-code" title="Copiar código de seguimiento">
                                             <i class="bi bi-copy" aria-hidden="true"></i>
                                         </button>

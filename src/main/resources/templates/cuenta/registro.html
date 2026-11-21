@@ -45,7 +45,7 @@
                     <div class="hs-cuenta__grid-2">
                         <label class="hs-cuenta__campo">
                             <span>Tipo de documento *</span>
-                            <select class="form-select" th:field="*{tipoDoc}" required>
+                            <select class="hs-select" th:field="*{tipoDoc}" required>
                                 <option value="">Selecciona tu documento</option>
                                 <option th:each="t : ${tiposDocumento}" th:value="${t}" th:text="${t.etiqueta}">DNI
                                 </option>
@@ -113,7 +113,7 @@
                                 <input id="reg-password" class="hs-input hs-cuenta__input--pass" type="password"
                                     th:field="*{contrasena}" placeholder="Mínimo 8 caracteres"
                                     autocomplete="new-password" required>
-                                <button type="button" class="hs-cuenta__ojo" data-toggle-pass="reg-password"
+                                <button type="button" class="hs-cuenta__ojo hs-btn-icono" data-toggle-pass="reg-password"
                                     aria-label="Mostrar u ocultar contraseña">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </button>
@@ -127,7 +127,7 @@
                                 <input id="reg-confirm" class="hs-input hs-cuenta__input--pass" type="password"
                                     th:field="*{confirmacion}" placeholder="Vuelve a escribir tu clave"
                                     autocomplete="new-password" required>
-                                <button type="button" class="hs-cuenta__ojo" data-toggle-pass="reg-confirm"
+                                <button type="button" class="hs-cuenta__ojo hs-btn-icono" data-toggle-pass="reg-confirm"
                                     aria-label="Mostrar u ocultar confirmación">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </button>
@@ -140,7 +140,7 @@
                     <!-- Términos y botón de envío -->
                     <label class="hs-cuenta__terminos hs-cuenta__terminos--card">
                         <input type="checkbox" th:field="*{aceptaTerminos}" required>
-                        <span>Acepto los <a th:href="@{/terminos}" class="hs-cuenta__cta-registro">términos y
+                        <span>Acepto los <a th:href="@{/terminos}" class="hs-cuenta__cta-registro hs-enlace">términos y
                                 condiciones</a> y la política de privacidad de HÖSÉG.</span>
                     </label>
                     <div class="text-danger hs-cuenta__error" th:errors="*{aceptaTerminos}"></div>
@@ -153,7 +153,7 @@
 
                 <div class="hs-cuenta__pie">
                     <span>¿Ya tienes una cuenta?</span>
-                    <a th:href="@{/login}" class="hs-cuenta__cta-registro">Inicia sesión</a>
+                    <a th:href="@{/login}" class="hs-cuenta__cta-registro hs-enlace">Inicia sesión</a>
                 </div>
             </div>
         </section>

@@ -82,8 +82,20 @@
 .hs-resenas .progress-bar {
     border-radius: var(--hs-radius-pill);
     background: var(--hs-amber);
-    transition: width 0.6s var(--hs-ease);
+    transform-origin: left;
+    transition: transform 0.8s var(--hs-ease-seda);
 }
+
+/* Las barras crecen desde la izquierda cuando el resumen entra en pantalla
+   (revelar.js marca .is-visible), una tras otra */
+.hs-revelar .hs-resenas__barras:not(.is-visible) .progress-bar {
+    transform: scaleX(0);
+}
+
+.hs-resenas__barras li:nth-child(2) .progress-bar { transition-delay: 0.08s; }
+.hs-resenas__barras li:nth-child(3) .progress-bar { transition-delay: 0.16s; }
+.hs-resenas__barras li:nth-child(4) .progress-bar { transition-delay: 0.24s; }
+.hs-resenas__barras li:nth-child(5) .progress-bar { transition-delay: 0.32s; }
 
 /* ---------- Formulario -------------------------------------------------- */
 .hs-resenas .hs-caja {
@@ -128,8 +140,7 @@
 .hs-resenas .hs-input:focus {
     background: var(--hs-card);
     border-color: var(--hs-terracotta);
-    box-shadow: 0 0 0 3px
-        color-mix(in srgb, var(--hs-terracotta) 18%, transparent);
+    box-shadow: var(--hs-anillo-foco);
     outline: 0;
 }
 .hs-resenas textarea.hs-input {
@@ -198,14 +209,9 @@
     border-radius: 18px;
     background: var(--hs-card);
     box-shadow: var(--hs-shadow-card-reposo);
-    animation: hsFadeSlide 0.5s var(--hs-ease) both;
-    transition:
-        transform var(--hs-t-fast),
-        box-shadow var(--hs-t-fast);
-}
-.hs-resenas .hs-resena:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--hs-shadow-card);
+    /* `backwards`: al terminar no deja transform, así funciona la elevación
+       de .hs-elevable (hoseg.css) al pasar el cursor */
+    animation: hsFadeSlide 0.5s var(--hs-ease-seda) backwards;
 }
 
 .hs-resena__cabecera {

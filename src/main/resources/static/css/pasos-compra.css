@@ -59,15 +59,59 @@
     border-color: var(--hs-terracotta);
     background: var(--hs-terracotta);
     color: var(--hs-sobre-acento);
+    /* Llega después de que se dibujan las rayas */
+    animation: hsPopExito 0.5s var(--hs-ease-seda) 0.35s backwards;
 }
 
-/* Raya entre pasos */
+.hs-pasos__enlace .hs-pasos__num {
+    transition: transform var(--hs-t-medio) var(--hs-ease-seda);
+}
+
+.hs-pasos__enlace:hover .hs-pasos__num {
+    transform: scale(1.1);
+}
+
+/* Raya entre pasos. La parte cumplida (salvia) se dibuja de izquierda a
+   derecha al cargar: es un ::after que crece con scaleX. */
+@keyframes hsRayaPaso {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
+
 .hs-pasos__raya {
+    position: relative;
     width: 28px;
     height: 2px;
+    overflow: hidden;
     border-radius: var(--hs-radius-pill);
     background: var(--hs-sand);
 }
-.hs-pasos__raya.is-hecho {
+
+.hs-pasos__raya.is-hecho::after {
+    content: "";
+    position: absolute;
+    inset: 0;
     background: var(--hs-sage);
+    transform-origin: left;
+    animation: hsRayaPaso 0.4s var(--hs-ease-seda) backwards;
+}
+
+/* La segunda raya cumplida empieza cuando termina la primera */
+.hs-pasos__raya.is-hecho ~ .hs-pasos__raya.is-hecho::after {
+    animation-delay: 0.2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hs-pasos__item.is-actual .hs-pasos__num,
+    .hs-pasos__raya.is-hecho::after {
+        animation: none;
+    }
+
+    .hs-pasos__enlace .hs-pasos__num {
+        transition: none;
+    }
+
+    .hs-pasos__enlace:hover .hs-pasos__num {
+        transform: none;
+    }
 }

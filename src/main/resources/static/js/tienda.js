@@ -29,6 +29,13 @@
         let ultimaBusqueda = buscador ? buscador.value.trim() : '';
         let modoHistorial = 'push';  // 'replace' mientras se escribe, para no llenar el historial
 
+        // Panel de filtros. En móvil (< 992 px) tapa los resultados, así que sus
+        // cambios no se aplican al tocarlos: esperan a "Aplicar", que además
+        // cierra el panel y baja a los resultados.
+        const panel = form.querySelector('#panel-filtros');
+        const esMovil = window.matchMedia('(max-width: 991.98px)');
+        const enPanelMovil = (el) => esMovil.matches && panel && panel.contains(el);
+
         // Con JavaScript el botón "Aplicar" sobra en escritorio
         form.querySelectorAll('[data-solo-sin-js]').forEach((b) => b.classList.add('d-lg-none'));
         if (titulo) titulo.tabIndex = -1;
@@ -48,15 +55,27 @@
             return form.action + (consulta ? '?' + consulta : '');
         };
 
-        const llevarArriba = () => {
+        /* Lleva la vista al inicio de los resultados. Por defecto solo si se
+           quedó por debajo (paginando); con siempre=true también baja (móvil,
+           tras "Aplicar"). */
+        const llevarArriba = (siempre = false) => {
             const y = zona.getBoundingClientRect().top + window.scrollY - 110;   // deja libre la barra fija
-            if (window.scrollY > y) {
+            if (siempre || window.scrollY > y) {
                 window.scrollTo({ top: y, behavior: menosMovimiento() ? 'auto' : 'smooth' });
             }
             if (titulo) titulo.focus({ preventScroll: true });
         };
 
-        const cargar = async (url, { historial = 'push', paginando = false } = {}) => {
+        const cerrarPanel = () => {
+            if (!panel || !panel.classList.contains('show')) return;
+            if (window.bootstrap && window.bootstrap.Collapse) {
+                window.bootstrap.Collapse.getOrCreateInstance(panel, { toggle: false }).hide();
+            } else {
+                panel.classList.remove('show');
+            }
+        };
+
+        const cargar = async (url, { historial = 'push', paginando = false, aplicando = false } = {}) => {
             const actual = zona.querySelector('[data-tienda-resultados]');
             if (controlador) controlador.abort();
             controlador = new AbortController();
@@ -74,11 +93,17 @@
                 if (!nuevo) throw new Error('Respuesta sin resultados');
 
                 actual.replaceWith(nuevo);
+                if (window.hsRevelar) window.hsRevelar(nuevo);
                 if (historial === 'push') history.pushState({ tienda: true }, '', url);
                 if (historial === 'replace') history.replaceState({ tienda: true }, '', url);
                 const resumen = nuevo.querySelector('.hs-tienda__resumen span');
                 if (anuncio && resumen) anuncio.textContent = resumen.textContent;
-                if (paginando) llevarArriba();
+                if (aplicando) {
+                    cerrarPanel();
+                    llevarArriba(true);
+                } else if (paginando) {
+                    llevarArriba();
+                }
             } catch (error) {
                 if (error.name === 'AbortError') return;
                 window.location.href = url;   // si algo falla, navegación normal
@@ -91,15 +116,17 @@
             const datos = new FormData(form);
             // Los botones del paginador envían name="pagina"; sin ellos se vuelve a la página 1
             const paginando = !!(e.submitter && e.submitter.name === 'pagina');
+            const aplicando = !!(e.submitter && e.submitter.matches('[data-aplicar-filtros]'));
             if (paginando) datos.set('pagina', e.submitter.value);
             if (buscador) ultimaBusqueda = buscador.value.trim();
-            cargar(urlDe(datos), { historial: modoHistorial, paginando });
+            cargar(urlDe(datos), { historial: modoHistorial, paginando, aplicando });
             modoHistorial = 'push';
         });
 
-        // Filtros, orden y "productos por página": se aplican al cambiar
+        // Filtros, orden y "productos por página": se aplican al cambiar,
+        // salvo los del panel en móvil, que esperan a "Aplicar"
         form.addEventListener('change', (e) => {
-            if (e.target.matches('input[type=radio], input[type=checkbox], select')) {
+            if (e.target.matches('input[type=radio], input[type=checkbox], select') && !enPanelMovil(e.target)) {
                 form.requestSubmit();
             }
         });

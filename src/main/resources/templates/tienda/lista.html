@@ -6,7 +6,8 @@
   Los filtros son un GET con los mismos nombres que FiltroCatalogo: q, categoria, coleccion, impacto,
   disponibles, orden; más pagina y porPagina. Con JavaScript (tienda.js) se aplican al cambiar y
   sin recargar: se pide solo el fragmento "resultados" (cabecera X-Hoseg-Parcial). Sin JavaScript,
-  el mismo formulario funciona con "Aplicar" y recargando. En móvil los filtros van en un panel desplegable.
+  el mismo formulario funciona con "Aplicar" y recargando. En móvil los filtros van en un panel desplegable
+  y no se aplican al tocarlos: "Aplicar" los envía, cierra el panel y baja a los resultados.
 -->
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout/base :: pagina(titulo='Tienda · HÖSÉG', activa='tienda',
@@ -18,11 +19,12 @@
 <main class="hs-main--bajo-nav hs-pagina">
     <th:block th:replace="~{fragments/avisos :: avisos}"/>
 
-    <header class="hs-pagina-cabecera">
-        <div class="container">
-            <p class="hs-kicker">Tienda</p>
-            <h1 class="hs-pagina-cabecera__titulo">Ropa que abriga dos veces.</h1>
-            <p class="hs-texto-secundario mt-2 mb-0 hs-ancho-texto">
+    <!-- Encabezado centrado con la marca "HÖSÉG" de fondo (decorativa, en el CSS) -->
+    <header class="hs-pagina-cabecera hs-pagina-cabecera--marca">
+        <div class="container text-center">
+            <p class="hs-kicker hs-fade-in">Tienda</p>
+            <h1 class="hs-pagina-cabecera__titulo hs-fade-in">Ropa que abriga <em class="hs-acento">dos veces.</em></h1>
+            <p class="hs-texto-secundario mt-2 mb-0 hs-ancho-texto mx-auto hs-fade-in">
                 Cada casaca abriga a un niño en Cusco y cada accesorio o café siembra un árbol.
             </p>
         </div>
@@ -108,7 +110,10 @@
                                 <span><i class="bi bi-check2" aria-hidden="true"></i> Solo disponibles</span>
                             </label>
 
-                            <button class="hs-btn hs-btn--primario w-100" type="submit" data-solo-sin-js>Aplicar</button>
+                            <!-- Sin JS: aplica en cualquier pantalla. Con JS: solo en móvil, donde los
+                                 filtros del panel esperan a este botón (tienda.js) -->
+                            <button class="hs-btn hs-btn--primario w-100" type="submit" data-solo-sin-js
+                                    data-aplicar-filtros>Aplicar</button>
                         </div>
                     </div>
                 </aside>
