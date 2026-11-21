@@ -130,6 +130,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // 5. Modal "Editar producto": un solo modal que se llena con los data-* del botón de la fila
+    const modalEditar = document.getElementById('modal-editar-producto');
+    if (modalEditar) {
+        const form = modalEditar.querySelector('[data-form-editar]');
+        const campo = (nombre) => form.elements.namedItem(nombre);
+        const elegir = (select, valor) => {
+            select.value = valor || '';
+            // Valor heredado que ya no está en la lista: se ve vacío y "required" obliga a elegir
+            if (select.value !== (valor || '')) select.value = '';
+        };
+
+        modalEditar.addEventListener('show.bs.modal', (e) => {
+            const d = e.relatedTarget && e.relatedTarget.dataset;
+            if (!d || !d.codigo) return;
+            form.action = form.dataset.accionBase + encodeURIComponent(d.codigo) + '/editar';
+            modalEditar.querySelector('[data-editar-codigo]').textContent = d.codigo;
+            campo('nombre').value = d.nombre || '';
+            campo('talla').value = d.talla || '';
+            campo('precio').value = d.precio || '';
+            campo('stockMinimo').value = d.minimo || '0';
+            elegir(campo('categoria'), d.categoria);
+            elegir(campo('coleccion'), d.coleccion);
+            elegir(campo('tipoCompromiso'), d.compromiso);
+        });
+        modalEditar.addEventListener('shown.bs.modal', () => campo('nombre').focus());
+    }
+
     // Si se llega a Inventario con ?filtro=critico, se activa la pestaña de stock crítico
     if (new URLSearchParams(window.location.search).get('filtro') === 'critico') {
         const tab = document.querySelector('[data-inv-filter="CRITICO"]');

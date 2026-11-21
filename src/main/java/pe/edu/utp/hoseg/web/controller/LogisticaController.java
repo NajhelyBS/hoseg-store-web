@@ -1,18 +1,24 @@
 package pe.edu.utp.hoseg.web.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pe.edu.utp.hoseg.web.config.AdministradorAutenticado;
+import pe.edu.utp.hoseg.web.dto.ProductoEdicionForm;
 import pe.edu.utp.hoseg.web.model.EstadoEnvio;
 import pe.edu.utp.hoseg.web.model.Producto;
+import pe.edu.utp.hoseg.web.model.TipoCompromiso;
 import pe.edu.utp.hoseg.web.model.TipoEnvio;
+import pe.edu.utp.hoseg.web.service.CatalogoService;
 import pe.edu.utp.hoseg.web.service.LogisticaService;
 import pe.edu.utp.hoseg.web.service.NegocioException;
 
@@ -23,9 +29,11 @@ import java.util.List;
 public class LogisticaController {
 
     private final LogisticaService logisticaService;
+    private final CatalogoService catalogoService;
 
-    public LogisticaController(LogisticaService logisticaService) {
+    public LogisticaController(LogisticaService logisticaService, CatalogoService catalogoService) {
         this.logisticaService = logisticaService;
+        this.catalogoService = catalogoService;
     }
 
        @GetMapping("/pedidos")
@@ -69,7 +77,30 @@ public class LogisticaController {
         model.addAttribute("productos", productos);
         model.addAttribute("productosCriticos", criticos);
         model.addAttribute("totalCriticos", criticos.size());
+        // Opciones de los modales "Nuevo producto" y "Editar": categoria y coleccion son claves foráneas
+        model.addAttribute("categorias", catalogoService.categorias());
+        model.addAttribute("colecciones", catalogoService.colecciones());
+        model.addAttribute("compromisos", TipoCompromiso.values());
         return "logistica/inventario";
+    }
+
+    /** Guarda el modal "Editar producto" del inventario (sin código ni stock). */
+    @PostMapping("/inventario/{codigo}/editar")
+    public String editarProducto(@PathVariable String codigo,
+                                 @Valid @ModelAttribute ProductoEdicionForm form,
+                                 BindingResult errores,
+                                 RedirectAttributes flash) {
+        if (errores.hasErrors()) {
+            flash.addFlashAttribute("error", errores.getAllErrors().get(0).getDefaultMessage());
+            return "redirect:/logistica/inventario";
+        }
+        try {
+            logisticaService.editarProducto(codigo, form);
+            flash.addFlashAttribute("exito", "Producto " + codigo + " actualizado.");
+        } catch (NegocioException e) {
+            flash.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/logistica/inventario";
     }
 
 

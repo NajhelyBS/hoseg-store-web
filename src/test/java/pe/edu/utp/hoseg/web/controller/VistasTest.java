@@ -16,6 +16,7 @@ import pe.edu.utp.hoseg.web.model.EstadoDonacion;
 import pe.edu.utp.hoseg.web.model.EstadoEnvio;
 import pe.edu.utp.hoseg.web.model.EstadoResena;
 import pe.edu.utp.hoseg.web.model.EstadoVenta;
+import pe.edu.utp.hoseg.web.model.Producto;
 import pe.edu.utp.hoseg.web.model.RolUsuario;
 import pe.edu.utp.hoseg.web.model.TipoCompromiso;
 import pe.edu.utp.hoseg.web.model.TipoEnvio;
@@ -38,6 +39,7 @@ import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
@@ -485,6 +487,51 @@ class VistasTest {
                 .andExpect(content().string(containsString("Estado del pedido actualizado a En ruta.")))
                 .andExpect(content().string(not(matchesRegex(
                         "(?s).*actualizado a En ruta\\..*actualizado a En ruta\\..*"))));
+    }
+
+    @Test
+    void elInventarioOfreceEditarCadaProducto() throws Exception {
+        Producto casaca = new Producto();
+        casaca.setCodigo("HSG-CAS-001");
+        casaca.setNombre("Casaca Älpafill Cusco");
+        casaca.setCategoria("Casacas");
+        casaca.setColeccion("Älpafill");
+        casaca.setTalla("M");
+        casaca.setPrecio(new BigDecimal("259.90"));
+        casaca.setStockComercial(10);
+        casaca.setStockMinimo(3);
+        casaca.setTipoCompromiso(TipoCompromiso.ABRIGO);
+        when(logisticaService.inventarioActivo()).thenReturn(List.of(casaca));
+        when(catalogoService.categorias()).thenReturn(List.of("Casacas", "Chullos"));
+        when(catalogoService.colecciones()).thenReturn(List.of("Älpafill"));
+
+        mvc.perform(get("/logistica/inventario").with(user(LOGISTICA)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("id=\"modal-editar-producto\"")))
+                .andExpect(content().string(containsString("data-codigo=\"HSG-CAS-001\"")))
+                .andExpect(content().string(containsString("data-precio=\"259.90\"")))
+                .andExpect(content().string(containsString("<option value=\"Chullos\">Chullos</option>")));
+    }
+
+    @Test
+    void editarUnProductoLoGuardaYVuelveAlInventario() throws Exception {
+        mvc.perform(post("/logistica/inventario/HSG-CAS-001/editar").with(user(LOGISTICA)).with(csrf())
+                        .param("nombre", "Casaca Älpafill Cusco").param("categoria", "Casacas")
+                        .param("coleccion", "").param("talla", "M").param("precio", "249.90")
+                        .param("stockMinimo", "4").param("tipoCompromiso", ""))
+                .andExpect(redirectedUrl("/logistica/inventario"))
+                .andExpect(flash().attribute("exito", "Producto HSG-CAS-001 actualizado."));
+        verify(logisticaService).editarProducto(eq("HSG-CAS-001"), any(ProductoEdicionForm.class));
+    }
+
+    @Test
+    void editarConPrecioInvalidoNoLlegaAlServicio() throws Exception {
+        mvc.perform(post("/logistica/inventario/HSG-CAS-001/editar").with(user(LOGISTICA)).with(csrf())
+                        .param("nombre", "Casaca").param("categoria", "Casacas")
+                        .param("precio", "0").param("stockMinimo", "3"))
+                .andExpect(redirectedUrl("/logistica/inventario"))
+                .andExpect(flash().attribute("error", "El precio debe ser mayor a cero."));
+        verify(logisticaService, never()).editarProducto(anyString(), any());
     }
 
     // ---------- Datos de ejemplo ----------

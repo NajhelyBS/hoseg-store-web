@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.utp.hoseg.web.dto.LineaLogisticaVista;
 import pe.edu.utp.hoseg.web.dto.PedidoLogisticaVista;
+import pe.edu.utp.hoseg.web.dto.ProductoEdicionForm;
 import pe.edu.utp.hoseg.web.model.Envio;
 import pe.edu.utp.hoseg.web.model.EstadoEnvio;
 import pe.edu.utp.hoseg.web.model.EstadoPedidoProveedor;
@@ -12,6 +13,8 @@ import pe.edu.utp.hoseg.web.model.PedidoProveedor;
 import pe.edu.utp.hoseg.web.model.Producto;
 import pe.edu.utp.hoseg.web.model.Proveedor;
 import pe.edu.utp.hoseg.web.model.TipoEnvio;
+import pe.edu.utp.hoseg.web.repository.CategoriaRepository;
+import pe.edu.utp.hoseg.web.repository.ColeccionRepository;
 import pe.edu.utp.hoseg.web.repository.EnvioRepository;
 import pe.edu.utp.hoseg.web.repository.PedidoProveedorRepository;
 import pe.edu.utp.hoseg.web.repository.ProductoRepository;
@@ -30,15 +33,21 @@ public class LogisticaService {
     private final ProductoRepository productoRepository;
     private final ProveedorRepository proveedorRepository;
     private final PedidoProveedorRepository pedidoProveedorRepository;
+    private final CategoriaRepository categoriaRepository;
+    private final ColeccionRepository coleccionRepository;
 
     public LogisticaService(EnvioRepository envioRepository,
                             ProductoRepository productoRepository,
                             ProveedorRepository proveedorRepository,
-                            PedidoProveedorRepository pedidoProveedorRepository) {
+                            PedidoProveedorRepository pedidoProveedorRepository,
+                            CategoriaRepository categoriaRepository,
+                            ColeccionRepository coleccionRepository) {
         this.envioRepository = envioRepository;
         this.productoRepository = productoRepository;
         this.proveedorRepository = proveedorRepository;
         this.pedidoProveedorRepository = pedidoProveedorRepository;
+        this.categoriaRepository = categoriaRepository;
+        this.coleccionRepository = coleccionRepository;
     }
 
     // ---------- 1. Despachos de pedidos web ----------
@@ -132,6 +141,35 @@ public class LogisticaService {
         p.setActivo(true);
         p.setDestacado(false);
         productoRepository.save(p);
+    }
+
+    /**
+     * Edita los datos comerciales de una variante. No toca el código (clave referenciada por
+     * ventas, donaciones y movimientos) ni el stock (eso es "reponer" u órdenes a talleres).
+     * {@code aplica_triple_impacto} se recalcula sola en la base a partir del compromiso.
+     */
+    @Transactional
+    public void editarProducto(String codigo, ProductoEdicionForm form) {
+        Producto p = productoRepository.findById(codigo)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado: " + codigo));
+
+        // categoria y coleccion son claves foráneas por nombre (tablas categoria y coleccion, 07)
+        String categoria = form.getCategoria().trim();
+        if (!categoriaRepository.existsById(categoria)) {
+            throw new NegocioException("La categoría «" + categoria + "» no existe.");
+        }
+        String coleccion = limpio(form.getColeccion());
+        if (coleccion != null && !coleccionRepository.existsById(coleccion)) {
+            throw new NegocioException("La colección «" + coleccion + "» no existe.");
+        }
+
+        p.setNombre(form.getNombre().trim());
+        p.setCategoria(categoria);
+        p.setColeccion(coleccion);
+        p.setTalla(limpio(form.getTalla()));
+        p.setPrecio(form.getPrecio());
+        p.setStockMinimo(form.getStockMinimo());
+        p.setTipoCompromiso(form.getTipoCompromiso());
     }
 
     // ---------- 3. Proveedores y órdenes a talleres ----------
