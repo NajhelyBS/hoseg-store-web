@@ -27,6 +27,7 @@ import pe.edu.utp.hoseg.web.config.JwtTokenProvider;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -134,6 +135,28 @@ class VistasTest {
                 .andExpect(content().string(containsString("Este producto aún no tiene reseñas.")))
                 .andExpect(content().string(containsString("para dejar tu reseña")))
                 .andExpect(content().string(not(containsString("Escribe tu reseña"))));
+    }
+
+    @Test
+    void tiendaPaginaYConservaLosFiltrosEnElPaginador() throws Exception {
+        when(catalogoService.tarjetas(any(FiltroCatalogo.class))).thenReturn(Collections.nCopies(14, tarjeta()));
+        mvc.perform(get("/tienda").param("impacto", "ABRIGO").param("porPagina", "6").param("pagina", "2"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Mostrando 7–12 de 14 productos")))
+                .andExpect(content().string(containsString("aria-current=\"page\"")))
+                // El paginador va dentro del formulario de filtros: así conserva impacto y orden
+                .andExpect(content().string(matchesRegex("(?s).*<form[^>]*data-tienda-filtros.*name=\"pagina\".*</form>.*")));
+    }
+
+    @Test
+    void tiendaConCabeceraParcialDevuelveSoloLosResultados() throws Exception {
+        when(catalogoService.tarjetas(any(FiltroCatalogo.class))).thenReturn(List.of(tarjeta()));
+        mvc.perform(get("/tienda").header("X-Hoseg-Parcial", "true"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("data-tienda-resultados")))
+                .andExpect(content().string(containsString("Casaca Älpafill Cusco")))
+                .andExpect(content().string(not(containsString("<html"))))
+                .andExpect(content().string(not(containsString("Ropa que abriga dos veces."))));
     }
 
     @Test

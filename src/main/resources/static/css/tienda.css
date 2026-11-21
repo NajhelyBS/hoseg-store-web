@@ -200,6 +200,130 @@
     font-size: 1.75rem;
 }
 
+/* ── Tienda: resultados sin recarga, tamaño de página y paginador ──── */
+.hs-tienda__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+}
+
+.hs-por-pagina {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.hs-select--compacto {
+    width: auto;
+    padding: 6px 32px 6px 12px;
+    border-radius: var(--hs-radius-pill);
+}
+
+/* Mientras llegan los resultados nuevos (tienda.js) */
+.hs-resultados {
+    transition: opacity var(--hs-t-fast) var(--hs-ease);
+}
+
+.hs-resultados.is-cargando {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+/* Las tarjetas entran en cascada, cada una un poco después de la anterior */
+.hs-grilla-tienda__item {
+    animation: hsFadeSlide 0.45s var(--hs-ease) both;
+    animation-delay: calc(var(--hs-i, 0) * 45ms);
+}
+
+/* Una sola columna en móvil: la tarjeta no crece sin límite en pantallas de 500 px */
+@media (max-width: 575.98px) {
+    .hs-grilla-tienda .hs-card {
+        max-width: 26rem;
+        margin-inline: auto;
+    }
+}
+
+.hs-paginador {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 2.5rem;
+}
+
+.hs-paginador__numero,
+.hs-paginador__flecha {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid var(--hs-sand);
+    border-radius: var(--hs-radius-pill);
+    background: var(--hs-card);
+    color: var(--hs-bark);
+    font-family: var(--hs-font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--hs-t-fast) var(--hs-ease),
+                border-color var(--hs-t-fast) var(--hs-ease),
+                color var(--hs-t-fast) var(--hs-ease),
+                transform var(--hs-t-fast) var(--hs-ease);
+}
+
+.hs-paginador__numero:hover,
+.hs-paginador__flecha:not(:disabled):hover {
+    border-color: var(--hs-terracotta);
+    background: var(--hs-terracotta-light);
+    color: var(--hs-terracotta);
+    transform: translateY(-2px);
+}
+
+.hs-paginador__numero:focus-visible,
+.hs-paginador__flecha:focus-visible {
+    outline: none;
+    box-shadow: var(--hs-anillo-foco-oscuro);
+}
+
+.hs-paginador__numero.is-actual {
+    border-color: var(--hs-terracotta);
+    background: var(--hs-terracotta);
+    color: var(--hs-sobre-acento);
+    transform: none;
+    cursor: default;
+}
+
+.hs-paginador__flecha:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.hs-paginador__salto {
+    min-width: 20px;
+    color: var(--hs-muted);
+    text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hs-resultados,
+    .hs-paginador__numero,
+    .hs-paginador__flecha {
+        transition: none;
+    }
+    .hs-grilla-tienda__item {
+        animation: none;
+    }
+    .hs-paginador__numero:hover,
+    .hs-paginador__flecha:not(:disabled):hover {
+        transform: none;
+    }
+}
+
 /* ── Detalle de producto ──────────────────────────────────────────── */
 .hs-galeria {
     position: relative;

@@ -35,8 +35,9 @@ Cada plantilla ya existe como **esqueleto funcional**: muestra todos los datos y
 | 1.5 Confirmar compra | `GET/POST /carrito/confirmar` | `carrito/confirmar.html` |
 | 1.6 Compra registrada | `GET /compra-exito` | `carrito/compra-exito.html` |
 
-**`/tienda`** filtra por parámetros GET, todos opcionales: `q`, `categoria`, `coleccion`, `impacto` (`ABRIGO`/`ARBOL`), `disponibles=true`, `orden` (`DESTACADOS`, `PRECIO_ASC`, `PRECIO_DESC`, `NOMBRE`).
-Modelo: `productos` (List<TarjetaProducto>, se pintan con `fragments/product-card :: card`), `total`, `filtro` (con `hayFiltros()`, `soloDisponibles()` y `ordenEfectivo()`), `categorias`, `colecciones`, `compromisos`, `ordenes`.
+**`/tienda`** filtra por parámetros GET, todos opcionales: `q`, `categoria`, `coleccion`, `impacto` (`ABRIGO`/`ARBOL`), `disponibles=true`, `orden` (`DESTACADOS`, `PRECIO_ASC`, `PRECIO_DESC`, `NOMBRE`), `pagina` (desde 1) y `porPagina` (`6`, `12` o `18`; por defecto 12). Valores fuera de rango se corrigen, no fallan.
+Modelo: `pagina` (`PaginaCatalogo`: `productos` de esa página, que se pintan con `fragments/product-card :: card`; `pagina`, `porPagina`, `totalProductos`, `totalPaginas`, `desde()`, `hasta()`, `hayAnterior()`, `haySiguiente()`, `vacia()` y `numeros()`, donde un 0 es un salto "…"), `tamanosPagina`, `filtro` (con `hayFiltros()`, `soloDisponibles()` y `ordenEfectivo()`), `categorias`, `colecciones`, `compromisos`, `ordenes`.
+Con la cabecera `X-Hoseg-Parcial` devuelve solo el fragmento `tienda/lista :: resultados` (lo usa `tienda.js` para filtrar y paginar sin recargar); ese fragmento solo usa `pagina`, `tamanosPagina` y `filtro`.
 
 **`/tienda/{codigo}`**: el código de cualquier talla abre el modelo completo.
 - `producto` (DetalleProducto): `nombre`, `categoria`, `coleccion`, `descripcion`, `urlImagen`, `precioDesde`, `tipoCompromiso`, `disponible`, `sinTallas` (café y accesorios: sin selector), `codigoElegido`, `relacionados`.
