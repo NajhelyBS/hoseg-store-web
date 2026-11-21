@@ -472,6 +472,21 @@ class VistasTest {
                 .andExpect(content().string(containsString("ana@correo.pe")));
     }
 
+    // ---------- Logística ----------
+
+    private static final AdministradorAutenticado LOGISTICA =
+            new AdministradorAutenticado(2, "Lucía Logística", "logistica", "s:h", RolUsuario.LOGISTICA, true, false);
+
+    @Test
+    void elAvisoDeEstadoDelPedidoSaleUnaSolaVez() throws Exception {
+        mvc.perform(get("/logistica/pedidos").with(user(LOGISTICA))
+                        .flashAttr("exito", "Estado del pedido actualizado a En ruta."))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Estado del pedido actualizado a En ruta.")))
+                .andExpect(content().string(not(matchesRegex(
+                        "(?s).*actualizado a En ruta\\..*actualizado a En ruta\\..*"))));
+    }
+
     // ---------- Datos de ejemplo ----------
 
     private static TarjetaProducto tarjeta() {

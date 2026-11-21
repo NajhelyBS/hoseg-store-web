@@ -15,15 +15,7 @@
             </span>
         </div>
 
-        <!-- Alertas de confirmación o error -->
-        <div class="alert alert-success d-flex align-items-center mb-3" role="alert" th:if="${exito}">
-            <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>
-            <span th:text="${exito}">Estado actualizado.</span>
-        </div>
-        <div class="alert alert-danger d-flex align-items-center mb-3" role="alert" th:if="${error}">
-            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
-            <span th:text="${error}">Error al actualizar.</span>
-        </div>
+        <!-- Los avisos de éxito o error los muestra layout/admin.html: no repetirlos aquí -->
 
         <section class="hs-admin-card">
             <div class="hs-card-head hs-card-head--wrap">
