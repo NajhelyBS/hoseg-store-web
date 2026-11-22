@@ -83,8 +83,11 @@
     padding: 0.35rem 0.65rem;
 }
 
-/* Cápsula móvil glassmorphism para Logística e Impacto */
+/* Cápsula móvil glassmorphism para Logística e Impacto.
+   Aparece en el mismo corte (640 px) en que admin.css retira la barra lateral
+   y el administrador recibe su menú en arco: nunca se ven dos menús a la vez. */
 .hs-op-pill {
+    display: none;
     position: fixed;
     bottom: 18px;
     left: 50%;
@@ -141,7 +144,11 @@
     font-weight: 600;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 640px) {
+    .hs-op-pill {
+        display: block;
+    }
+
     .hs-admin-page {
         padding-bottom: 6rem;
     }
@@ -194,7 +201,7 @@
     padding-bottom: 0.25rem;
     border-bottom: 1px solid var(--hs-sand);
 }
-@media (max-width: 767.98px) {
+@media (max-width: 640px) {
     .hs-stock-toast {
         bottom: 5.5rem;
     }

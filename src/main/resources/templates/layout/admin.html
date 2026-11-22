@@ -27,21 +27,25 @@
             <ul class="list-unstyled d-flex flex-column gap-2">
                 <!-- ADMINISTRADOR (usa los iconos automáticos de admin.css) -->
                 <th:block sec:authorize="hasRole('ADMINISTRADOR')">
-                    <li><a th:href="@{/admin/panel}" th:classappend="${activa == 'panel'} ? 'fw-bold'">Panel</a></li>
+                    <!-- data-etiqueta es el rótulo de cada burbuja del menú en arco móvil (admin.css):
+                     así el rótulo viaja con su enlace y no depende del orden de la lista. -->
+                    <li><a th:href="@{/admin/panel}" data-etiqueta="Panel"
+                            th:classappend="${activa == 'panel'} ? 'fw-bold'">Panel</a></li>
                     <!-- Pedidos abre su propia pantalla (solo lectura para el administrador).
                      No apunta a /logistica/pedidos porque esa ruta es solo del rol LOGISTICA (SecurityConfig).
                      El icono se define en admin.css con a[href$="/admin/pedidos"]. -->
-                    <li><a th:href="@{/admin/pedidos}" th:classappend="${activa == 'pedidos'} ? 'fw-bold'">Pedidos</a>
-                    </li>
-                    <li><a th:href="@{/admin/catalogo}" th:classappend="${activa == 'catalogo'} ? 'fw-bold'">Catálogo
-                            web</a></li>
-                    <li><a th:href="@{/admin/cafe}" th:classappend="${activa == 'cafe'} ? 'fw-bold'">Höség Café</a></li>
-                    <li><a th:href="@{/admin/contenido}"
+                    <li><a th:href="@{/admin/pedidos}" data-etiqueta="Pedidos"
+                            th:classappend="${activa == 'pedidos'} ? 'fw-bold'">Pedidos</a></li>
+                    <li><a th:href="@{/admin/catalogo}" data-etiqueta="Catálogo"
+                            th:classappend="${activa == 'catalogo'} ? 'fw-bold'">Catálogo web</a></li>
+                    <li><a th:href="@{/admin/cafe}" data-etiqueta="Höség Café"
+                            th:classappend="${activa == 'cafe'} ? 'fw-bold'">Höség Café</a></li>
+                    <li><a th:href="@{/admin/contenido}" data-etiqueta="Contenido"
                             th:classappend="${activa == 'contenido'} ? 'fw-bold'">Contenido</a></li>
-                    <li><a th:href="@{/admin/mensajes}"
+                    <li><a th:href="@{/admin/mensajes}" data-etiqueta="Mensajes"
                             th:classappend="${activa == 'mensajes'} ? 'fw-bold'">Mensajes</a></li>
-                    <li><a th:href="@{/admin/resenas}" th:classappend="${activa == 'resenas'} ? 'fw-bold'">Reseñas</a>
-                    </li>
+                    <li><a th:href="@{/admin/resenas}" data-etiqueta="Reseñas"
+                            th:classappend="${activa == 'resenas'} ? 'fw-bold'">Reseñas</a></li>
                 </th:block>
 
                 <!-- LOGÍSTICA -->
@@ -82,7 +86,7 @@
         </th:block>
 
         <!-- Cápsula glassmorphism móvil para LOGÍSTICA -->
-        <nav class="hs-op-pill d-md-none" sec:authorize="hasRole('LOGISTICA')" aria-label="Navegación logística">
+        <nav class="hs-op-pill" sec:authorize="hasRole('LOGISTICA')" aria-label="Navegación logística">
             <ul class="hs-op-pill__list">
                 <li>
                     <a class="hs-op-pill__link" th:href="@{/logistica/pedidos}"
@@ -109,7 +113,7 @@
         </nav>
 
         <!-- Cápsula glassmorphism móvil para GESTOR DE IMPACTO -->
-        <nav class="hs-op-pill d-md-none" sec:authorize="hasRole('GESTOR_IMPACTO')" aria-label="Navegación impacto">
+        <nav class="hs-op-pill" sec:authorize="hasRole('GESTOR_IMPACTO')" aria-label="Navegación impacto">
             <ul class="hs-op-pill__list">
                 <li>
                     <a class="hs-op-pill__link" th:href="@{/gestion-impacto/donaciones}"

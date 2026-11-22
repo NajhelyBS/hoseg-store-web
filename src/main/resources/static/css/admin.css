@@ -2345,10 +2345,14 @@ body:has(.hs-admin-page)
         right: 4px;
         bottom: 4px;
         opacity: 0;
+        /* Cerrado también sale del orden de tabulación (y en Logística/Impacto,
+           que usan la cápsula, este menú nunca se abre). */
+        visibility: hidden;
         transform: translate(0, 0) scale(0.4);
         transition:
             transform 0.35s var(--hs-ease),
-            opacity 0.25s var(--hs-ease);
+            opacity 0.25s var(--hs-ease),
+            visibility 0s linear 0.35s;
         pointer-events: none;
     }
 
@@ -2401,60 +2405,9 @@ body:has(.hs-admin-page)
         font-weight: 600;
         white-space: nowrap;
         box-shadow: var(--hs-shadow-card);
-    }
-
-    body:has(.hs-admin-page)
-        > .d-flex.min-vh-100
-        > nav[aria-label="Panel"]
-        ul
-        li:nth-child(1)
-        a::after {
-        content: "Panel";
-    }
-
-    body:has(.hs-admin-page)
-        > .d-flex.min-vh-100
-        > nav[aria-label="Panel"]
-        ul
-        li:nth-child(2)
-        a::after {
-        content: "Catálogo";
-    }
-
-    body:has(.hs-admin-page)
-        > .d-flex.min-vh-100
-        > nav[aria-label="Panel"]
-        ul
-        li:nth-child(3)
-        a::after {
-        content: "Höség Café";
-    }
-
-    body:has(.hs-admin-page)
-        > .d-flex.min-vh-100
-        > nav[aria-label="Panel"]
-        ul
-        li:nth-child(4)
-        a::after {
-        content: "Contenido";
-    }
-
-    body:has(.hs-admin-page)
-        > .d-flex.min-vh-100
-        > nav[aria-label="Panel"]
-        ul
-        li:nth-child(5)
-        a::after {
-        content: "Mensajes";
-    }
-
-    body:has(.hs-admin-page)
-        > .d-flex.min-vh-100
-        > nav[aria-label="Panel"]
-        ul
-        li:nth-child(6)
-        a::after {
-        content: "Reseñas";
+        /* El rótulo sale del propio enlace (layout/admin.html), no de su posición:
+           agregar o reordenar un ítem ya no corre las etiquetas. */
+        content: attr(data-etiqueta);
     }
 
     /* Estado activo en terracota */
@@ -2475,15 +2428,19 @@ body:has(.hs-admin-page)
         ul
         li {
         opacity: 1;
+        visibility: visible;
         pointer-events: auto;
     }
 
+    /* Siete burbujas en arco (Panel, Pedidos, Catálogo, Café, Contenido,
+       Mensajes, Reseñas), ~59 px entre centros para que no se pisen.
+       Si se agrega un ítem al menú del administrador, hay que sumar aquí su posición. */
     body:has(.hs-admin-page)
         > .d-flex.min-vh-100
         > nav[aria-label="Panel"].is-open
         ul
         li:nth-child(1) {
-        transform: translate(0px, -342px) scale(1);
+        transform: translate(0px, -370px) scale(1);
         transition-delay: 0.03s;
     }
 
@@ -2492,7 +2449,7 @@ body:has(.hs-admin-page)
         > nav[aria-label="Panel"].is-open
         ul
         li:nth-child(2) {
-        transform: translate(-24px, -280px) scale(1);
+        transform: translate(-24px, -311px) scale(1);
         transition-delay: 0.06s;
     }
 
@@ -2501,7 +2458,7 @@ body:has(.hs-admin-page)
         > nav[aria-label="Panel"].is-open
         ul
         li:nth-child(3) {
-        transform: translate(-52px, -218px) scale(1);
+        transform: translate(-46px, -252px) scale(1);
         transition-delay: 0.09s;
     }
 
@@ -2510,7 +2467,7 @@ body:has(.hs-admin-page)
         > nav[aria-label="Panel"].is-open
         ul
         li:nth-child(4) {
-        transform: translate(-76px, -154px) scale(1);
+        transform: translate(-66px, -193px) scale(1);
         transition-delay: 0.12s;
     }
 
@@ -2519,7 +2476,7 @@ body:has(.hs-admin-page)
         > nav[aria-label="Panel"].is-open
         ul
         li:nth-child(5) {
-        transform: translate(-92px, -86px) scale(1);
+        transform: translate(-82px, -134px) scale(1);
         transition-delay: 0.15s;
     }
 
@@ -2528,8 +2485,17 @@ body:has(.hs-admin-page)
         > nav[aria-label="Panel"].is-open
         ul
         li:nth-child(6) {
-        transform: translate(-98px, -16px) scale(1);
+        transform: translate(-94px, -75px) scale(1);
         transition-delay: 0.18s;
+    }
+
+    body:has(.hs-admin-page)
+        > .d-flex.min-vh-100
+        > nav[aria-label="Panel"].is-open
+        ul
+        li:nth-child(7) {
+        transform: translate(-98px, -16px) scale(1);
+        transition-delay: 0.21s;
     }
 
     .hs-admin-page {
