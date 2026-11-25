@@ -1,5 +1,6 @@
 package pe.edu.utp.hoseg.web.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.ObjectProvider;
@@ -65,7 +66,7 @@ public class AuthApiController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest peticion) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest peticion, HttpServletRequest request) {
         String username = peticion.username().trim();
         Authentication autenticacion;
         try {
@@ -77,6 +78,8 @@ public class AuthApiController {
             return error(HttpStatus.FORBIDDEN, "Usuario inactivo.");
         } catch (AuthenticationException e) {
             Optional<Integer> bloqueo = bloqueoAccesoService.falloDeUsuario(username);
+            // Capa adicional (Guava, solo auditoría): fuerza bruta distribuida por IP, igual que en los formularios.
+            bloqueoAccesoService.registrarIntentoFallidoDesdeIp(request.getRemoteAddr());
             return bloqueo.isPresent()
                     ? bloqueado(bloqueo)
                     : error(HttpStatus.UNAUTHORIZED, "Usuario o contraseña incorrectos.");

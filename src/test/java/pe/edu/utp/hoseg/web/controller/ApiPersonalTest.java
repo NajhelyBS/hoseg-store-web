@@ -114,6 +114,7 @@ class ApiPersonalTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.error").value("Usuario o contraseña incorrectos."));
         verify(bloqueoAccesoService).falloDeUsuario("admin");
+        verify(bloqueoAccesoService).registrarIntentoFallidoDesdeIp(anyString());
         verify(bloqueoAccesoService, never()).ingresoDeUsuario(anyString());
 
         // Al tercer intento el servicio bloquea la cuenta: 423

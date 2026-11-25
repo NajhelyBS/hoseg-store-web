@@ -49,6 +49,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
@@ -473,6 +474,18 @@ class VistasTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/csv"))
                 .andExpect(content().string(containsString("ana@correo.pe")));
+    }
+
+    @Test
+    void elExcelDeSuscriptoresSeDescarga() throws Exception {
+        byte[] excel = {1, 2, 3};
+        when(boletinService.exportarExcelActivos()).thenReturn(excel);
+        mvc.perform(get("/admin/suscriptores.xlsx").with(user(ADMIN)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .andExpect(header().string("Content-Disposition", containsString("suscriptores-hoseg.xlsx")))
+                .andExpect(content().bytes(excel));
     }
 
     // ---------- Logística ----------
